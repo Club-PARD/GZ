@@ -12,12 +12,12 @@ export default function Home() {
 
   const categories = [
     { id: 'all', name: '전체' },
-    { id: 'electronics', name: '전자기기' },
+    { id: 'electronics', name: '전자' },
     { id: 'camera', name: '전강' },
-    { id: 'hobby', name: '취미/여가' },
-    { id: 'beauty', name: '뷰티/패션' },
-    { id: 'study', name: '도서/학업' },
-    { id: 'life', name: '생활용품' },
+    { id: 'hobby', name: '취미' },
+    { id: 'beauty', name: '뷰티' },
+    { id: 'study', name: '학업' },
+    { id: 'life', name: '생활' },
     { id: 'etc', name: '기타' },
   ];
 
