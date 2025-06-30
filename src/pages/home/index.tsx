@@ -12,12 +12,12 @@ export default function Home() {
 
   const categories = [
     { id: 'all', name: '전체' },
-    { id: 'electronics', name: '전자' },
+    { id: 'electronics', name: '전자기기' },
     { id: 'camera', name: '전강' },
-    { id: 'hobby', name: '취미' },
-    { id: 'beauty', name: '뷰티' },
-    { id: 'study', name: '학업' },
-    { id: 'life', name: '생활' },
+    { id: 'hobby', name: '취미/여가' },
+    { id: 'beauty', name: '뷰티/패션' },
+    { id: 'study', name: '도서/학업' },
+    { id: 'life', name: '생활용품' },
     { id: 'etc', name: '기타' },
   ];
 
@@ -55,37 +55,37 @@ export default function Home() {
       timeUnit: { hour: '1시간', day: '1일' }
     },
     {
-        id: 5,
-        title: '좋은 축구화임',
-        image: '/images/shoes.jpg',
-        category: '건강',
-        price: { hour: 5000, day: 20000 },
-        timeUnit: { hour: '1시간', day: '1일' }
-      }, 
-      {
-        id: 6,
-        title: '오피스백 대여해드림',
-        image: '/images/bag.jpg',
-        category: '생활용품',
-        price: { hour: 3000, day: 12000 },
-        timeUnit: { hour: '1시간', day: '1일' }
-      },  
-      {
-        id: 7,
-        title: '공구 많아요',
-        image: '/images/hammer.jpg',
-        category: '생활용품',
-        price: { hour: 5000, day: 20000 },
-        timeUnit: { hour: '1시간', day: '1일' }
-      }, {
-        id: 8,
-        title: '비싼 캠핑 용품입니다.',
-        image: '/images/camping.jpg',
-        category: '생활용품',
-        price: { hour: 3000, day: 12000 },
-        timeUnit: { hour: '1시간', day: '1일' }
-      }
-
+      id: 5,
+      title: '좋은 축구화임',
+      image: '/images/shoes.jpg',
+      category: '건강',
+      price: { hour: 5000, day: 20000 },
+      timeUnit: { hour: '1시간', day: '1일' }
+    }, 
+    {
+      id: 6,
+      title: '오피스백 대여해드림',
+      image: '/images/bag.jpg',
+      category: '생활용품',
+      price: { hour: 3000, day: 12000 },
+      timeUnit: { hour: '1시간', day: '1일' }
+    },  
+    {
+      id: 7,
+      title: '공구 많아요',
+      image: '/images/hammer.jpg',
+      category: '생활용품',
+      price: { hour: 5000, day: 20000 },
+      timeUnit: { hour: '1시간', day: '1일' }
+    }, 
+    {
+      id: 8,
+      title: '비싼 캠핑 용품입니다.',
+      image: '/images/camping.jpg',
+      category: '생활용품',
+      price: { hour: 3000, day: 12000 },
+      timeUnit: { hour: '1시간', day: '1일' }
+    }
   ];
 
   return (
