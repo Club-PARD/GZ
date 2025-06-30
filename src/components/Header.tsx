@@ -6,7 +6,7 @@ export default function Header() {
     <div className="pl-[260px] pr-[272px]">
       <header className="w-full flex justify-between items-center px-8 py-4">
         <Image
-          src="/images/logo.jpg"
+          src="/images/logo.svg"
           alt="로고"
           width={63}
           height={20}
