@@ -1,0 +1,86 @@
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  gap: 2rem;
+}
+
+.categoryButton {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  transition: all 0.2s;
+}
+
+.categoryButtonActive {
+  background-color: #8769FF;
+  color: white;
+}
+
+.categoryButtonInactive {
+  background-color: #F3F3F5;
+  color: black;
+}
+
+.categoryButtonInactive:hover {
+  background-color: #E5E5E5;
+}
+
+.itemsContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  padding: 0 272px;
+  width: 100%;
+}
+
+.itemCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.imageContainer {
+  width: 233px;
+  height: 233px;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.itemTitle {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.price {
+  font-weight: bold;
+}
+
+.timeUnit {
+  color: #6B7280;
+}
+
+.categoryTag {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background-color: #F3F3F5;
+  color: #8769FF;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+} 
