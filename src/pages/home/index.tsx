@@ -51,7 +51,39 @@ export default function Home() {
       category: '생활용품',
       price: { hour: 3000, day: 12000 },
       timeUnit: { hour: '1시간', day: '1일' }
-    }
+    },
+    {
+        id: 5,
+        title: '좋은 축구화임',
+        image: '/images/shoes.jpg',
+        category: '건강',
+        price: { hour: 5000, day: 20000 },
+        timeUnit: { hour: '1시간', day: '1일' }
+      }, 
+      {
+        id: 6,
+        title: '오피스백 대여해드림',
+        image: '/images/bag.jpg',
+        category: '생활용품',
+        price: { hour: 3000, day: 12000 },
+        timeUnit: { hour: '1시간', day: '1일' }
+      },  
+      {
+        id: 7,
+        title: '공구 많아요',
+        image: '/images/hammer.jpg',
+        category: '생활용품',
+        price: { hour: 5000, day: 20000 },
+        timeUnit: { hour: '1시간', day: '1일' }
+      }, {
+        id: 8,
+        title: '비싼 캠핑 용품입니다.',
+        image: '/images/camping.jpg',
+        category: '생활용품',
+        price: { hour: 3000, day: 12000 },
+        timeUnit: { hour: '1시간', day: '1일' }
+      }
+
   ];
 
   return (
@@ -84,7 +116,7 @@ export default function Home() {
               className={`px-4 py-2 rounded-full transition-colors ${
                 selectedCategory === category.id
                 ? 'bg-[#8769FF] text-white'
-                : 'bg-[#F3F3F5] text-black hover:bg-gray-200'
+                : 'bg-[#F3F3F5] text-[#A2A3A7] hover:bg-[#F3F3F5]'
               }`}
             >
               {category.name}
