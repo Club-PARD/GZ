@@ -1,4 +1,3 @@
-
 .content {
   flex: 1;
   display: flex;
@@ -15,18 +14,15 @@
 }
 
 .categoryButtonActive {
-  background-color: #8769FF;
+  background-color: #8769ff;
   color: white;
 }
 
 .categoryButtonInactive {
-  background-color: #F3F3F5;
+  background-color: #f3f3f5;
   color: black;
 }
 
-.categoryButtonInactive:hover {
-  background-color: #E5E5E5;
-}
 
 .itemsContainer {
   display: grid;
@@ -72,15 +68,17 @@
 }
 
 .timeUnit {
-  color: #6B7280;
+  color: #A2A3A7;
 }
 
 .categoryTag {
   display: inline-block;
   margin-top: 0.5rem;
-  padding: 0.25rem 0.75rem;
-  background-color: #F3F3F5;
-  color: #8769FF;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-} 
+  padding: 0.15rem 0.25rem;
+  background-color: #f3f0ff;
+  color: #8769ff;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  width: fit-content;
+  white-space: nowrap;
+}
