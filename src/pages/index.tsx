@@ -1,16 +1,20 @@
-import { useRouter } from "next/router";
+// pages/index.tsx
+import HeroSection from '../components/index-components/hero-section'
+import EmailAuthFeature from '../components/index-components/email-auth-feature'
+import DepositFeature from '../components/index-components/deposit-feature'
+import ProductsFeature from '../components/index-components/products-feature'
+import Header from '@/components/cert-header';
+import Footer from '@/components/Footer';
 
-export default function Index() {
-  const router = useRouter();
-
+export default function Home() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <button
-        onClick={() => router.push("/home")}
-        className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-      >
-        홈으로 가기
-      </button>
+    <main className="space-y-0 bg-white">
+      <Header />
+      <HeroSection />
+      <EmailAuthFeature />
+      <DepositFeature />
+      <ProductsFeature />
+      <Footer />
     </main>
-  );
+  )
 }
