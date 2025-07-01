@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function Header() {
   return (
-    <div className="pl-[260px] pr-[272px]">
+    <div className="pl-[260px] pr-[272px] bg-[#FFFFFF]">
       <header className="w-full flex justify-between items-center px-8 py-4">
         <Image
           src="/images/logo.svg"
