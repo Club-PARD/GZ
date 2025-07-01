@@ -1,12 +1,12 @@
 // src/pages/index.tsx
-import Header from "@/components/Header";
+import Header from "@/components/home-header";
 import { IoSearchOutline } from "@/components/icons";
 import { IoLocationSharp } from "react-icons/io5";
 import styles from "./home.module.css";
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import BottomButton from "@/components/bottom_button";
+import Footer from "@/components/Footer";
+
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
@@ -162,21 +162,7 @@ export default function Home() {
         <div className="flex w-full h-100"></div>
       </div>
 
-      <div className="w-full bg-[#F9F9FB] py-20">
-        <div className="flex items-start gap-8 px-[260px]">
-          <div className="flex flex-col gap-2 w-full">
-            <div className="flex flex-row justify-between items-center">
-              <Image src="/images/logo.svg" alt="logo" width={64} height={32} />
-              <BottomButton />
-            </div>
-            <p className="text-[#828286] text-[16px] font-normal">
-              '지구'는 대학생들이 캠퍼스 안에서 단기간 필요한 물건을
-              <br />
-              빠르게 빌리고 빌려주는 P2P 대여 플랫폼입니다.
-            </p>
-          </div>
-        </div>
-      </div>
+      <Footer />
 
       <Link
         href="/register"
