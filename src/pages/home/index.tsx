@@ -1,91 +1,91 @@
 // src/pages/index.tsx
-import Header from '@/components/Header';
-import { IoSearchOutline } from '@/components/icons';
-import { IoLocationSharp } from 'react-icons/io5';
-import styles from './home.module.css';
-import { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import BottomButton from '@/components/bottom_button';
+import Header from "@/components/Header";
+import { IoSearchOutline } from "@/components/icons";
+import { IoLocationSharp } from "react-icons/io5";
+import styles from "./home.module.css";
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import BottomButton from "@/components/bottom_button";
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const categories = [
-    { id: 'all', name: '전체' },
-    { id: 'electronics', name: '전자기기' },
-    { id: 'camera', name: '전강' },
-    { id: 'hobby', name: '취미/여가' },
-    { id: 'beauty', name: '뷰티/패션' },
-    { id: 'study', name: '도서/학업' },
-    { id: 'life', name: '생활용품' },
-    { id: 'etc', name: '기타' },
+    { id: "all", name: "전체" },
+    { id: "electronics", name: "전자기기" },
+    { id: "camera", name: "전강" },
+    { id: "hobby", name: "취미/여가" },
+    { id: "beauty", name: "뷰티/패션" },
+    { id: "study", name: "도서/학업" },
+    { id: "life", name: "생활용품" },
+    { id: "etc", name: "기타" },
   ];
 
   const items = [
     {
       id: 1,
-      title: '1TB USB 빌려드려요',
-      image: '/images/usb.jpg',
-      category: '전자기기',
+      title: "1TB USB 빌려드려요",
+      image: "/images/usb.jpg",
+      category: "전자기기",
       price: { hour: 3000, day: 10000 },
-      timeUnit: { hour: '1시간', day: '1일' }
+      timeUnit: { hour: "1시간", day: "1일" },
     },
     {
       id: 2,
-      title: '후지필름 카메라',
-      image: '/images/camera.jpg',
-      category: '취미/여가',
+      title: "후지필름 카메라",
+      image: "/images/camera.jpg",
+      category: "취미/여가",
       price: { hour: 7000, day: 30000 },
-      timeUnit: { hour: '1시간', day: '1일' }
+      timeUnit: { hour: "1시간", day: "1일" },
     },
     {
       id: 3,
-      title: '계산기 편하게 빌리세요',
-      image: '/images/calculator.jpg',
-      category: '도서/학업',
+      title: "계산기 편하게 빌리세요",
+      image: "/images/calculator.jpg",
+      category: "도서/학업",
       price: { hour: 2000, day: 10000 },
-      timeUnit: { hour: '1시간', day: '1일' }
+      timeUnit: { hour: "1시간", day: "1일" },
     },
     {
       id: 4,
-      title: '미니 선풍기 빌려드립니다',
-      image: '/images/fan.jpg',
-      category: '생활용품',
+      title: "미니 선풍기 빌려드립니다",
+      image: "/images/fan.jpg",
+      category: "생활용품",
       price: { hour: 3000, day: 12000 },
-      timeUnit: { hour: '1시간', day: '1일' }
+      timeUnit: { hour: "1시간", day: "1일" },
     },
     {
       id: 5,
-      title: '좋은 축구화임',
-      image: '/images/shoes.jpg',
-      category: '건강',
+      title: "좋은 축구화임",
+      image: "/images/shoes.jpg",
+      category: "건강",
       price: { hour: 5000, day: 20000 },
-      timeUnit: { hour: '1시간', day: '1일' }
-    }, 
+      timeUnit: { hour: "1시간", day: "1일" },
+    },
     {
       id: 6,
-      title: '오피스백 대여해드림',
-      image: '/images/bag.jpg',
-      category: '생활용품',
+      title: "오피스백 대여해드림",
+      image: "/images/bag.jpg",
+      category: "생활용품",
       price: { hour: 3000, day: 12000 },
-      timeUnit: { hour: '1시간', day: '1일' }
-    },  
+      timeUnit: { hour: "1시간", day: "1일" },
+    },
     {
       id: 7,
-      title: '공구 많아요',
-      image: '/images/hammer.jpg',
-      category: '생활용품',
+      title: "공구 많아요",
+      image: "/images/hammer.jpg",
+      category: "생활용품",
       price: { hour: 5000, day: 20000 },
-      timeUnit: { hour: '1시간', day: '1일' }
-    }, 
+      timeUnit: { hour: "1시간", day: "1일" },
+    },
     {
       id: 8,
-      title: '비싼 캠핑 용품입니다.',
-      image: '/images/camping.jpg',
-      category: '생활용품',
+      title: "비싼 캠핑 용품입니다.",
+      image: "/images/camping.jpg",
+      category: "생활용품",
       price: { hour: 3000, day: 12000 },
-      timeUnit: { hour: '1시간', day: '1일' }
-    }
+      timeUnit: { hour: "1시간", day: "1일" },
+    },
   ];
 
   return (
@@ -93,13 +93,14 @@ export default function Home() {
       <Header />
       <div className={styles.content}>
         <h1 className="text-[36px] font-bold">
-          필요할때마다 사지말고, <span className="text-[#8769FF]">지구</span>에서 잠깐 빌려요
+          필요할때마다 사지말고, <span className="text-[#8769FF]">지구</span>
+          에서 잠깐 빌려요
         </h1>
         <div className="w-[824px] h-[68px] relative">
-          <input 
+          <input
             className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF]"
-            type="text" 
-            placeholder="지금 어떤 물건을 구매하고 있나요?" 
+            type="text"
+            placeholder="지금 어떤 물건을 구매하고 있나요?"
           />
           <div className="absolute left-5 top-1/2 -translate-y-1/2">
             <IoSearchOutline size={24} />
@@ -107,9 +108,11 @@ export default function Home() {
         </div>
         <div className="flex items-center gap-2 mt-[50px] pl-[260px] self-start">
           <IoLocationSharp size={20} />
-          <div className="text-[22px] font-bold">한동대학교 학생들이 주고받은 물건들</div>
+          <div className="text-[22px] font-bold">
+            한동대학교 학생들이 주고받은 물건들
+          </div>
         </div>
-        
+
         <div className="flex gap-2 pl-[260px] self-start">
           {categories.map((category) => (
             <button
@@ -117,8 +120,8 @@ export default function Home() {
               onClick={() => setSelectedCategory(category.id)}
               className={`px-4 py-2 rounded-full transition-colors ${
                 selectedCategory === category.id
-                ? 'bg-[#8769FF] text-white'
-                : 'bg-[#F3F3F5] text-[#A2A3A7] hover:bg-[#F3F3F5]'
+                  ? "bg-[#8769FF] text-white"
+                  : "bg-[#F3F3F5] text-[#A2A3A7] hover:bg-[#F3F3F5]"
               }`}
             >
               {category.name}
@@ -128,12 +131,17 @@ export default function Home() {
 
         <div className="grid grid-cols-4 gap-6 px-[272px]">
           {items
-            .filter(item => selectedCategory === 'all' || item.category === categories.find(c => c.id === selectedCategory)?.name)
+            .filter(
+              (item) =>
+                selectedCategory === "all" ||
+                item.category ===
+                  categories.find((c) => c.id === selectedCategory)?.name
+            )
             .map((item) => (
               <div key={item.id} className={styles.itemCard}>
                 <div className="w-full h-full aspect-square rounded-lg overflow-hidden">
-                  <img 
-                    src={item.image} 
+                  <img
+                    src={item.image}
                     alt={item.title}
                     className={styles.image}
                   />
@@ -149,41 +157,34 @@ export default function Home() {
                 </div>
                 <span className={styles.categoryTag}>{item.category}</span>
               </div>
-          ))}
+            ))}
         </div>
-        <div className='flex w-full h-100'>
-         
-        </div>
+        <div className="flex w-full h-100"></div>
       </div>
 
-      {/* 하단 섹션 */}
       <div className="w-full bg-[#F9F9FB] py-20">
         <div className="flex items-start gap-8 px-[260px]">
           <div className="flex flex-col gap-2 w-full">
-            <div className='flex flex-row justify-between items-center'>
-              <Image 
-                src="/images/logo.svg" 
-                alt="logo"
-                width={64}
-                height={32}
-              />
+            <div className="flex flex-row justify-between items-center">
+              <Image src="/images/logo.svg" alt="logo" width={64} height={32} />
               <BottomButton />
             </div>
             <p className="text-[#828286] text-[16px] font-normal">
-              '지구'는 대학생들이 캠퍼스 안에서 단기간 필요한 물건을<br/>
+              '지구'는 대학생들이 캠퍼스 안에서 단기간 필요한 물건을
+              <br />
               빠르게 빌리고 빌려주는 P2P 대여 플랫폼입니다.
             </p>
           </div>
         </div>
       </div>
 
-      <Link 
+      <Link
         href="/register"
         className="fixed bottom-8 right-8 bg-[#8769FF] 
         text-white px-6 py-4 rounded-lg flex items-center gap-2 hover:bg-[#7559EF] transition-colors shadow-lg"
       >
         <span className="text-2xl">+</span>
-        <span className='text-[18px] font-bold'>물건 등록하기</span>
+        <span className="text-[18px] font-bold">물건 등록하기</span>
       </Link>
     </main>
   );
