@@ -13,7 +13,7 @@ export default function Home() {
   const categories = [
     { id: "all", name: "전체" },
     { id: "electronics", name: "전자기기" },
-    { id: "camera", name: "전강" },
+    { id: "health", name: "건강" },
     { id: "hobby", name: "취미/여가" },
     { id: "beauty", name: "뷰티/패션" },
     { id: "study", name: "도서/학업" },
