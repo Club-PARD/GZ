@@ -1,5 +1,5 @@
 // src/pages/index.tsx
-import Header from '@/components/Header';
+import Header from '@/components/home-header';
 import { IoSearchOutline } from '@/components/icons';
 import { IoLocationSharp } from 'react-icons/io5';
 import styles from './home.module.css';
@@ -7,6 +7,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import BottomButton from '@/components/bottom_button';
+import Footer from '@/components/Footer';
+
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -61,7 +63,7 @@ export default function Home() {
       category: '건강',
       price: { hour: 5000, day: 20000 },
       timeUnit: { hour: '1시간', day: '1일' }
-    }, 
+    },
     {
       id: 6,
       title: '오피스백 대여해드림',
@@ -69,7 +71,7 @@ export default function Home() {
       category: '생활용품',
       price: { hour: 3000, day: 12000 },
       timeUnit: { hour: '1시간', day: '1일' }
-    },  
+    },
     {
       id: 7,
       title: '공구 많아요',
@@ -77,7 +79,7 @@ export default function Home() {
       category: '생활용품',
       price: { hour: 5000, day: 20000 },
       timeUnit: { hour: '1시간', day: '1일' }
-    }, 
+    },
     {
       id: 8,
       title: '비싼 캠핑 용품입니다.',
@@ -96,10 +98,10 @@ export default function Home() {
           필요할때마다 사지말고, <span className="text-[#8769FF]">지구</span>에서 잠깐 빌려요
         </h1>
         <div className="w-[824px] h-[68px] relative">
-          <input 
+          <input
             className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF]"
-            type="text" 
-            placeholder="지금 어떤 물건을 구매하고 있나요?" 
+            type="text"
+            placeholder="지금 어떤 물건을 구매하고 있나요?"
           />
           <div className="absolute left-5 top-1/2 -translate-y-1/2">
             <IoSearchOutline size={24} />
@@ -109,17 +111,16 @@ export default function Home() {
           <IoLocationSharp size={20} />
           <div className="text-[22px] font-bold">한동대학교 학생들이 주고받은 물건들</div>
         </div>
-        
+
         <div className="flex gap-2 pl-[260px] self-start">
           {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              className={`px-4 py-2 rounded-full transition-colors ${
-                selectedCategory === category.id
-                ? 'bg-[#8769FF] text-white'
-                : 'bg-[#F3F3F5] text-[#A2A3A7] hover:bg-[#F3F3F5]'
-              }`}
+              className={`px-4 py-2 rounded-full transition-colors ${selectedCategory === category.id
+                  ? 'bg-[#8769FF] text-white'
+                  : 'bg-[#F3F3F5] text-[#A2A3A7] hover:bg-[#F3F3F5]'
+                }`}
             >
               {category.name}
             </button>
@@ -132,8 +133,8 @@ export default function Home() {
             .map((item) => (
               <div key={item.id} className={styles.itemCard}>
                 <div className="w-full h-full aspect-square rounded-lg overflow-hidden">
-                  <img 
-                    src={item.image} 
+                  <img
+                    src={item.image}
                     alt={item.title}
                     className={styles.image}
                   />
@@ -149,35 +150,17 @@ export default function Home() {
                 </div>
                 <span className={styles.categoryTag}>{item.category}</span>
               </div>
-          ))}
+            ))}
         </div>
         <div className='flex w-full h-100'>
-         
+
         </div>
       </div>
 
       {/* 하단 섹션 */}
-      <div className="w-full bg-[#F9F9FB] py-20">
-        <div className="flex items-start gap-8 px-[260px]">
-          <div className="flex flex-col gap-2 w-full">
-            <div className='flex flex-row justify-between items-center'>
-              <Image 
-                src="/images/logo.svg" 
-                alt="logo"
-                width={64}
-                height={32}
-              />
-              <BottomButton />
-            </div>
-            <p className="text-[#828286] text-[16px] font-normal">
-              '지구'는 대학생들이 캠퍼스 안에서 단기간 필요한 물건을<br/>
-              빠르게 빌리고 빌려주는 P2P 대여 플랫폼입니다.
-            </p>
-          </div>
-        </div>
-      </div>
+      <Footer />
 
-      <Link 
+      <Link
         href="/register"
         className="fixed bottom-8 right-8 bg-[#8769FF] 
         text-white px-6 py-4 rounded-lg flex items-center gap-2 hover:bg-[#7559EF] transition-colors shadow-lg"
