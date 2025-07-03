@@ -48,7 +48,7 @@ export default function NewPage() {
     if (!isFormValid) return
     setIsLoading(true)                // 로딩 시작
     setTimeout(() => {
-      router.push('/detail')          // 3초 뒤 detail 페이지로 이동
+      router.push('/detail/detail-page-producer')
     }, 3000)
   }
 
