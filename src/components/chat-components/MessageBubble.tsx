@@ -16,7 +16,7 @@ export default function MessageBubble({
     <div className={`flex ${isMine ? 'justify-end' : 'justify-start'}`}>
       <div
         className={`max-w-xs p-2 rounded-lg shadow ${
-          isMine ? 'bg-blue-100' : 'bg-white'
+          isMine ? 'bg-[#F3F0FF]' : 'bg-white'
         }`}
       >
         {/* 텍스트 혹은 이미지 구분 렌더링 */}
@@ -27,7 +27,7 @@ export default function MessageBubble({
             className="max-w-full rounded"
           />
         ) : (
-          <p className="text-sm">{message.message}</p>
+          <p className="text-sm text-black">{message.message}</p>
         )}
 
         <div className="text-xs text-gray-500 text-right mt-1">
