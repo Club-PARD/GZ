@@ -55,6 +55,7 @@
 .itemTitle {
   font-weight: 500;
   margin-bottom: 0.5rem;
+  color: black;
 }
 
 .priceContainer {
@@ -65,10 +66,12 @@
 
 .price {
   font-weight: bold;
+  color: black;
 }
 
 .timeUnit {
   color: #A2A3A7;
+
 }
 
 .categoryTag {

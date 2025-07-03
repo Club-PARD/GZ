@@ -185,18 +185,8 @@ const TransactionHistory: React.FC = () => {
               </React.Fragment>
             ))}
           </div>
-          ):(
-            // ★ 데이터가 하나도 없을 때 보여줄 영역
-            <div className="flex flex-col items-center py-20 text-gray-400">
-              {/* 아이콘 이미지는 적당히 대체하세요 */}
-              <img
-                src="/images/folder-empty.png"
-                alt="거래 내역 없음"
-                className="w-16 h-16 mb-4"
-              />
-              <p>아직 거래 내역이 없어요.</p>
-            </div>
-          )
+          
+           
 
         </main>
       </div>
