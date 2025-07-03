@@ -40,7 +40,7 @@ export default function MessageInput({
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="메시지를 입력하세요"
-          className="flex-1 border rounded-lg px-3 py-2 focus:outline-none"
+          className="flex-1 border rounded-lg px-3 py-2 focus:outline-none text-black"
         />
         <button
           type="submit"

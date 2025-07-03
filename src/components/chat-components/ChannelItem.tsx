@@ -29,7 +29,7 @@ export default function ChannelItem({
       onClick={onClick}
       className={`
         flex items-center px-4 py-3 cursor-pointer transition-colors
-        ${isActive ? 'bg-blue-50' : 'hover:bg-gray-100'}
+        ${isActive ? 'bg-[#F3F0FF]' : 'hover:bg-gray-100'}
       `}
     >
       <img
