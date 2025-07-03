@@ -8,7 +8,7 @@ export default function Header() {
         <Image
           src="/images/logo.svg"
           alt="로고"
-          width={63}
+          width={94}
           height={20}
         />
         <div className="flex items-center gap-2">          
