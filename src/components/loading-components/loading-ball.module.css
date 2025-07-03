@@ -1,0 +1,52 @@
+/* components/loading-components/loading-ball.module.css */
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 360px;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.balls {
+  position: absolute;
+  width: 240px;                      /* 박스 너비 고정 */
+  height: 60px;                      /* 박스 높이 고정 */
+  top: 50%;                          /* 세로 중앙 */
+  left: calc(50% + 40px);            /* 가로 중앙＋40px */
+  transform: translate(-50%, -50%);
+  overflow: hidden;                  /* 공이 밖으로 안 보이게 */
+}
+
+/* 공 기본 스타일 */
+.ball {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #8769FF;
+  animation: ball 4s infinite ease-in-out;
+}
+
+/* 그룹1: 정상 delay */
+.balls-1 .ball--1 { left:  20px; animation-delay:   0s;   }
+.balls-1 .ball--2 { left:  50px; animation-delay:  .05s; }
+.balls-1 .ball--3 { left:  80px; animation-delay:   .1s; }
+.balls-1 .ball--4 { left: 110px; animation-delay:  .15s; }
+.balls-1 .ball--5 { left: 140px; animation-delay:   .2s; }
+
+/* 그룹2: negative delay (–2초 = 반 주기) */
+.balls-2 .ball--1 { left:  20px; animation-delay:  -2s;   }
+.balls-2 .ball--2 { left:  50px; animation-delay: -1.95s; }
+.balls-2 .ball--3 { left:  80px; animation-delay:  -1.9s; }
+.balls-2 .ball--4 { left: 110px; animation-delay: -1.85s; }
+.balls-2 .ball--5 { left: 140px; animation-delay:  -1.8s; }
+
+/* 수직 움직임은 translateY로 통일 */
+@keyframes ball {
+  0%, 25%   { transform: translateY(-10px); }  /* 박스 위로 10px */
+  50%       { transform: translateY(50px); }   /* 박스 아래 (60 - 10) */
+  75%,100%  { transform: translateY(-10px); }  /* 다시 위로 */
+}
