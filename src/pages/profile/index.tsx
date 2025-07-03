@@ -1,103 +1,179 @@
-import Header from '@/components/home-header'; 
-import Footer from '@/components/Footer';    
-import React from 'react';                
-import styles from './profile.module.css';  
+// src/pages/ProfilePage.tsx
+import React, { useState } from 'react';
+import Header from '@/components/home-header';
+import Footer from '@/components/Footer';
 
-// 거래 아이템의 타입 정의
-interface Item {
-  id: number;          // 각 아이템의 고유 ID
-  name: string;        // 아이템 이름
-  price: string;       // 가격 문자열
-  status: string;      // 거래 상태 표시 (거래 완료, 거래 중 등)
-  imageUrl?: string;   // 이미지 URL (선택적)
+interface TransactionItem {
+  id: number;
+  title: string;
+  category: string;
+  duration: string;
+  price: number;
+  deposit: number;
+  status: string;
+  imageUrl: string;
 }
 
-// 더미 데이터 배열: 실제 API 대신 렌더링 용도로 사용
-const dummyItems: Item[] = [
-  { id: 1, name: '물건 이름 1', price: '₩12,000', status: '거래 완료', imageUrl: '/images/placeholder.png' },
-  { id: 2, name: '물건 이름 2', price: '₩34,000', status: '거래 중', imageUrl: '/images/placeholder.png' },
-  { id: 3, name: '물건 이름 3', price: '₩56,000', status: '거래 대기', imageUrl: '/images/placeholder.png' },
+// 더미 데이터 예시
+const borrowedItems: TransactionItem[] = [
+  {
+    id: 1,
+    title: '1TB USB 빌려드려요',
+    category: '전자기기',
+    duration: '10시간',
+    price: 30000,
+    deposit: 10000,
+    status: '반납 요청',
+    imageUrl: '/images/usb.jpg',
+  },
+  {
+    id: 2,
+    title: '가방 빌려드려요',
+    category: '패션',
+    duration: '3일',
+    price: 50000,
+    deposit: 20000,
+    status: '반납 수락',
+    imageUrl: '/images/bag.jpg',
+  },
+  {
+    id: 3,
+    title: '망치 빌려드려요',
+    category: '도구',
+    duration: '1주일',
+    price: 20000,
+    deposit: 5000,
+    status: '반납 요청',
+    imageUrl: '/images/hammer.jpg',
+  },
+  
+  
 ];
 
-// ProfilePage 컴포넌트: 사용자 프로필 및 거래 내역 목록 표시
-export default function ProfilePage() {
-  <div>
-    <br />
+const lentItems: TransactionItem[] = [
+  {
+    id: 2,
+    title: '카메라 빌려드려요',
+    category: '전자기기',
+    duration: '1일',
+    price: 15000,
+    deposit: 5000,
+    status: '반납 수락',
+    imageUrl: '/images/camera.jpg',
+  }, {
+    id: 3,
+    title: '신발 빌려드려요',
+    category: '패션',
+    duration: '2주일',
+    price: 5000,
+    deposit: 1000,
+    status: '반납 요청',
+    imageUrl: '/images/shoes.jpg',
+  }, {
+    id: 4,
+    title: '캠핑용품 세트 빌려드려요',
+    category: '여행',
+    duration: '1달',
+    price: 30000,
+    deposit: 10000,
+    status: '반납 수락',
+    imageUrl: '/images/camping.jpg',
+  }
 
-    <br />
-    <br />
-    <br />
-  </div>
-  // 하드코딩된 사용자 정보 (실제 환경에서는 API 호출로 대체)
-  const nickname = '닉네임';
-  const email = 'gkrryrcibapdif@yu.ac.kr';
+  // ... 추가 아이템
+];
 
+const TransactionHistory: React.FC = () => {
+  // useState 훅: 컴포넌트 내부에서 상태(state)를 관리하기 위한 React 훅입니다.
+  // activeTab은 현재 선택된 탭을 의미하며, 'borrow'(빌린 내역) 또는 'lend'(빌려준 내역) 값을 가집니다.
+  // setActiveTab 함수를 호출하여 activeTab 값을 업데이트할 수 있습니다.
+  const [activeTab, setActiveTab] = useState<'borrow' | 'lend'>('borrow');
 
+  // activeTab에 따라 보여줄 리스트를 선택
+  const items = activeTab === 'borrow' ? borrowedItems : lentItems;
 
-  // JSX 반환: 컴포넌트 렌더링 구조 정의
   return (
-    // 최상위 wrapper: CSS 모듈의 배경, 레이아웃 적용
-    <div className={styles.wrapper}>
-      {/* 헤더 컴포넌트 렌더링 */}
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
+      <div className="max-w-250 mx-auto px-4">
+        <main className="flex-grow container mx-auto p-4">
+          <h1 className="text-2xl font-semibold mb-6 text-center">거래 내역</h1>
+          <div>
+            {/* 탭 - 수정 필요 */}
+            <div
+              className="
+     flex justify-center space-x-8
+     mb-1      /* 탭 아래 여백 조정 */
+     pb-4      /* 탭 내부 아래 여백 조정 */
+     border-b-2/* 선 두께: 2px (기본은 border-b = 1px) */
+     border-gray-200 /* 선 색상: 연한 회색 */
+   "
+            >
+              <button
+                className={`pb-2 mx-6 ${activeTab === 'borrow' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500'}`}
+                onClick={() => setActiveTab('borrow')}
+              >
+                빌린 내역
+              </button>
+              <button
+                className={`pb-2 mx-4 ${activeTab === 'lend' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500'}`}
+                onClick={() => setActiveTab('lend')}
+              >
+                빌려준 내역
+              </button>
+            </div>
+          </div>
+          <div className="inline-grid
+                grid-cols-4
+                
+                divide-y divide-gray-200
+                text-gray-600
+                font-medium">
+            {/* — 헤더 */}
+            <div className="px-2 py-3">물품 정보</div>
+            <div className="px-2 py-3 text-center">기간 및 금액</div>
+            <div className="px-2 py-3 text-center">보증금</div>
+            <div className="px-2 py-3 text-center">상태</div>
 
-      {/* 메인 컨텐츠 영역 */}
-      <main className={styles.main}>
-
-        {/* 프로필 헤더 섹션: 닉네임, 이메일, 뱃지, 버튼 */}
-        <section className={styles.profileHeader}>
-
-          {/* 프로필 정보: 닉네임과 이메일 */}
-          <div className={styles.profileInfo}>
-            <h1 className={styles.nickname}>{nickname}</h1>
-            <p className={styles.email}>{email}</p>
+            {/* — 아이템들 */}
+            {items.map(item => (
+              <React.Fragment key={item.id}>
+                <div className="flex items-center space-x-4 px-2 py-3">
+                  {/* 물품 사진 */}
+                  <img src={item.imageUrl} alt="" className="w-20 h-20 rounded object-cover" />
+                  <div>
+                    {/* 폰트 */}
+                    <div className="font-semibold ">{item.title}</div>
+                    <div className="text-sm text-gray-500">{item.category}</div>
+                  </div>
+                </div>
+                {/* 금액 정보 */}
+                <div className="px-2 py-3 text-center">
+                  <div className="text-sm text-gray-400">{item.duration}</div>
+                  <div className="font-medium">{item.price.toLocaleString()}원</div>
+                </div>
+                {/* 보증금 */}
+                <div className="px-2 py-3 text-center font-medium">
+                  {item.deposit.toLocaleString()}원
+                </div>
+                {/* 상태(반납, 내역) */}
+                <div className="flex flex-col items-center space-y-2 px-2 py-3">
+                  <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500">
+                    내역 조회
+                  </button>
+                  <button className="px-3 py-1 bg-purple-600 text-white rounded text-sm">
+                    {activeTab === 'borrow' ? '반납 요청' : '반납 수락'}
+                  </button>
+                </div>
+              </React.Fragment>
+            ))}
           </div>
 
-
-          
-
-          {/* 프로필 정보 보기 버튼 */}
-          <button className={styles.profileButton}>프로필 정보</button>
-        </section>
-
-        {/* 탭 섹션: 게시물/거래 탭 전환 UI */}
-        <br />
-        <section className={styles.tabs}>
-          {/* 비활성 탭 */}
-          <button className={styles.tabs}>내가 쓴 게시물</button>
-          {/* 활성화된 탭 (active 스타일 추가) */}
-          <button className={`${styles.tab} ${styles.active}`}>내가 거래한 물건</button>
-        </section>
-        
-
-        {/* 거래 아이템 리스트 섹션 */}
-        <section className={styles.itemList}>
-          {/* 더미 데이터 반복 렌더링: .map() 사용 */}
-          {dummyItems.map(item => (
-            <div key={item.id} className={styles.itemCard}>
-              {/* 아이템 이미지 */}
-              <img
-                src={item.imageUrl}
-                alt={item.name}
-                className={styles.itemImage}
-              />
-
-              {/* 아이템 이름 및 가격 */}
-              <div className={styles.itemDetails}>
-                <h3 className={styles.itemName}>{item.name}</h3>
-                <p className={styles.itemPrice}>{item.price}</p>
-                
-              </div>
-
-              {/* 거래 상태 버튼 */}
-              <button className={styles.statusButton}>{item.status}</button>
-            </div>
-          ))}
-        </section>
-      </main> 
-
-      {/* 푸터 컴포넌트 렌더링 */}
+        </main>
+      </div>
       <Footer />
     </div>
   );
-}
+};
+
+export default TransactionHistory;
