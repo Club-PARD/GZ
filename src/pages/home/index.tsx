@@ -11,14 +11,14 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const categories = [
-    { id: "all", name: "전체" },
-    { id: "electronics", name: "전자기기" },
-    { id: "camera", name: "전강" },
-    { id: "hobby", name: "취미/여가" },
-    { id: "beauty", name: "뷰티/패션" },
-    { id: "study", name: "도서/학업" },
-    { id: "life", name: "생활용품" },
-    { id: "etc", name: "기타" },
+    { id: 'all', name: '전체' },
+    { id: 'electronics', name: '전자기기' },
+    { id: 'health', name: '건강' },
+    { id: 'hobby', name: '취미/여가' },
+    { id: 'beauty', name: '뷰티/패션' },
+    { id: 'study', name: '도서/학업' },
+    { id: 'life', name: '생활용품' },
+    { id: 'etc', name: '기타' },
   ];
 
   const items = [
@@ -165,7 +165,7 @@ export default function Home() {
       <Footer />
 
       <Link
-        href="/register"
+        href="/detail/new-page"
         className="fixed bottom-8 right-8 bg-[#8769FF] 
         text-white px-6 py-4 rounded-lg flex items-center gap-2 hover:bg-[#7559EF] transition-colors shadow-lg"
       >

@@ -3,7 +3,7 @@ import BottomButton from '@/components/bottom_button';
 
 export default function Footer() {
   return (
-    <div className="w-full bg-[#F9F9FB] py-20">
+    <div className="w-full bg-[#F3F3F5] py-20">
       <div className="flex items-start gap-8 px-[260px]">
         <div className="flex flex-col gap-2 w-full">
           <div className='flex flex-row justify-between items-center'>
