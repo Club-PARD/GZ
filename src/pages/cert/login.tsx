@@ -1,37 +1,37 @@
-// pages/cert/login.tsx
-import { useState } from 'react'
-import { useRouter } from 'next/router'
+// src/pages/cert/login.tsx
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 import Header from '@/components/cert-header';
-import Link from 'next/link';
 
 export default function Login() {
-  const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
+    e.preventDefault();
+    setError(null);
 
     if (!email.trim() || !password) {
-      return setError('아이디와 비밀번호를 모두 입력해 주세요.')
+      return setError('아이디와 비밀번호를 모두 입력해 주세요.');
     }
 
-    // 로그인 API 호출 생략 → 바로 홈으로 이동
-    router.push('/')
-  }
+    // 로그인 버튼 누를 때만 저장 & 이동
+    localStorage.setItem('me', email.trim());
+    router.push('/home');
+  };
 
   return (
     <main>
       <Header />
       <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-16">
-        {/* 제목 */}
         <h1 className="text-3xl font-bold mb-6 text-black">로그인</h1>
-
-        {/* 로그인 폼 */}
         <form
           onSubmit={handleSubmit}
+          noValidate
           className="w-full max-w-md bg-[#F5F5F5] p-8 rounded-2xl space-y-6"
         >
           {/* 아이디 */}
@@ -72,7 +72,6 @@ export default function Login() {
           </div>
 
           {/* 로그인 버튼 */}
-          <Link href="/home">
           <button
             type="submit"
             className="w-full py-3 bg-black text-white rounded-lg disabled:opacity-50"
@@ -80,9 +79,8 @@ export default function Login() {
           >
             로그인
           </button>
-          </Link>
         </form>
       </div>
     </main>
-  )
+  );
 }

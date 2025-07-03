@@ -1,11 +1,11 @@
 // src/pages/index.tsx
-import Header from "@/components/home-header";
 import { IoSearchOutline } from "@/components/icons";
 import { IoLocationSharp } from "react-icons/io5";
 import styles from "./home.module.css";
 import { useState } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import Header from "@/components/cert-header";
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -165,7 +165,7 @@ export default function Home() {
       <Footer />
 
       <Link
-        href="/register"
+        href="/detail/new-page"
         className="fixed bottom-8 right-8 bg-[#8769FF] 
         text-white px-6 py-4 rounded-lg flex items-center gap-2 hover:bg-[#7559EF] transition-colors shadow-lg"
       >
