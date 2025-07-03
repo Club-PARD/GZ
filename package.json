@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@sendbird/chat": "^4.19.2",
+    "@sendbird/chat": "^4.19.3",
     "next": "15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
