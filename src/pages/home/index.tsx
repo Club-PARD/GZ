@@ -1,24 +1,24 @@
 // src/pages/index.tsx
+import Header from "@/components/home-header";
 import { IoSearchOutline } from "@/components/icons";
 import { IoLocationSharp } from "react-icons/io5";
 import styles from "./home.module.css";
 import { useState } from "react";
 import Link from "next/link";
 import Footer from "@/components/Footer";
-import Header from "@/components/cert-header";
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const categories = [
-    { id: "all", name: "전체" },
-    { id: "electronics", name: "전자기기" },
-    { id: "health", name: "건강" },
-    { id: "hobby", name: "취미/여가" },
-    { id: "beauty", name: "뷰티/패션" },
-    { id: "study", name: "도서/학업" },
-    { id: "life", name: "생활용품" },
-    { id: "etc", name: "기타" },
+    { id: 'all', name: '전체' },
+    { id: 'electronics', name: '전자기기' },
+    { id: 'health', name: '건강' },
+    { id: 'hobby', name: '취미/여가' },
+    { id: 'beauty', name: '뷰티/패션' },
+    { id: 'study', name: '도서/학업' },
+    { id: 'life', name: '생활용품' },
+    { id: 'etc', name: '기타' },
   ];
 
   const items = [
@@ -89,26 +89,26 @@ export default function Home() {
   ];
 
   return (
-    <main className="min-h-screen w-full flex flex-col relativ bg-white">
+    <main className="min-h-screen w-full flex flex-col relative">
       <Header />
       <div className={styles.content}>
-        <h1 className="text-[36px] font-bold text-black">
+        <h1 className="text-[36px] font-bold">
           필요할때마다 사지말고, <span className="text-[#8769FF]">지구</span>
           에서 잠깐 빌려요
         </h1>
         <div className="w-[824px] h-[68px] relative">
           <input
-            className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF] text-black"
+            className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF]"
             type="text"
             placeholder="지금 어떤 물건을 구매하고 있나요?"
           />
-          <div className="absolute left-5 top-1/2 -translate-y-1/2 text-black">
-            <IoSearchOutline size={24} color="#A2A3A7" />
+          <div className="absolute left-5 top-1/2 -translate-y-1/2">
+            <IoSearchOutline size={24} />
           </div>
         </div>
         <div className="flex items-center gap-2 mt-[50px] pl-[260px] self-start">
-          <IoLocationSharp size={20} color="#232323" />
-          <div className="text-[22px] font-bold text-black">
+          <IoLocationSharp size={20} />
+          <div className="text-[22px] font-bold">
             한동대학교 학생들이 주고받은 물건들
           </div>
         </div>

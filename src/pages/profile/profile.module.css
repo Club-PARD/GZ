@@ -1,129 +1,137 @@
 .container {
-  width: 1280px;
-  height: 1105px;
-  /* 상단 58px + 하단 210px 제외 */
-  height: calc(100vh - 268px);
-  margin: 0 auto;
-  padding: 20px 0;
-  box-sizing: border-box;
-  overflow-y: auto;
-  /* 스크롤 */
+    width: 1280px;
+    height: 1105px;
+    /* 상단 58px + 하단 210px 제외 */
+    height: calc(100vh - 268px);
+    margin: 0 auto;
+    padding: 20px 0;
+    box-sizing: border-box;
+    overflow-y: auto;
+    /* 스크롤 */
 }
+
 
 /* 헤더 */
 .profileHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 30px;
 }
 
 .nickname {
-  color: #000;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 130%;
-  /* 41.6px */
-  letter-spacing: -0.64px;
-  margin-left: 270px;
+    color: #000;
+    font-family: Pretendard;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 130%;
+    /* 41.6px */
+    letter-spacing: -0.64px;
+    margin-left: 270px;
 }
 
 .email {
-  color: #000;
-  margin-left: 270px;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 130%;
-  /* 20.8px */
-  letter-spacing: -0.32px;
+    color: #000;
+    margin-left: 270px;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 130%;
+    /* 20.8px */
+    letter-spacing: -0.32px;
+
 }
 
-.profileButton {
-  background-color: #000;
-  color: #fff;
 
-  border: none;
-  border-radius: 8px;
-  margin-right: 280px;
-  width: 123px;
-  height: 40px;
-  flex-shrink: 0;
+.profileButton {
+    background-color: #000;
+    color: #fff;
+
+    border: none;
+    border-radius: 8px;
+    margin-right: 280px;
+    width: 123px;
+    height: 40px;
+    flex-shrink: 0;
+
 }
 
 .tabs {
-  gap: 41px;
-  padding: 0 20px;
-  color: #000;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 130%;
-  /* 26px */
-  letter-spacing: -0.4px;
-  margin-left: 9%;
+    gap: 41px;
+    padding: 0 20px;
+    color: #000;
+    font-family: Pretendard;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+    /* 26px */
+    letter-spacing: -0.4px;
+    margin-left: 9%;
 }
 
 .tab {
-  background: none;
-  border: none;
-  padding: 8px 0;
-  cursor: pointer;
-  color: #000;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 130%;
-  /* 26px */
-  letter-spacing: -0.4px;
-  color: #999;
+    background: none;
+    border: none;
+    padding: 8px 0;
+    cursor: pointer;
+    color: #000;
+    font-family: Pretendard;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 130%;
+    /* 26px */
+    letter-spacing: -0.4px;
+    color: #999;
 }
 
-.active {
-  /* 활성 탭 텍스트 + 밑줄 */
+.active {/* 활성 탭 텍스트 + 밑줄 */
   /* 활성일 때 검정 텍스트 */
-  color: #000;
+  color: #000;    
   /* 텍스트 바로 아래에 검정 밑줄 */
-  border-bottom: 2px solid #000;
+  border-bottom: 2px solid #000;  
   font-weight: 600;
 }
 
 .tabActive {
-  background: none;
-  border: none;
-  font-size: 18px;
-  padding: 8px 0;
-  cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 18px;
+    padding: 8px 0;
+    cursor: pointer;
 }
 
 .tabActive {
-  font-weight: bold;
-  border-bottom: 2px solid #000;
+    font-weight: bold;
+    border-bottom: 2px solid #000;
 }
 
 /* 아이템 리스트 */
 .itemList {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 0 20px;
+    
 }
 
 .itemCard {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px dashed #ccc;
-  padding: 16px;
-  height: 180px;
-  width: 840px;
-  margin: 0 auto;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px dashed #ccc;
+    padding: 16px;
+    height: 180px;
+    width: 840px;
+    margin: 0 auto;
+    border-radius: 8px;
+border: 1px solid rgba(0, 0, 0, 0.06);
 
-  background: #fff;
+background: #FFF;
 }
 .itemImage {
   width: 120px;
@@ -131,8 +139,8 @@
   flex-shrink: 0;
 }
 .itemStatus {
-  background-color: #f2f2f2; /* Figma 회색 버튼 배경 */
-  color: #333333; /* 버튼 텍스트 */
+  background-color: #F2F2F2;  /* Figma 회색 버튼 배경 */
+  color: #333333;             /* 버튼 텍스트 */
   padding: 8px 16px;
   border: none;
   border-radius: 8px;
@@ -141,35 +149,35 @@
 }
 
 .imagePlaceholder {
-  width: 160px;
-  height: 160px;
-  background-color: #f0f0f0;
+    width: 160px;
+    height: 160px;
+    background-color: #f0f0f0;
 }
 
 .itemInfo {
-  flex: 1;
-  margin-left: 20px;
+    flex: 1;
+    margin-left: 20px;
 }
 
 .itemName {
-  font-size: 20px;
-  margin: 0 0 8px;
+    font-size: 20px;
+    margin: 0 0 8px;
 }
 
 .itemPrice {
-  font-size: 16px;
-  color: #666;
-  margin: 0;
+    font-size: 16px;
+    color: #666;
+    margin: 0;
 }
 
 .statusButton {
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.15);
-  color: #fff;
-  padding: 8px 16px;
-  border: none;
-  cursor: pointer;
-  width: 123px;
-  height: 40px;
-  flex-shrink: 0;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.15);
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    width: 123px;
+    height: 40px;
+    flex-shrink: 0;
 }
