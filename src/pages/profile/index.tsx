@@ -92,6 +92,22 @@ const TransactionHistory: React.FC = () => {
   // activeTab에 따라 보여줄 리스트를 선택
   const items = activeTab === 'borrow' ? borrowedItems : lentItems;
 
+  // 렌더링할 컴포넌트 -> 받아온 길이가 0이면 "거래 내역이 없습니다."라는 문구를 보여줍니다.
+  if(borrowedItems.length === 0 && lentItems.length === 0) {
+    return (
+      <div className="text-center py-4">
+        <p className="text-gray-500">거래 내역이 없습니다.</p>
+      </div>
+    );
+  }
+  else if (lentItems.length === 0) {
+    return (
+      <div className="text-center py-4">
+        <p className="text-gray-500">빌려준 내역이 없습니다.</p>
+      </div>
+    );
+    //리턴값들
+  }
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
@@ -136,6 +152,7 @@ const TransactionHistory: React.FC = () => {
             <div className="px-2 py-3 text-center">상태</div>
 
             {/* — 아이템들 */}
+            
             {items.map(item => (
               <React.Fragment key={item.id}>
                 <div className="flex items-center space-x-4 px-2 py-3">
@@ -158,16 +175,28 @@ const TransactionHistory: React.FC = () => {
                 </div>
                 {/* 상태(반납, 내역) */}
                 <div className="flex flex-col items-center space-y-2 px-2 py-3">
-                  <button className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500">
+                  <button className="px-3 py-1 border bg-[#FFFFFF] border-gray-300 rounded text-sm text-gray-500">
                     내역 조회
                   </button>
-                  <button className="px-3 py-1 bg-purple-600 text-white rounded text-sm">
+                  <button className="px-3 py-1 bg-[#8769FF] text-white rounded text-sm">
                     {activeTab === 'borrow' ? '반납 요청' : '반납 수락'}
                   </button>
                 </div>
               </React.Fragment>
             ))}
           </div>
+          ):(
+            // ★ 데이터가 하나도 없을 때 보여줄 영역
+            <div className="flex flex-col items-center py-20 text-gray-400">
+              {/* 아이콘 이미지는 적당히 대체하세요 */}
+              <img
+                src="/images/folder-empty.png"
+                alt="거래 내역 없음"
+                className="w-16 h-16 mb-4"
+              />
+              <p>아직 거래 내역이 없어요.</p>
+            </div>
+          )
 
         </main>
       </div>
