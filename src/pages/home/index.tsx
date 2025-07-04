@@ -138,7 +138,7 @@ export default function Home() {
                   categories.find((c) => c.id === selectedCategory)?.name
             )
             .map((item) => (
-              <div key={item.id} className={styles.itemCard}>
+              <Link key = {item.id} href="detail/detail-page-consumer" className = {styles.itemCard}>
                 <div className="w-full h-full aspect-square rounded-lg overflow-hidden">
                   <img
                     src={item.image}
@@ -156,7 +156,7 @@ export default function Home() {
                   <span className={styles.timeUnit}>/{item.timeUnit.day}</span>
                 </div>
                 <span className={styles.categoryTag}>{item.category}</span>
-              </div>
+              </Link>
             ))}
         </div>
         <div className="flex w-full h-100"></div>
