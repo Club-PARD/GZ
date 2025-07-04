@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="flex flex-col gap-2 w-full">
           <div className='flex flex-row justify-between items-center'>
             <Image
-              src="/images/logo.svg"
+              src="/images/blogo.svg"
               alt="logo"
               width={64}
               height={32}

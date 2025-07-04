@@ -1,16 +1,11 @@
-.content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 60px;
-  gap: 2rem;
-}
+
 
 .categoryButton {
   padding: 0.5rem 1rem;
-  border-radius: 9999px;
+  border-radius: 20px;
   transition: all 0.2s;
+  width: 64px;
+  height: 38px;
 }
 
 .categoryButtonActive {
@@ -22,7 +17,6 @@
   background-color: #f3f3f5;
   color: black;
 }
-
 
 .itemsContainer {
   display: grid;
@@ -67,11 +61,6 @@
 .price {
   font-weight: bold;
   color: black;
-}
-
-.timeUnit {
-  color: #A2A3A7;
-
 }
 
 .categoryTag {

@@ -58,7 +58,7 @@ export default function DetailPageConsumer() {
     <>
       <Header />
 
-      <main className="max-w-5xl mx-70 my-8 flex gap-12 mb-85 pb-32">
+      <main className="max-w-5xl mx-70 my-8 flex gap-12 mb-85 pb-32 ">
         {/* 좌측: 이미지 캐러셀 + 그 아래 영역 */}
         <section className="w-1/2 space-y-4">
           <div className="relative bg-[#F3F3F5] rounded-lg h-97 overflow-hidden">
