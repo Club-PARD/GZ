@@ -144,7 +144,7 @@ export default function ChatWindow({ me, selectedChannelUrl }: ChatWindowProps) 
       </div>
 
       {/* 메시지 리스트 */}
-      <div ref={listRef} className="flex-1 overflow-y-auto px-6 py-4 bg-gray-50 space-y-4 bg-white">
+      <div ref={listRef} className="flex-1 overflow-y-auto px-6 py space-y-4 bg-white">
         <MessageList messages={messages} me={me} />
         {typingUsers.length > 0 && <div className="text-xs text-gray-500">{typingUsers.join(', ')}님이 입력 중...</div>}
       </div>
