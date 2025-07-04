@@ -174,11 +174,11 @@ const TransactionHistory: React.FC = () => {
                   {item.deposit.toLocaleString()}원
                 </div>
                 {/* 상태(반납, 내역) */}
-                <div className="flex flex-col items-center space-y-2 px-2 py-3">
-                  <button className="px-3 py-1 border bg-[#FFFFFF] border-gray-300 rounded text-sm text-gray-500">
+                <div className="flex flex-col items-center  space-y-2 px-2 py-3">
+                  <button className="px-3 py-2 border bg-[#FFFFFF] border-gray-300 rounded text-sm text-gray-500">
                     내역 조회
                   </button>
-                  <button className="px-3 py-1 bg-[#8769FF] text-white rounded text-sm">
+                  <button className="px-3 py-2 bg-[#8769FF] text-white rounded text-sm">
                     {activeTab === 'borrow' ? '반납 요청' : '반납 수락'}
                   </button>
                 </div>
