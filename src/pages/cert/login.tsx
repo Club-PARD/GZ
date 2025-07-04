@@ -45,25 +45,30 @@ export default function Login() {
       console.log('✅ Sendbird 연결 성공:', sb.currentUser);
       
       // 로그인 성공 후 FCM 토큰을 Firestore에 저장하는 로직
-      requestFcmToken(async (token) => {
-        if (token && sb.currentUser) {
-          try {
-            // Firestore 인스턴스를 가져옵니다.
-            const db = getFirestore();
-            // 'fcm_tokens' 컬렉션에 사용자 ID를 문서 ID로 하여 토큰을 저장합니다.
-            await setDoc(doc(db, 'fcm_tokens', sb.currentUser.userId), { token: token, updatedAt: new Date() });
-            console.log('✅ Firestore에 FCM 토큰 저장 성공');
+      try {
+        await requestFcmToken(async (token) => {
+          if (token && sb.currentUser) {
+            try {
+              // Firestore 인스턴스를 가져옵니다.
+              const db = getFirestore();
+              // 'fcm_tokens' 컬렉션에 사용자 ID를 문서 ID로 하여 토큰을 저장합니다.
+              await setDoc(doc(db, 'fcm_tokens', sb.currentUser.userId), { token: token, updatedAt: new Date() });
+              console.log('✅ Firestore에 FCM 토큰 저장 성공');
 
-            // Sendbird에도 토큰을 등록합니다 (선택사항, 하지만 해두는 것이 좋습니다).
-            sb.registerFCMPushTokenForCurrentUser(token)
-              .then(() => console.log('Sendbird에 FCM 토큰 등록 성공'))
-              .catch((err: any) => console.error('Sendbird FCM 토큰 등록 실패:', err));
+              // Sendbird에도 토큰을 등록합니다 (선택사항, 하지만 해두는 것이 좋습니다).
+              sb.registerFCMPushTokenForCurrentUser(token)
+                .then(() => console.log('Sendbird에 FCM 토큰 등록 성공'))
+                .catch((err: any) => console.error('Sendbird FCM 토큰 등록 실패:', err));
 
-          } catch (dbError) {
-            console.error('Firestore 토큰 저장 실패:', dbError);
+            } catch (dbError) {
+              console.error('Firestore 토큰 저장 실패:', dbError);
+            }
           }
-        }
-      });
+        });
+      } catch (fcmError) {
+        console.warn('FCM 토큰 요청 실패:', fcmError);
+        // FCM 실패는 로그인 자체에는 영향을 주지 않음
+      }
       
       localStorage.setItem('me', email.trim());
       router.push('/home');

@@ -8,12 +8,12 @@ import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
 
 export default function DetailPageProducer() {
   const images = [
-    '/images/usb.jpg',
-    '/images/bag.jpg',
-    '/images/camera.jpg',
-    '/images/camping.jpg',
-    '/images/shoes.jpg',
-  ]
+    "/images/usb.jpg",
+    "/images/bag.jpg",
+    "/images/camera.jpg",
+    "/images/camping.jpg",
+    "/images/shoes.jpg",
+  ];
 
   const [current, setCurrent] = useState(0)
   const lastIndex = images.length - 1
@@ -28,7 +28,7 @@ export default function DetailPageProducer() {
     <>
       <Header />
 
-      <main className="max-w-5xl mx-70 my-8 flex gap-12 mb-85 pb-32">
+      <main className="max-w-5xl mx-70 my-8 flex gap-12 mb-85">
         {/* 좌측: 이미지 캐러셀 */}
         <section className="w-1/2 space-y-4">
           <div className="relative bg-[#F3F3F5] rounded-lg h-97 overflow-hidden">
@@ -36,7 +36,7 @@ export default function DetailPageProducer() {
               src={images[current]}
               alt={`slide-${current}`}
               fill
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: "cover" }}
               className="absolute inset-0"
             />
 
@@ -61,7 +61,7 @@ export default function DetailPageProducer() {
                   key={idx}
                   onClick={() => setCurrent(idx)}
                   className={`w-2 h-2 rounded-full ${
-                    idx === current ? 'bg-white' : 'bg-gray-300'
+                    idx === current ? "bg-white" : "bg-gray-300"
                   }`}
                 />
               ))}
@@ -105,26 +105,7 @@ export default function DetailPageProducer() {
             <span className="px-2 py-1 bg-[#F2E8FF] text-[#6B46C1] text-xs rounded-full">
               전자기기
             </span>
-
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="ml-auto cursor-pointer text-2xl leading-none"
-            >
-              ⋮
-            </button>
-
-            {menuOpen && (
-              <div className="absolute top-full right-0 mt-2 w-max bg-white rounded-lg shadow-md">
-                <button className="flex justify-between items-center w-auto px-3 py-2 text-sm hover:bg-gray-100 whitespace-nowrap">
-                  <span>수정하기</span>
-                  <AiOutlineEdit className="ml-2 text-gray-500" />
-                </button>
-                <button className="flex justify-between items-center w-auto px-3 py-2 text-sm hover:bg-gray-100 whitespace-nowrap">
-                  <span>삭제하기</span>
-                  <AiOutlineDelete className="ml-2 text-gray-500" />
-                </button>
-              </div>
-            )}
+            <span className="ml-auto cursor-pointer text-2xl leading-none">⋮</span>
           </div>
 
           {/* 대여 가격 */}
@@ -150,5 +131,5 @@ export default function DetailPageProducer() {
 
       <Footer />
     </>
-  )
+  );
 }
