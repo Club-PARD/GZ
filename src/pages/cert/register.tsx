@@ -2,14 +2,13 @@
 import { GetServerSideProps } from 'next'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
-import Header from '@/components/cert-header';
-import Link from 'next/link';
+import Header from '@/components/cert-header'
 
-// 쿠키 파싱 헬퍼
+// 쿠키 파싱 헬퍼 (원본 그대로)
 function parseCookies(cookieHeader?: string): Record<string, string> {
   const list: Record<string, string> = {}
   if (!cookieHeader) return list
-  cookieHeader.split(';').forEach(pair => {
+  cookieHeader.split(';').forEach((pair) => {
     const [rawKey, rawVal] = pair.split('=')
     if (rawKey && rawVal) {
       list[rawKey.trim()] = decodeURIComponent(rawVal.trim())
@@ -18,11 +17,13 @@ function parseCookies(cookieHeader?: string): Record<string, string> {
   return list
 }
 
+// email에 더해 univ도 받도록 Props 확장
 type Props = {
   email: string
+  univ: string
 }
 
-export default function Register({ email }: Props) {
+export default function Register({ email, univ }: Props) {
   const router = useRouter()
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
@@ -30,30 +31,41 @@ export default function Register({ email }: Props) {
   const [agreePrivacy, setAgreePrivacy] = useState(false)
   const [msg, setMsg] = useState<{ text: string; type: 'error' | 'success' } | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setMsg(null)
-    if (!nickname.trim()) return setMsg({ text: '닉네임을 입력해 주세요.', type: 'error' })
-    if (password.length < 8) return setMsg({ text: '비밀번호는 8자 이상이어야 합니다.', type: 'error' })
-    if (!agreeTerms || !agreePrivacy)
-      return setMsg({ text: '필수 약관에 모두 동의해 주세요.', type: 'error' })
 
-    const res = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, nickname, password })
-    })
-    if (res.ok) {
-      router.push('/register/success')
-    } else {
-      const json = await res.json()
-      setMsg({ text: json.message || '회원가입에 실패했습니다.', type: 'error' })
+    if (!nickname.trim()) {
+      return setMsg({ text: '닉네임을 입력해 주세요.', type: 'error' })
+    }
+    if (password.length < 8) {
+      return setMsg({ text: '비밀번호는 8자 이상이어야 합니다.', type: 'error' })
+    }
+    if (!agreeTerms || !agreePrivacy) {
+      return setMsg({ text: '필수 약관에 모두 동의해 주세요.', type: 'error' })
+    }
+
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, univ, nickname, password })
+      })
+
+      if (res.ok) {
+        router.push('/cert/success')
+      } else {
+        const data = await res.json()
+        setMsg({ text: data.message || '회원가입에 실패했습니다.', type: 'error' })
+      }
+    } catch {
+      setMsg({ text: '네트워크 오류가 발생했습니다.', type: 'error' })
     }
   }
 
   return (
     <main>
-      <Header/>
+      <Header />
       <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-16">
         {/* 제목 */}
         <h1 className="text-3xl font-bold mb-6 text-black">회원가입</h1>
@@ -75,11 +87,8 @@ export default function Register({ email }: Props) {
         </div>
 
         {/* Form Card */}
-        <form
-          onSubmit={handleSubmit}
-          className="w-full max-w-md bg-[#F5F5F5] p-8 rounded-2xl space-y-6"
-        >
-          {/* 아이디 */}
+        <form onSubmit={handleSubmit} className="w-full max-w-md bg-[#F5F5F5] p-8 rounded-2xl space-y-6">
+          {/* 아이디(이메일) */}
           <div>
             <label className="block mb-1 text-gray-700">아이디</label>
             <input
@@ -97,7 +106,7 @@ export default function Register({ email }: Props) {
             <input
               type="text"
               value={nickname}
-              onChange={e => setNickname(e.target.value)}
+              onChange={(e) => setNickname(e.target.value)}
               placeholder="최대 몇 자"
               className="w-full p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
             />
@@ -109,41 +118,35 @@ export default function Register({ email }: Props) {
             <input
               type="password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호를 입력해 주세요."
               className="w-full p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
             />
             <p className="mt-1 text-sm text-gray-500">
-              대/소문자, 특수기호 !&amp;$*5 ~~~
+              대/소문자, 특수기호 포함하여 8자 이상
             </p>
           </div>
 
           {/* 약관 동의 */}
           <div className="space-y-3">
-            <div className="flex items-center">
+            <label className="flex items-center">
               <input
-                id="terms"
                 type="checkbox"
                 className="mr-2"
                 checked={agreeTerms}
-                onChange={e => setAgreeTerms(e.target.checked)}
+                onChange={(e) => setAgreeTerms(e.target.checked)}
               />
-              <label htmlFor="terms" className="text-gray-700">
-                [필수] 이용약관에 동의합니다.
-              </label>
-            </div>
-            <div className="flex items-center">
+              <span className="text-gray-700">[필수] 이용약관에 동의합니다.</span>
+            </label>
+            <label className="flex items-center">
               <input
-                id="privacy"
                 type="checkbox"
                 className="mr-2"
                 checked={agreePrivacy}
-                onChange={e => setAgreePrivacy(e.target.checked)}
+                onChange={(e) => setAgreePrivacy(e.target.checked)}
               />
-              <label htmlFor="privacy" className="text-gray-700">
-                [필수] 개인정보 수집∙이용에 동의합니다.
-              </label>
-            </div>
+              <span className="text-gray-700">[필수] 개인정보 수집∙이용에 동의합니다.</span>
+            </label>
           </div>
 
           {/* 메시지 */}
@@ -154,36 +157,35 @@ export default function Register({ email }: Props) {
           )}
 
           {/* 다음 버튼 */}
-          <Link href="/cert/success">
           <button
             type="submit"
-            className="w-full py-3 bg-gray-300 text-gray-600 rounded-lg disabled:opacity-50"
             disabled={!nickname || password.length < 8 || !agreeTerms || !agreePrivacy}
+            className="w-full py-3 bg-gray-300 text-gray-600 rounded-lg disabled:opacity-50"
           >
             다음
           </button>
-          </Link>
         </form>
       </div>
     </main>
   )
 }
 
-// SSR: httpOnly 쿠키에서 email 꺼내서 props로 넘기기
+// SSR: 쿠키에서 email, univ 꺼내서 props로 넘기기
 export const getServerSideProps: GetServerSideProps<Props> = async ({ req }) => {
   const cookies = parseCookies(req.headers.cookie)
   const email = cookies.email || ''
+  const univ = cookies.univ || ''
 
   if (!email) {
     return {
       redirect: {
         destination: '/',
-        permanent: false
-      }
+        permanent: false,
+      },
     }
   }
 
   return {
-    props: { email }
+    props: { email, univ },
   }
 }
