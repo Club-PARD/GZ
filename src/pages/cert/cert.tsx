@@ -106,8 +106,7 @@ export default function Home() {
 
         {/* Step Indicator */}
         <div className="flex justify-center space-x-4 mb-8">
-          <div className="flex items-center bg-gray-200 rounded-lg px-4 py-2 space-x-2">
-            <span className="w-6 h-6 bg-black text-white rounded-lg flex items-center justify-center">
+        <div className="w-[178px] h-[56px] flex items-center bg-gray-200 rounded-lg px-[20px] py-[16px] space-x-2">            <span className="w-6 h-6 bg-black text-white rounded-lg flex items-center justify-center">
               1
             </span>
             <span className="font-medium text-gray-700">학교 이메일 인증</span>

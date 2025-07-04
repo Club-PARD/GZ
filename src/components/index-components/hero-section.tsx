@@ -12,24 +12,24 @@ export default function HeroSection() {
           <br />
           캠퍼스 안에서 지금 구해요
         </h2>
-        <p className="text-gray-700 w-7/8">
+        <p className="text-gray-700 w-7/8 font-black">
           ‘지구’는 대학생들이 캠퍼스 안에서 단기간 필요한 물건을
           <br />
           빠르게 빌리고 빌려주는 P2P 대여 플랫폼입니다.
         </p>
-        <div className="flex gap-4"> 
+        <div className="flex gap-4">
           <Link
-          href="/cert/cert"
-          className="bg-[#6849FE] text-white  py-4 rounded-lg h-[55px] w-[193px] text-center"
-        >
-          학교메일로 시작하기
-        </Link>
-        <Link
-          href="/cert/cert"
-          className="bg-[#F0EDFF] text-[#6849FE] px-6 py-4 rounded-lg w-[94px] h-[55px] text-center size-[18px]"
-        >
-          로그인
-        </Link>
+            href="/cert/cert"
+            className="bg-[#6849FE] text-white  py-4 rounded-lg h-[55px] w-[193px] text-center"
+          >
+            학교메일로 시작하기
+          </Link>
+          <Link
+            href="/cert/login"
+            className="bg-[#F0EDFF] text-[#6849FE] px-6 py-4 rounded-lg w-[94px] h-[55px] text-center size-[18px]"
+          >
+            로그인
+          </Link>
         </div>
       </div>
 
@@ -39,7 +39,7 @@ export default function HeroSection() {
         <Image
           src="/images/intro1.svg"
           alt="hero-section"
-          width={480}
+          width={580}
           height={540}
         />
       </div>
