@@ -93,53 +93,58 @@ export default function Home() {
       return setMsg({ text: json.message || "코드 불일치", type: "error" });
     }
 
-    // 성공 시 이동
+    // 코드 검증 성공 시, 학교명 쿠키에 저장
+    document.cookie = `univ=${encodeURIComponent(univ)}; path=/;`;
+    // (이미 email 쿠키가 서버에서 세팅되어 있다면 생략 가능)
+
+    // 회원 정보 입력 페이지로 이동
     router.push("/cert/register");
   };
 
   return (
     <main>
       <Header />
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-16">
+      <div className="min-h-screen bg-white flex flex-col items-center pt-[60px]">
         {/* 회원가입 제목 */}
-        <h1 className="text-3xl font-bold mb-6 text-black">회원가입</h1>
+        <h1 className="text-[32px] text-center font-bold mb-[28px] text-[#232323]">회원가입</h1>
 
         {/* Step Indicator */}
-        <div className="flex justify-center space-x-4 mb-8">
-        <div className="w-[178px] h-[56px] flex items-center bg-gray-200 rounded-lg px-[20px] py-[16px] space-x-2">            <span className="w-6 h-6 bg-black text-white rounded-lg flex items-center justify-center">
+        <div className="flex justify-center space-x-[60px] mb-8">
+          <div className="w-[178px] h-[56px] flex items-center bg-gray-200 rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#232323] text-white rounded-lg flex items-center justify-center font-bold">
               1
             </span>
-            <span className="font-medium text-gray-700">학교 이메일 인증</span>
+            <span className="text-[#232323] font-bold">학교 이메일 인증</span>
           </div>
-          <div className="flex items-center bg-gray-200 rounded-lg px-4 py-2 space-x-2">
-            <span className="w-6 h-6 bg-gray-300 text-gray-500 rounded-lg flex items-center justify-center">
+          <div className="w-[178px] h-[56px] flex items-center bg-gray-200 rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">
               2
             </span>
-            <span className="font-medium text-gray-500">회원 정보 입력</span>
+            <span className="text-[#ADAEB2] font-bold">회원 정보 입력</span>
           </div>
-          <div className="flex items-center bg-gray-200 rounded-lg px-4 py-2 space-x-2">
-            <span className="w-6 h-6 bg-gray-300 text-gray-500 rounded-lg flex items-center justify-center">
+          <div className="w-[178px] h-[56px] flex items-center bg-gray-200 rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">
               3
             </span>
-            <span className="font-medium text-gray-500">가입 완료</span>
+            <span className="font-bold text-[#ADAEB2]">회원가입 완료</span>
           </div>
         </div>
 
         {/* 인증 카드 */}
-        <div className="w-[654px] h-[555px] bg-[#F5F5F5] p-8 rounded-2xl space-y-6">
+        <div className="w-[654px] h-[555px] bg-[#F3F3F5] px-[84px] py-[60px] rounded-2xl space-y-6">
           {/* 학교 */}
           <div>
-            <label className="block mb-1 text-gray-700">학교</label>
+            <label className="block mb-[8px] px[88px] text-[#232323]">학교</label>
             <div className="flex items-center space-x-5">
               <input
-                className="flex-1 min-w-0 p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
+                className="flex-1 w-[337px] h-[53px] p-[16px] border border-white rounded-lg bg-white text-black placeholder-[#C2C3C9]"
                 placeholder="학교 이름을 입력해 주세요."
                 value={univ}
                 onChange={(e) => setUniv(e.target.value)}
                 disabled={isSchoolVerified}
               />
               <button
-                className="w-[133px] h-[53px] flex-shrink-0 bg-[#4C4C4E] text-white rounded-lg text-center"
+                className="w-[133px] h-[53px] flex-shrink-0 bg-[#C2C3C9] text-white rounded-lg text-center"
                 onClick={handleSchoolVerify}
                 disabled={isSchoolVerified || !univ.trim()}
               >
@@ -180,33 +185,25 @@ export default function Home() {
                 placeholder="전송받은 인증번호를 입력해 주세요."
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                disabled={false}
               />
             </div>
           </div>
 
           {/* 메시지 */}
           {msg && (
-            <p
-              className={
-                msg.type === "error" ? "text-red-600" : "text-green-600"
-              }
-            >
+            <p className={msg.type === "error" ? "text-red-600" : "text-green-600"}>
               {msg.text}
             </p>
           )}
 
-          {/* 다음 버튼 (코드 확인 + 이동) */}
-         <div className="flex justify-center  mt-[60px] bg-[#6849FE] w-[318px]  h-[53px] rounded-lg disabled:opacity-50 ">
-            <button
-              onClick={handleNext}
-              disabled={!email || !code}
-            >
+          {/* 다음 버튼 */}
+          <div className="flex justify-center mt-[60px] bg-[#6849FE] w-[318px] h-[53px] rounded-lg disabled:opacity-50">
+            <button onClick={handleNext} disabled={!email || !code}>
               다음
             </button>
           </div>
         </div>
       </div>
     </main>
-  );
+);
 }
