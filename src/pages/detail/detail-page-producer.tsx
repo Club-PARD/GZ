@@ -1,32 +1,30 @@
 // pages/detail/detail-page-producer.tsx
-import React, { useState } from 'react'
-import Image from 'next/image'
-import Header from '@/components/home-header'
-import Footer from '@/components/Footer'
+import React, { useState } from "react";
+import Image from "next/image";
+import Header from "@/components/home-header";
+import Footer from "@/components/Footer";
 
 export default function DetailPageProducer() {
   // public/images 폴더에 있는 이미지들 (테스트용)
   const images = [
-    '/images/usb.jpg',
-    '/images/bag.jpg',
-    '/images/camera.jpg',
-    '/images/camping.jpg',
-    '/images/shoes.jpg',
-  ]
+    "/images/usb.jpg",
+    "/images/bag.jpg",
+    "/images/camera.jpg",
+    "/images/camping.jpg",
+    "/images/shoes.jpg",
+  ];
 
-  const [current, setCurrent] = useState(0)
-  const lastIndex = images.length - 1
+  const [current, setCurrent] = useState(0);
+  const lastIndex = images.length - 1;
 
-  const prevSlide = () =>
-    setCurrent(current === 0 ? lastIndex : current - 1)
-  const nextSlide = () =>
-    setCurrent(current === lastIndex ? 0 : current + 1)
+  const prevSlide = () => setCurrent(current === 0 ? lastIndex : current - 1);
+  const nextSlide = () => setCurrent(current === lastIndex ? 0 : current + 1);
 
   return (
     <>
       <Header />
 
-      <main className="max-w-5xl mx-70 my-8 flex gap-12 mb-85">
+      <main className="max-w-5xl mx-70 my-8 flex gap-12 mb-85 ">
         {/* 좌측: 이미지 캐러셀 */}
         <section className="w-1/2 space-y-4">
           <div className="relative bg-[#F3F3F5] rounded-lg h-97 overflow-hidden">
@@ -34,7 +32,7 @@ export default function DetailPageProducer() {
               src={images[current]}
               alt={`slide-${current}`}
               fill
-              style={{ objectFit: 'cover' }}
+              style={{ objectFit: "cover" }}
               className="absolute inset-0"
             />
 
@@ -59,7 +57,7 @@ export default function DetailPageProducer() {
                   key={idx}
                   onClick={() => setCurrent(idx)}
                   className={`w-2 h-2 rounded-full ${
-                    idx === current ? 'bg-white' : 'bg-gray-300'
+                    idx === current ? "bg-white" : "bg-gray-300"
                   }`}
                 />
               ))}
@@ -103,7 +101,9 @@ export default function DetailPageProducer() {
             <span className="px-2 py-1 bg-[#F2E8FF] text-[#6B46C1] text-xs rounded-full">
               전자기기
             </span>
-            <span className="ml-auto cursor-pointer text-2xl leading-none">⋮</span>
+            <span className="ml-auto cursor-pointer text-2xl leading-none">
+              ⋮
+            </span>
           </div>
 
           {/* 대여 가격 */}
@@ -129,5 +129,5 @@ export default function DetailPageProducer() {
 
       <Footer />
     </>
-  )
+  );
 }
