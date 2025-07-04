@@ -89,26 +89,26 @@ export default function Home() {
   ];
 
   return (
-    <main className="min-h-screen w-full flex flex-col relative">
+    <main className="min-h-screen w-full flex flex-col relative bg-white">
       <Header />
       <div className={styles.content}>
-        <h1 className="text-[36px] font-bold">
+        <h1 className="text-[36px] font-bold text-black">
           필요할때마다 사지말고, <span className="text-[#8769FF]">지구</span>
           에서 잠깐 빌려요
         </h1>
-        <div className="w-[824px] h-[68px] relative">
+        <div className="w-[824px] h-[68px] relative ">
           <input
-            className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF]"
+            className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF] text-black"
             type="text"
             placeholder="지금 어떤 물건을 구매하고 있나요?"
           />
           <div className="absolute left-5 top-1/2 -translate-y-1/2">
-            <IoSearchOutline size={24} />
+            <IoSearchOutline size={24} color="#A2A3A7" />
           </div>
         </div>
         <div className="flex items-center gap-2 mt-[50px] pl-[260px] self-start">
-          <IoLocationSharp size={20} />
-          <div className="text-[22px] font-bold">
+          <IoLocationSharp size={20} color="black" />
+          <div className="text-[22px] font-bold text-black">
             한동대학교 학생들이 주고받은 물건들
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function Home() {
                   categories.find((c) => c.id === selectedCategory)?.name
             )
             .map((item) => (
-              <div key={item.id} className={styles.itemCard}>
+              <Link key = {item.id} href="detail/detail-page-consumer" className = {styles.itemCard}>
                 <div className="w-full h-full aspect-square rounded-lg overflow-hidden">
                   <img
                     src={item.image}
@@ -156,7 +156,7 @@ export default function Home() {
                   <span className={styles.timeUnit}>/{item.timeUnit.day}</span>
                 </div>
                 <span className={styles.categoryTag}>{item.category}</span>
-              </div>
+              </Link>
             ))}
         </div>
         <div className="flex w-full h-100"></div>
