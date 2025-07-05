@@ -32,12 +32,14 @@
 }
 
 .imageContainer {
-  width: 233px;
-  height: 233px;
+  width: 200px;
+  height: 200px;
   aspect-ratio: 1;
   border-radius: 16px;
   overflow: hidden;
   margin-bottom: 1rem;
+  border: 1px solid #D9D8D3;
+  box-shadow: inset 0 0 0 1px #000000;
 }
 
 .image {

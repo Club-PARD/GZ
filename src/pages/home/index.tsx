@@ -120,14 +120,14 @@ export default function Home() {
         </div>
       </div>
       <div className="flex flex-col items-center gap-8 pt-[20px]">
-        <div className="flex items-center gap-2 mt-[50px] pl-[260px] self-start">
-          <IoLocationSharp size={20} color="black" />
+        <div className="flex items-center gap-2 mt-[50px] pl-[210px] self-start">
+          <IoLocationSharp size={24} color="black" />
           <div className="text-[22px] font-bold text-black">
             한동대학교 학생들이 주고받은 물건들
           </div>
         </div>
 
-        <div className="flex gap-2 pl-[260px] self-start">
+        <div className="flex gap-2 pl-[210px] self-start">
           {categories.map((category) => (
             <button
               key={category.id}
@@ -143,7 +143,7 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="grid grid-cols-4 gap-6 px-[272px]">
+        <div className="grid grid-cols-5 gap-6 px-[150px]">
           {items
             .filter(
               (item) =>
@@ -157,7 +157,7 @@ export default function Home() {
                 href="detail/detail-page-consumer"
                 className={styles.itemCard}
               >
-                <div className="w-full h-full aspect-square rounded-lg overflow-hidden">
+                <div className={styles.imageContainer}>
                   <img
                     src={item.image}
                     alt={item.title}
@@ -175,7 +175,8 @@ export default function Home() {
                 </div>
                 <div className=" flex flex-row gap-2">
                   <span className={styles.categoryTag}>{item.category}</span>
-                  <span className="text-black flex items-center ">조회수</span>
+                  <span className={styles.categoryTag}>대여중</span>
+
                 </div>
               </Link>
             ))}
