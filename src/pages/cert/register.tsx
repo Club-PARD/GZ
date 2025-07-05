@@ -66,19 +66,18 @@ export default function Register({ email, univ }: Props) {
         {/* 제목 */}
         <h1 className="text-3xl font-bold mb-6 text-black">회원가입</h1>
 
-        {/* Step Indicator */}
-        <div className="flex justify-center space-x-4 mb-8">
-          <div className="flex items-center bg-gray-200 rounded-lg px-4 py-2 space-x-2">
-            <span className="w-6 h-6 bg-gray-300 text-gray-500 rounded-lg flex items-center justify-center">1</span>
-            <span className="font-medium text-gray-500">학교 이메일 인증</span>
+        <div className="flex justify-center space-x-[60px] mb-8">
+          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#232323] text-white rounded-lg flex items-center justify-center font-bold">1</span>
+            <span className="text-[#232323] font-bold">학교 이메일 인증</span>
           </div>
-          <div className="flex items-center bg-gray-200 rounded-lg px-4 py-2 space-x-2">
-            <span className="w-6 h-6 bg-black text-white rounded-lg flex items-center justify-center">2</span>
-            <span className="font-medium text-gray-700">회원 정보 입력</span>
+          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">2</span>
+            <span className="text-[#ADAEB2] font-bold">회원 정보 입력</span>
           </div>
-          <div className="flex items-center bg-gray-200 rounded-lg px-4 py-2 space-x-2">
-            <span className="w-6 h-6 bg-gray-300 text-gray-500 rounded-lg flex items-center justify-center">3</span>
-            <span className="font-medium text-gray-500">가입 완료</span>
+          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">3</span>
+            <span className="font-bold text-[#ADAEB2]">회원가입 완료</span>
           </div>
         </div>
 

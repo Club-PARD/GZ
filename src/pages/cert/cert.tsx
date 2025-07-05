@@ -99,58 +99,61 @@ export default function Home() {
     <main>
       <Header />
       <ErrorDialog isOpen={errorDialog.isOpen} message={errorDialog.message} onClose={closeErrorDialog} />
-      <div className="min-h-screen bg-white flex flex-col items-center pt-[60px]">
+      <div className="min-h-screen bg-[#F3F3F5] flex flex-col items-center p-[60px]">
         <h1 className="text-[32px] text-center font-bold mb-[28px] text-[#232323]">회원가입</h1>
         <div className="flex justify-center space-x-[60px] mb-8">
-          <div className="w-[178px] h-[56px] flex items-center bg-gray-200 rounded-lg px-[20px] py-[16px] space-x-2">
+          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
             <span className="w-[24px] h-[24px] bg-[#232323] text-white rounded-lg flex items-center justify-center font-bold">1</span>
             <span className="text-[#232323] font-bold">학교 이메일 인증</span>
           </div>
-          <div className="w-[178px] h-[56px] flex items-center bg-gray-200 rounded-lg px-[20px] py-[16px] space-x-2">
+          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
             <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">2</span>
             <span className="text-[#ADAEB2] font-bold">회원 정보 입력</span>
           </div>
-          <div className="w-[178px] h-[56px] flex items-center bg-gray-200 rounded-lg px-[20px] py-[16px] space-x-2">
+          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
             <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">3</span>
             <span className="font-bold text-[#ADAEB2]">회원가입 완료</span>
           </div>
         </div>
-        <div className="w-[654px] h-[555px] bg-[#F3F5F5] px-[84px] py-[60px] rounded-2xl space-y-6">
+        <div className="w-[654px] h-[555px] bg-[#FFFFFF] px-[84px] py-[60px] rounded-2xl space-y-8">
           <div>
             <label className="block mb-[8px] text-[#232323]">학교</label>
-            <div className="flex items-center space-x-5">
+            <div className="flex items-center space-x-[8px]">
               <input
-                className="flex-1 w-[337px] h-[53px] p-[16px] border border-white rounded-lg bg-white text-black placeholder-[#C2C3C9]"
-                placeholder="학교 이름을 입력해 주세요."
+                className="flex-1 w-[337px] h-[53px] p-[16px] border border-white rounded-lg bg-[#F3F3F5] text-black placeholder-[#C2C3C9]"
+                placeholder="재학 중인 학교명을 입력해 주세요"
                 value={univ}
                 onChange={(e) => setUniv(e.target.value)}
                 disabled={isSchoolVerified}
               />
               <button
-                className="w-[133px] h-[53px] bg-[#C2C3C9] text-white rounded-lg"
+                className={`w-[133px] h-[53px] text-white rounded-lg ${univ.trim() ? 'bg-[#4C4C4E]' : 'bg-[#C2C3C9]'
+                  }`}
                 onClick={handleSchoolVerify}
                 disabled={isSchoolVerified || !univ.trim()}
               >
-                학교 인증
+                학교 확인하기
               </button>
             </div>
           </div>
           <div>
-            <label className="block mb-1 text-gray-700">학교 이메일</label>
-            <div className="flex items-center space-x-5">
+            <label className="block mb-[8px] text-[#232323]">학교 메일</label>
+            <div className="flex items-center space-x-[8px]">
               <input
-                className="flex-1 p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
-                placeholder="학교 이메일을 입력해 주세요."
+                className="flex-1 w-[337px] h-[53px] p-[16px] border border-white rounded-lg bg-[#F3F3F5] text-black placeholder-[#C2C3C9]"
+
+                placeholder="학교 메일을 정확하게 입력해 주세요"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isCodeSent}
               />
               <button
-                className="w-32 py-3 bg-black text-white rounded-lg "
+                className={`w-[133px] h-[53px] text-white rounded-lg ${email.trim() ? 'bg-[#4C4C4E]' : 'bg-[#C2C3C9]'
+                  }`}
                 onClick={handleSendCode}
                 disabled={!isSchoolVerified || isCodeSent || !email.includes('@')}
               >
-                {isCodeSent ? '재발송' : '인증번호 발송'}
+                {isCodeSent ? '재발송' : '인증번호 받기'}
               </button>
             </div>
           </div>
@@ -158,8 +161,7 @@ export default function Home() {
             <label className="block mb-1 text-gray-700">인증번호</label>
             <div className="flex items-center space-x-5">
               <input
-                className="flex-1 p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
-                placeholder="전송받은 인증번호를 입력해 주세요."
+                className="flex-1 w-[460px] h-[53px] p-[16px]  border border-[#F3F3F5] rounded-lg bg-[#F3F3F5] text-black"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
               />
@@ -170,11 +172,12 @@ export default function Home() {
               {msg.text}
             </p>
           )}
-          <div className="flex justify-center mt-[60px]">
+          <div className="flex justify-center mt-[40px]">
             <button
               onClick={handleNext}
               disabled={!email || !code}
-              className="w-[318px] h-[53px] bg-[#6849FE] text-white rounded-lg disabled:opacity-50 hover:bg-[#5A3FE8] transition-colors duration-200 font-medium"
+              className={`w-[180px] h-[53px] text-white rounded-lg font-medium px-[24px] py-[16px] ${email.trim() && code.trim() ? 'bg-[#6849FE]' : 'bg-[#C2C3C9]'
+                }`}
             >
               다음
             </button>
