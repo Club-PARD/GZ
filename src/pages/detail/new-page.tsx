@@ -6,6 +6,7 @@ import Footer from "@/components/Footer"
 import { BiSolidImage } from "@/components/icons"
 import { AiFillWarning } from "@/components/icons"
 import LoadingBalls from "@/components/loading-components/loding-ball"
+import axios from "axios"
 
 const categories = [
   "전체",
@@ -74,18 +75,22 @@ export default function NewPage() {
       )
       images.forEach((file) => form.append("images", file))
 
-      const res = await fetch("/api/post/create", {
-        method: "POST",
-        body: form,
-      })
-
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => null)
-        console.error("등록 실패 상세:", res.status, errBody)
-        throw new Error(errBody?.message || `등록 실패: ${res.status}`)
+      // FormData 내용 로그 출력
+      console.log("보내는 데이터:")
+      for (let [key, value] of form.entries()) {
+        if (value instanceof File) {
+          console.log(`${key}: File(${value.name}, ${value.size}bytes)`)
+        } else {
+          console.log(`${key}: ${value}`)
+        }
       }
 
-      const data = await res.json()
+      const res = await axios.post("/api/post/create", form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+
+      console.log("등록 성공 응답:", res.data)
+      const data = res.data
       router.push(`/detail/${data.id}`)
     } catch (err) {
       console.error(err)
