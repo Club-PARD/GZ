@@ -7,7 +7,6 @@ import Header from '@/components/cert-header';
 import { getSendbird } from '@/lib/sendbird';
 import { requestFcmToken } from '@/lib/firebase';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import { login } from '@/lib/firebase-functions';
 
 export default function Login() {
   const router = useRouter();
@@ -27,11 +26,10 @@ export default function Login() {
     }
 
     try {
-      // Firebase Functions를 통한 로그인
-      const loginResult = await login(email.trim(), password);
-      
-      if (!loginResult.success) {
-        setError(loginResult.message || '로그인에 실패했습니다.');
+      // TODO: 추후 백엔드와 실제 로그인 로직 연동 필요
+      const testUsers = ['user1', 'user2', 'user3'];
+      if (!testUsers.includes(email.trim())) {
+        setError('테스트용 아이디는 user1, user2, user3만 가능합니다.');
         setIsLoading(false);
         return;
       }
@@ -73,7 +71,8 @@ export default function Login() {
       }
       
       localStorage.setItem('me', email.trim());
-      router.push('/home');
+      console.log('✅ 로그인 성공, 메인 페이지로 이동');
+      router.replace('/home');
 
     } catch (err: any) {
       console.error('Sendbird 연결 실패:', err);
