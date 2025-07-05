@@ -46,7 +46,7 @@ export default function BottomButton() {
         등록한 물건
       </Link>
       <Link
-        href="/about"
+        href="/profile  "
         className="text-[#828286] hover:text-[#8769FF] transition-colors"
       >
         내 프로필
