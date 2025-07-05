@@ -4,5 +4,8 @@ import { BiSolidImage } from "react-icons/bi";
 import { AiFillWarning } from "react-icons/ai";
 import { BsArrowRightCircleFill } from "react-icons/bs";
 import { BsArrowLeftCircleFill } from "react-icons/bs";
-
-export { FaLocationDot, IoSearchOutline, BiSolidImage, AiFillWarning, BsArrowRightCircleFill, BsArrowLeftCircleFill};
+import { AiFillSetting } from "react-icons/ai";
+import { MdPolicy } from "react-icons/md";
+import { BsHeadset } from "react-icons/bs";
+import { MdManageAccounts } from "react-icons/md";
+export { FaLocationDot, IoSearchOutline, BiSolidImage, AiFillWarning, BsArrowRightCircleFill, BsArrowLeftCircleFill, AiFillSetting, MdPolicy, BsHeadset, MdManageAccounts };
