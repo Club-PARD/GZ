@@ -3,6 +3,7 @@ import { GetServerSideProps } from 'next'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Header from '@/components/cert-header'
+import { register } from '@/lib/firebase-functions'
 
 // 쿠키 파싱 헬퍼 (원본 그대로)
 function parseCookies(cookieHeader?: string): Record<string, string> {
@@ -46,19 +47,14 @@ export default function Register({ email, univ }: Props) {
     }
 
     try {
-      const res = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, univ, nickname, password })
-      })
-
-      if (res.ok) {
+      const result = await register(email, univ, nickname, password)
+      
+      if (result.success) {
         router.push('/cert/success')
       } else {
-        const data = await res.json()
-        setMsg({ text: data.message || '회원가입에 실패했습니다.', type: 'error' })
+        setMsg({ text: result.message || '회원가입에 실패했습니다.', type: 'error' })
       }
-    } catch {
+    } catch (error) {
       setMsg({ text: '네트워크 오류가 발생했습니다.', type: 'error' })
     }
   }
