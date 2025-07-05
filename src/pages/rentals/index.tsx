@@ -174,19 +174,29 @@ const TransactionHistory: React.FC = () => {
                   {item.deposit.toLocaleString()}원
                 </div>
                 {/* 상태(반납, 내역) */}
-                <div className="flex flex-col items-center space-y-2 px-2 py-3">
-                  <button className="px-3 py-1 border bg-[#FFFFFF] border-gray-300 rounded text-sm text-gray-500">
+                <div className="flex flex-col items-center  space-y-2 px-2 py-3">
+                  <button className="px-3 py-2 border bg-[#FFFFFF] border-gray-300 rounded text-sm text-gray-500">
                     내역 조회
                   </button>
-                  <button className="px-3 py-1 bg-[#8769FF] text-white rounded text-sm">
+                  <button className="px-3 py-2 bg-[#8769FF] text-white rounded text-sm">
                     {activeTab === 'borrow' ? '반납 요청' : '반납 수락'}
                   </button>
                 </div>
               </React.Fragment>
             ))}
           </div>
-          
-           
+          {items.length === 0 && (
+            // ★ 데이터가 하나도 없을 때 보여줄 영역
+            <div className="flex flex-col items-center py-20 text-gray-400">
+              {/* 아이콘 이미지는 적당히 대체하세요 */}
+              <img
+                src="/images/folder-empty.png"
+                alt="거래 내역 없음"
+                className="w-16 h-16 mb-4"
+              />
+              <p>아직 거래 내역이 없어요.</p>
+            </div>
+          )}
 
         </main>
       </div>
