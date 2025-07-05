@@ -7,6 +7,7 @@ import Header from '@/components/cert-header';
 import { getSendbird } from '@/lib/sendbird';
 import { requestFcmToken } from '@/lib/firebase';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { login } from '@/lib/firebase-functions';
 
 export default function Login() {
   const router = useRouter();
@@ -25,19 +26,20 @@ export default function Login() {
       return setError('아이디와 비밀번호를 모두 입력해 주세요.');
     }
 
-    const sb = getSendbird();
-    if (!sb) {
-      setIsLoading(false);
-      return setError('Sendbird가 초기화되지 않았습니다. 잠시 후 다시 시도해 주세요.');
-    }
-
     try {
-      // TODO: 추후 백엔드와 실제 로그인 로직 연동 필요
-      const testUsers = ['user1', 'user2', 'user3'];
-      if (!testUsers.includes(email.trim())) {
-        setError('테스트용 아이디는 user1, user2, user3만 가능합니다.');
+      // Firebase Functions를 통한 로그인
+      const loginResult = await login(email.trim(), password);
+      
+      if (!loginResult.success) {
+        setError(loginResult.message || '로그인에 실패했습니다.');
         setIsLoading(false);
         return;
+      }
+
+      const sb = getSendbird();
+      if (!sb) {
+        setIsLoading(false);
+        return setError('Sendbird가 초기화되지 않았습니다. 잠시 후 다시 시도해 주세요.');
       }
       
       await sb.connect(email.trim());
