@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Header from '@/components/cert-header'
 import { register } from '@/lib/firebase-functions'
+import { PiCheckCircleFill } from "react-icons/pi";
 
 // 쿠키 파싱 헬퍼 (원본 그대로)
 function parseCookies(cookieHeader?: string): Record<string, string> {
@@ -48,7 +49,7 @@ export default function Register({ email, univ }: Props) {
 
     try {
       const result = await register(email, univ, nickname, password)
-      
+
       if (result.success) {
         router.push('/cert/success')
       } else {
@@ -62,87 +63,101 @@ export default function Register({ email, univ }: Props) {
   return (
     <main>
       <Header />
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-16">
+      <div className="min-h-screen bg-[#F3F3F5] flex flex-col items-center pt-16">
         {/* 제목 */}
         <h1 className="text-3xl font-bold mb-6 text-black">회원가입</h1>
 
-        <div className="flex justify-center space-x-[60px] mb-8">
-          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
-            <span className="w-[24px] h-[24px] bg-[#232323] text-white rounded-lg flex items-center justify-center font-bold">1</span>
-            <span className="text-[#232323] font-bold">학교 이메일 인증</span>
+        <div className="flex justify-center space-x-[20px] mb-8">
+          <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">1</span>
+            <span className="text-[#ADAEB2] font-bold">학교 이메일 인증</span>
           </div>
-          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
-            <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">2</span>
-            <span className="text-[#ADAEB2] font-bold">회원 정보 입력</span>
+          <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#232323] text-white rounded-lg flex items-center justify-center font-bold">2</span>
+            <span className="text-[#232323] font-bold">회원 정보 입력</span>
           </div>
-          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+          <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
             <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">3</span>
             <span className="font-bold text-[#ADAEB2]">회원가입 완료</span>
           </div>
         </div>
 
         {/* Form Card */}
-        <form onSubmit={handleSubmit} className="w-full max-w-md bg-[#F5F5F5] p-8 rounded-2xl space-y-6">
+        <form onSubmit={handleSubmit} className="w-[580px] h-[638px] bg-[#FFFFFF] px-[60px] rounded-2xl mb-[70px]">
           {/* 아이디(이메일) */}
           <div>
-            <label className="block mb-1 text-gray-700">아이디</label>
+            <label className="block pl-[4px] mb-[8px] text-[#232323] mt-[52px]">아이디</label>
             <input
               type="email"
               value={email}
               readOnly
-              placeholder="학교 이메일 자동 입력"
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
+              className="w-[460px] h-[53px] p-[16px] border border-[#F3F3F5] rounded-lg bg-[#F3F3F5] text-[#232323]"
             />
           </div>
 
           {/* 닉네임 */}
           <div>
-            <label className="block mb-1 text-gray-700">닉네임</label>
+            <label className="block pl-[4px] mb-[8px] text-[#232323] mt-[32px]">닉네임</label>
             <input
               type="text"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              placeholder="최대 몇 자"
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
+              placeholder="최대 10자"
+              className="w-[319px] h-[53px] p-[16px] border border-[#F3F3F5] rounded-lg bg-[#F3F3F5] text-[#232323] placeholder-[#C2C3C9] mr-[8px]"
             />
+            <button
+              className={`w-[133px] h-[53px] text-white rounded-lg ${nickname ? 'bg-[#4C4C4E]' : 'bg-[#C2C3C9]'
+                }`}
+            >
+              중복 확인하기
+            </button>
           </div>
 
           {/* 비밀번호 */}
           <div>
-            <label className="block mb-1 text-gray-700">비밀번호</label>
+            <label className="block pl-[4px] mb-[8px] text-[#232323] mt-[32px]">비밀번호</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력해 주세요."
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
+              className="w-[460px] h-[53px] p-[16px] border border-[#F3F3F5] rounded-lg bg-[#F3F3F5] text-[#232323]"
             />
-            <p className="mt-1 text-sm text-gray-500">
-              대/소문자, 특수기호 포함하여 8자 이상
+            <p className="mt-[4px] text-sm text-[#828286] ml-[4px]">
+              영문, 숫자, 특수문자 조합 8자~16자
             </p>
           </div>
 
-          {/* 약관 동의 */}
+          {/* 지구(ZIGU) 서비스 동의 */}
           <div className="space-y-3">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                className="mr-2"
-                checked={agreeTerms}
-                onChange={(e) => setAgreeTerms(e.target.checked)}
-              />
-              <span className="text-gray-700">[필수] 이용약관에 동의합니다.</span>
+            <p className="block pl-[4px] mb-[8px] text-[#232323] mt-[32px] text-[16px]">
+              지구(ZIGU) 서비스 동의
+            </p>
+
+            {/* 이용약관 동의 */}
+            <label
+              className="flex items-center mt-[12px] cursor-pointer"
+              onClick={() => setAgreeTerms(prev => !prev)}
+            >
+              {agreeTerms
+                ? <PiCheckCircleFill size={24} className="text-[#6849FE]" />
+                : <span className="w-[24px] h-[24px] border-2 border-[#ADAEB2] rounded-full" />
+              }
+              <span className="ml-2 text-[#232323]">[필수] 서비스 이용약관에 동의합니다.</span>
             </label>
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                className="mr-2"
-                checked={agreePrivacy}
-                onChange={(e) => setAgreePrivacy(e.target.checked)}
-              />
-              <span className="text-gray-700">[필수] 개인정보 수집∙이용에 동의합니다.</span>
+
+            {/* 개인정보 동의 */}
+            <label
+              className="flex items-center mt-[8px] cursor-pointer"
+              onClick={() => setAgreePrivacy(prev => !prev)}
+            >
+              {agreePrivacy
+                ? <PiCheckCircleFill size={24} className="text-[#6849FE]" />
+                : <span className="w-[24px] h-[24px] border-2 border-[#ADAEB2] rounded-full" />
+              }
+              <span className="ml-2 text-[#232323]">[필수] 개인정보 수집∙이용에 동의합니다.</span>
             </label>
           </div>
+
 
           {/* 메시지 */}
           {msg && (
@@ -152,13 +167,16 @@ export default function Register({ email, univ }: Props) {
           )}
 
           {/* 다음 버튼 */}
-          <button
-            type="submit"
-            disabled={!nickname || password.length < 8 || !agreeTerms || !agreePrivacy}
-            className="w-full py-3 bg-gray-300 text-gray-600 rounded-lg disabled:opacity-50"
-          >
-            다음
-          </button>
+          <div className="flex justify-center" >
+            <button
+              type="submit"
+              disabled={!nickname || password.length < 8 || !agreeTerms || !agreePrivacy}
+              className={`justify items-center w-[180px] h-[53px] px-[24px] py-[16px] text-white rounded-lg mt-[28px] mb-[48px] ${nickname && password.length >= 8 && agreeTerms && agreePrivacy ? 'bg-[#6849FE]' : 'bg-[#C2C3C9]'
+                }`}
+            >
+              다음
+            </button>
+          </div>
         </form>
       </div>
     </main>
