@@ -11,14 +11,14 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const categories = [
-    { id: 'all', name: '전체' },
-    { id: 'electronics', name: '전자기기' },
-    { id: 'health', name: '건강' },
-    { id: 'hobby', name: '취미/여가' },
-    { id: 'beauty', name: '뷰티/패션' },
-    { id: 'study', name: '도서/학업' },
-    { id: 'life', name: '생활용품' },
-    { id: 'etc', name: '기타' },
+    { id: "all", name: "전체" },
+    { id: "electronics", name: "전자기기" },
+    { id: "health", name: "건강" },
+    { id: "hobby", name: "취미/여가" },
+    { id: "beauty", name: "뷰티/패션" },
+    { id: "study", name: "도서/학업" },
+    { id: "life", name: "생활용품" },
+    { id: "etc", name: "기타" },
   ];
 
   const items = [
@@ -91,11 +91,11 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full flex flex-col relative bg-white">
       <Header />
-      <div className={styles.content}>
-        <h1 className="text-[36px] font-bold text-black">
-          필요할때마다 사지말고, <span className="text-[#8769FF]">지구</span>
-          에서 잠깐 빌려요
+        <div className="bg-[#6849FE] p-8  w-full flex flex-col items-center gap-8 pt-16">
+        <h1 className="text-[36px] font-bold text-white">
+          필요할때마다 사지말고,지구에서 잠깐 빌려요
         </h1>
+
         <div className="w-[824px] h-[68px] relative ">
           <input
             className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF] text-black"
@@ -106,6 +106,8 @@ export default function Home() {
             <IoSearchOutline size={24} color="#A2A3A7" />
           </div>
         </div>
+        </div>
+        <div className="flex flex-col items-center gap-8 pt-[80px]">
         <div className="flex items-center gap-2 mt-[50px] pl-[260px] self-start">
           <IoLocationSharp size={20} color="black" />
           <div className="text-[22px] font-bold text-black">
@@ -138,7 +140,11 @@ export default function Home() {
                   categories.find((c) => c.id === selectedCategory)?.name
             )
             .map((item) => (
-              <Link key = {item.id} href="detail/detail-page-consumer" className = {styles.itemCard}>
+              <Link
+                key={item.id}
+                href="detail/detail-page-consumer"
+                className={styles.itemCard}
+              >
                 <div className="w-full h-full aspect-square rounded-lg overflow-hidden">
                   <img
                     src={item.image}
@@ -149,13 +155,18 @@ export default function Home() {
                 <h3 className={styles.itemTitle}>{item.title}</h3>
                 <div className={styles.priceContainer}>
                   <span className={styles.price}>{item.price.hour}원</span>
-                  <span className={styles.timeUnit}>/{item.timeUnit.hour}</span>
+                  <span className="text-[#A2A3A7]">/{item.timeUnit.hour}</span>
                 </div>
                 <div className={styles.priceContainer}>
                   <span className={styles.price}>{item.price.day}원</span>
-                  <span className={styles.timeUnit}>/{item.timeUnit.day}</span>
+                  <span className="text-[#A2A3A7]">/{item.timeUnit.day}</span>
                 </div>
-                <span className={styles.categoryTag}>{item.category}</span>
+                <div className=" flex flex-row gap-2">
+                  <span className={styles.categoryTag}>{item.category}</span>
+                  <span className="text-black flex items-center ">
+                  조회수 
+                  </span>
+                </div>
               </Link>
             ))}
         </div>

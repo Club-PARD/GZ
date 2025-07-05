@@ -113,7 +113,7 @@ const TransactionHistory: React.FC = () => {
       <Header />
       <div className="max-w-250 mx-auto px-4">
         <main className="flex-grow container mx-auto p-4">
-          <h1 className="text-2xl font-semibold mb-6 text-center">거래 내역</h1>
+          <h1 className="text-2xl font-semibold mb-6 text-center text-[#232323]">거래 내역</h1>
           <div>
             {/* 탭 - 수정 필요 */}
             <div

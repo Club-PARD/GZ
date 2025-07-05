@@ -28,7 +28,7 @@ export default function HomeHeader() {
   return (
     <div className="pl-[260px] pr-[272px] bg-white">
       <header className="w-full flex justify-between items-center px-8 py-4">
-        <Image src="/images/logo.svg" alt="로고" width={63} height={20} />
+        <Image src="/images/blogo.svg" alt="로고" width={63} height={20} />
         <div className="flex items-center gap-2">
           {/* 이제 여기서 채팅으로 이동 */}
           <Link
