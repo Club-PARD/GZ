@@ -101,21 +101,21 @@ export default function Home() {
       <ErrorDialog isOpen={errorDialog.isOpen} message={errorDialog.message} onClose={closeErrorDialog} />
       <div className="min-h-screen bg-[#F3F3F5] flex flex-col items-center p-[60px]">
         <h1 className="text-[32px] text-center font-bold mb-[28px] text-[#232323]">회원가입</h1>
-        <div className="flex justify-center space-x-[60px] mb-8">
-          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+        <div className="flex justify-center space-x-[20px] mb-8">
+          <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
             <span className="w-[24px] h-[24px] bg-[#232323] text-white rounded-lg flex items-center justify-center font-bold">1</span>
             <span className="text-[#232323] font-bold">학교 이메일 인증</span>
           </div>
-          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+          <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
             <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">2</span>
             <span className="text-[#ADAEB2] font-bold">회원 정보 입력</span>
           </div>
-          <div className="w-[178px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+          <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
             <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">3</span>
             <span className="font-bold text-[#ADAEB2]">회원가입 완료</span>
           </div>
         </div>
-        <div className="w-[654px] h-[555px] bg-[#FFFFFF] px-[84px] py-[60px] rounded-2xl space-y-8">
+        <div className="w-[580px] h-[550px] bg-[#FFFFFF] px-[84px] py-[60px] rounded-2xl space-y-8">
           <div>
             <label className="block mb-[8px] text-[#232323]">학교</label>
             <div className="flex items-center space-x-[8px]">

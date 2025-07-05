@@ -8,4 +8,6 @@ import { AiFillSetting } from "react-icons/ai";
 import { MdPolicy } from "react-icons/md";
 import { BsHeadset } from "react-icons/bs";
 import { MdManageAccounts } from "react-icons/md";
-export { FaLocationDot, IoSearchOutline, BiSolidImage, AiFillWarning, BsArrowRightCircleFill, BsArrowLeftCircleFill, AiFillSetting, MdPolicy, BsHeadset, MdManageAccounts };
+import { PiCheckCircleFill } from "react-icons/pi";
+
+export { FaLocationDot, IoSearchOutline, BiSolidImage, AiFillWarning, BsArrowRightCircleFill, BsArrowLeftCircleFill, AiFillSetting, MdPolicy, BsHeadset, MdManageAccounts, PiCheckCircleFill };
