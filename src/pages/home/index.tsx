@@ -92,33 +92,33 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full flex flex-col relative bg-white">
       <Header />
-              <div 
-          className="w-full flex flex-col items-center justify-center h-[351px]"
-          style={{
-            backgroundImage: 'url(/images/main.svg)',
-            backgroundSize: 'contain',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundColor: '#6849FE'
-          }}
-        >
-          <div className="flex flex-col items-center gap-8">
-            <h1 className="text-[36px] font-bold text-white text-center">
-              필요할때마다 사지말고,지구에서 잠깐 빌려요
-            </h1>
+      <div
+        className="w-full flex flex-col items-center justify-center h-[351px]"
+        style={{
+          backgroundImage: "url(/images/main.svg)",
+          backgroundSize: "contain",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundColor: "#6849FE",
+        }}
+      >
+        <div className="flex flex-col items-center gap-8">
+          <h1 className="text-[36px] font-bold text-white text-center">
+            필요할때마다 사지말고,지구에서 잠깐 빌려요
+          </h1>
 
-            <div className="w-[780px] h-[68px] relative">
-              <input
-                className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF] text-black"
-                type="text"
-                placeholder="지금 어떤 물건을 구매하고 있나요?"
-              />
-              <div className="absolute left-5 top-1/2 -translate-y-1/2">
-                <IoSearchOutline size={24} color="#A2A3A7" />
-              </div>
+          <div className="w-[780px] h-[68px] relative">
+            <input
+              className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF] text-black"
+              type="text"
+              placeholder="지금 어떤 물건을 구매하고 있나요?"
+            />
+            <div className="absolute left-5 top-1/2 -translate-y-1/2">
+              <IoSearchOutline size={24} color="#A2A3A7" />
             </div>
           </div>
         </div>
+      </div>
       <div className="flex flex-col items-center gap-8 pt-[20px]">
         <div className="flex items-center gap-2 mt-[50px] pl-[260px] self-start">
           <IoLocationSharp size={20} color="black" />

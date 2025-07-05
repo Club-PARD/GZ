@@ -1,12 +1,11 @@
-// pages/detail/new-page.tsx
-import React, { useState } from "react";
-import { useRouter } from "next/router";
-import Image from "next/image";
-import Header from "@/components/home-header";
-import Footer from "@/components/Footer";
-import { BiSolidImage } from "@/components/icons";
-import { AiFillWarning } from "@/components/icons";
-import LoadingBalls from "@/components/loading-components/loding-ball";
+import React, { useState } from "react"
+import { useRouter } from "next/router"
+import Image from "next/image"
+import Header from "@/components/home-header"
+import Footer from "@/components/Footer"
+import { BiSolidImage } from "@/components/icons"
+import { AiFillWarning } from "@/components/icons"
+import LoadingBalls from "@/components/loading-components/loding-ball"
 
 const categories = [
   "전체",
@@ -17,49 +16,84 @@ const categories = [
   "도서/학업",
   "생활용품",
   "기타",
-] as const;
+] as const
 
 export default function NewPage() {
-  const router = useRouter();
-
-  // ── 1) 로딩 상태 ─────────────────────────────────
-  const [isLoading, setIsLoading] = useState(false);
-
-  // ── 2) 이미지 업로드 ──────────────────────────────
-  const [images, setImages] = useState<File[]>([]);
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    const newFiles = Array.from(e.target.files);
-    setImages((prev) => [...prev, ...newFiles].slice(0, 5));
-    e.target.value = "";
-  };
-
-  // ── 3) 폼 상태 ───────────────────────────────────
-  const [title, setTitle] = useState("");
-  const [hourPrice, setHourPrice] = useState("");
-  const [dayPrice, setDayPrice] = useState("");
-  const [deposit, setDeposit] = useState("");
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
+  const [images, setImages] = useState<File[]>([])
+  const [title, setTitle] = useState("")
+  const [hourPrice, setHourPrice] = useState("")
+  const [dayPrice, setDayPrice] = useState("")
+  const [description, setDescription] = useState("")
   const [selectedCat, setSelectedCat] =
-    useState<(typeof categories)[number]>("전체");
+    useState<(typeof categories)[number]>("전체")
+  const [showWarningList, setShowWarningList] = useState(false)
 
-  // ── 4) 유효성 검사 ────────────────────────────────
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return
+    const newFiles = Array.from(e.target.files).slice(0, 5 - images.length)
+    setImages((prev) => [...prev, ...newFiles])
+    e.target.value = ""
+  }
+
   const isFormValid =
     images.length > 0 &&
     title.trim().length > 0 &&
-    deposit.trim().length > 0 &&
     (hourPrice.trim().length > 0 || dayPrice.trim().length > 0) &&
-    selectedCat !== "전체";
+    selectedCat !== "전체"
 
-  // ── 5) 등록 핸들러 ───────────────────────────────
-  const handleRegister = () => {
-    if (!isFormValid) return;
-    setIsLoading(true); // 로딩 시작
-    setTimeout(() => {
-      router.push("/detail/detail-page-producer");
-    }, 3000);
-  };
+  const handleRegister = async () => {
+    if (!isFormValid) return
+    setIsLoading(true)
 
-  // ── 6) 로딩 스크린 ───────────────────────────────
+    try {
+      const userId = "1"
+      const categoryEnumMap: Record<string, string> = {
+        전자기기: "ELECTRONICS",
+        건강: "HEALTH",
+        "취미/여가": "HOBBY",
+        "뷰티/패션": "BEAUTY",
+        "도서/학업": "STUDY",
+        생활용품: "LIFE",
+        기타: "ETC",
+      }
+      const categoryEnum = categoryEnumMap[selectedCat] || selectedCat
+
+      const form = new FormData()
+      form.append("userId", userId)
+      form.append("isBorrowable", "POSSIBLE")
+      form.append("itemName", title)
+      form.append("pricePerHour", hourPrice || "0")
+      form.append("pricePerDay", dayPrice || "0")
+      form.append("category", categoryEnum)
+      form.append("description", description)
+      form.append(
+        "caution",
+        "안전한 사용을 위해 사용 전 상태를 확인해주세요"
+      )
+      images.forEach((file) => form.append("images", file))
+
+      const res = await fetch("/api/post/create", {
+        method: "POST",
+        body: form,
+      })
+
+      if (!res.ok) {
+        const errBody = await res.json().catch(() => null)
+        console.error("등록 실패 상세:", res.status, errBody)
+        throw new Error(errBody?.message || `등록 실패: ${res.status}`)
+      }
+
+      const data = await res.json()
+      router.push(`/detail/${data.id}`)
+    } catch (err) {
+      console.error(err)
+      alert("등록 중 오류가 발생했습니다.")
+      setIsLoading(false)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white">
@@ -68,15 +102,13 @@ export default function NewPage() {
         </div>
         <p className="text-gray-600">물건을 등록 중이에요</p>
       </div>
-    );
+    )
   }
 
-  // ── 7) 실제 폼 렌더링 ─────────────────────────────
   return (
-    <>
+    <div className="bg-white">
       <Header />
-
-      <main className="max-w-5xl mx-70 my-8 flex gap-12 mb-85">
+      <main className="max-w-5xl mx-auto my-8 flex gap-12 mb-85 bg-white px-8">
         {/* 좌측: 이미지 업로드 */}
         <section className="w-1/2 space-y-4">
           <div className="relative bg-[#F3F3F5] rounded-lg h-97 overflow-hidden">
@@ -92,7 +124,9 @@ export default function NewPage() {
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center">
               <label className="inline-flex items-center bg-[#C2C3C9] rounded-md px-4 py-2 cursor-pointer">
                 <BiSolidImage size={24} color="white" />
-                <span className="ml-2 text-sm text-white">이미지 추가하기</span>
+                <span className="ml-2 text-sm text-white">
+                  이미지 추가하기
+                </span>
                 <input
                   type="file"
                   accept="image/*"
@@ -106,10 +140,9 @@ export default function NewPage() {
               </p>
             </div>
           </div>
-
           <div className="grid grid-cols-4 gap-2">
             {Array.from({ length: 4 }).map((_, idx) => {
-              const file = images[idx + 1];
+              const file = images[idx + 1]
               return (
                 <div
                   key={idx}
@@ -125,24 +158,8 @@ export default function NewPage() {
                     />
                   )}
                 </div>
-              );
+              )
             })}
-          </div>
-
-          <div className="mt-4 p-4 bg-[#F9F9FA] rounded-lg text-sm text-gray-600 space-y-2">
-            <p>
-              꼼꼼하게 찍힌 사진은 대여 중 생길 수 있는 오해나 분쟁을 예방하고,
-              문제가 생겼을 때 상황을 정확히 파악하는 데 큰 도움이 됩니다.
-            </p>
-            <p>
-              반대로, 물건 상태가 잘 보이지 않거나 누락된 부분이 있다면 경우에
-              따라 책임이 사용자에게 돌아갈 수 있어요.
-            </p>
-            <p className="font-semibold">
-              물건의 전체 모습, 사용 흔적이나 흠집이 있다면 그 부분도 함께!
-              정확하고 안전한 대여를 위해, 사진은 최대한 꼼꼼하게 등록해 주세요
-              :)
-            </p>
           </div>
         </section>
 
@@ -150,7 +167,7 @@ export default function NewPage() {
         <section className="w-1/2 space-y-6">
           {/* 제목 */}
           <div>
-            <label className="block font-medium mb-2">
+            <label className="block font-medium mb-2 text-[#232323]">
               제목 <span className="text-[#6B46C1]">*</span>
             </label>
             <input
@@ -158,59 +175,44 @@ export default function NewPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="충전기, 공구, 정장 등"
-              className="w-full h-13 p-3 bg-[#F3F3F5] rounded-lg placeholder-gray-400 text-sm"
+              className="w-full h-13 p-3 bg-[#F3F3F5] rounded-lg placeholder-gray-400 text-sm text-[#232323]"
             />
           </div>
 
           {/* 대여 가격 */}
           <div>
-            <label className="block font-medium mb-2">
+            <label className="block font-medium mb-2 text-[#232323]">
               대여 가격 <span className="text-[#6B46C1]">*</span>
             </label>
             <div className="space-y-2">
               <div className="flex items-center">
                 <input
-                  type="number"
+                  type="text"
                   value={hourPrice}
                   onChange={(e) => setHourPrice(e.target.value)}
                   placeholder="원하는 가격을 입력해 주세요"
-                  className="flex-none w-88 p-3 h-13 bg-[#F3F3F5] rounded-lg placeholder-gray-400 text-sm"
+                  className="flex-none w-88 p-3 h-13 bg-[#F3F3F5] rounded-lg placeholder-gray-400 text-sm text-[#232323]"
                 />
-                <span className="ml-2 text-sm text-gray-600">원 / 1시간</span>
+                <span className="ml-2 text-sm text-[#232323]">
+                  원 / 1시간
+                </span>
               </div>
               <div className="flex items-center">
                 <input
-                  type="number"
+                  type="text"
                   value={dayPrice}
                   onChange={(e) => setDayPrice(e.target.value)}
                   placeholder="원하는 가격을 입력해 주세요"
-                  className="flex-none w-88 p-3 h-13 bg-[#F3F3F5] rounded-lg placeholder-gray-400 text-sm"
+                  className="flex-none w-88 p-3 h-13 bg-[#F3F3F5] rounded-lg placeholder-gray-400 text-sm text-[#232323]"
                 />
-                <span className="ml-2 text-sm text-gray-600">원 / 1일</span>
+                <span className="ml-2 text-sm text-[#232323]">원 / 1일</span>
               </div>
-            </div>
-          </div>
-
-          {/* 보증금 */}
-          <div>
-            <label className="block font-medium mb-2">
-              보증금 <span className="text-[#6B46C1]">*</span>
-            </label>
-            <div className="flex items-center">
-              <input
-                type="number"
-                value={deposit}
-                onChange={(e) => setDeposit(e.target.value)}
-                placeholder="원하는 가격을 입력해 주세요"
-                className="flex-none w-88 p-3 h-13 bg-[#F3F3F5] rounded-lg placeholder-gray-400 text-sm"
-              />
-              <span className="ml-2 text-sm text-gray-600">원</span>
             </div>
           </div>
 
           {/* 카테고리 */}
           <div>
-            <label className="block font-medium mb-2">
+            <label className="block font-medium mb-2 text-[#232323]">
               카테고리 <span className="text-[#6B46C1]">*</span>
             </label>
             <div className="flex flex-wrap gap-2">
@@ -224,7 +226,7 @@ export default function NewPage() {
                     className={`px-4 py-2 rounded-full text-[12px] font-medium ${
                       isActive
                         ? "bg-[#8769FF] text-white"
-                        : "bg-[#F3F3F5] text-gray-600 hover:bg-gray-200"
+                        : "bg-[#F3F3F5] text-[#ADAEB2] hover:bg-gray-200"
                     }`}
                   >
                     {cat}
@@ -236,22 +238,49 @@ export default function NewPage() {
 
           {/* 설명 */}
           <div>
-            <label className="block font-medium mb-2">설명</label>
-            <textarea
-              placeholder="물건에 대한 자세한 설명…"
-              className="w-full p-3 bg-[#F3F3F5] rounded-lg placeholder-gray-400 text-sm h-40 resize-none"
-            />
+            <label className="block font-medium mb-2 text-[#232323]">
+              설명
+            </label>
+            <div className="relative">
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="물건에 대한 자세한 설명…"
+                className="w-full p-3 bg-[#F3F3F5] rounded-lg placeholder-gray-400 text-sm h-40 resize-none text-[#232323]"
+                maxLength={200}
+              />
+              <div className="absolute bottom-2 right-2 text-xs text-gray-400">
+                {description.length}/200
+              </div>
+            </div>
           </div>
 
           {/* 버튼 그룹 */}
           <div className="flex items-center justify-between mt-4">
-            <button
-              type="button"
-              className="flex items-center px-9 py-2 h-11 min-w-[270px] bg-[#F2E8FF] rounded-lg text-sm text-[#6B46C1]"
-            >
-              <AiFillWarning size={24} color="#6B46C1" className="mr-1" />
-              물건 등록 전 주의사항 살펴보기
-            </button>
+            <div className="relative">
+              <button
+                type="button"
+                className="flex items-center px-9 py-2 h-11 min-w-[270px] bg-[#F2E8FF] rounded-lg text-sm text-[#6B46C1]"
+                onMouseEnter={() => setShowWarningList(true)}
+                onMouseLeave={() => setShowWarningList(false)}
+              >
+                <AiFillWarning size={24} color="#6B46C1" className="mr-1" />
+                물건 등록 전 주의사항 살펴보기
+              </button>
+              {showWarningList && (
+                <div className="absolute top-full -left-50 mt-2 p-4 bg-[#F9F9FA] rounded-lg text-sm text-[#4C4C4E] shadow-lg z-10 w-[631px]">
+                  <ul className="space-y-2 list-disc list-inside">
+                    <li>허위 매물이나 과장 광고는 금지됩니다.</li>
+                    <li>금지 품목(예: 불법 복제품, 유해 물질 등)은 등록할 수 없습니다.</li>
+                    <li>상품 설명과 사진은 실제와 일치해야 하며, 꼼꼼하게 작성해야 합니다.</li>
+                    <li>
+                      직거래 시 안전한 장소를 선택하고 택배 거래 시에는
+                      입금 확인 후 상품을 발송해야 합니다.
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
             <button
               type="button"
               disabled={!isFormValid}
@@ -269,6 +298,6 @@ export default function NewPage() {
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 }

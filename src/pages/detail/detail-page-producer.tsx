@@ -25,7 +25,7 @@ export default function DetailPageProducer() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <>
+    <div>
       <Header />
 
       <main className="max-w-5xl mx-70 my-8 flex gap-12 mb-85">
@@ -130,6 +130,6 @@ export default function DetailPageProducer() {
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 }
