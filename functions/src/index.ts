@@ -9,6 +9,8 @@ admin.initializeApp();
 const db = admin.firestore();
 const messaging = admin.messaging();
 
+
+
 /**
  * Sendbird 웹훅 요청을 처리하여 푸시 알림을 보냅니다.
  * HTTP 요청으로 트리거됩니다.
