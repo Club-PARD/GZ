@@ -27,8 +27,8 @@ export default function HomeHeader() {
   }, [queryMe]);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 pl-[260px] pr-[272px] bg-white ">
-      <header className="w-full flex justify-between items-center px-8 py-4">
+    <div className="fixed top-0 left-0 right-0 z-50 pl-[260px] pr-[272px] bg-white h-16">
+      <header className="w-full flex justify-between items-center px-8 py-4 h-full">
         <Link href={'/home'}>
           <Image src="/images/blogo.svg" alt="로고" width={94} height={20} />
         </Link>
