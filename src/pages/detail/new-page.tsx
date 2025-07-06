@@ -31,6 +31,9 @@ export default function NewPage() {
     useState<(typeof categories)[number]>("전체")
   const [showWarningList, setShowWarningList] = useState(false)
 
+  // 응답 데이터를 저장할 state
+  const [responseData, setResponseData] = useState<any>(null)
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
     const newFiles = Array.from(e.target.files).slice(0, 5 - images.length)
@@ -49,7 +52,7 @@ export default function NewPage() {
     setIsLoading(true)
 
     try {
-      const userId = "1"
+      const userId = "3"
       const categoryEnumMap: Record<string, string> = {
         전자기기: "ELECTRONICS",
         건강: "HEALTH",
@@ -81,16 +84,17 @@ export default function NewPage() {
         }
       }
 
-      const res = await axios.post("/api/post/create", form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      // axios가 multipart boundary를 자동 지정하도록 헤더 생략
+      const res = await axios.post("/api/post/create", form)
 
       console.log("등록 성공 응답:", res.data)
-      const data = res.data
-      router.push(`/detail/${data.id}`)
+
+      // 화면에 응답을 보여주기 위해 state에 저장
+      setResponseData(res.data)
     } catch (err) {
       console.error(err)
       alert("등록 중 오류가 발생했습니다.")
+    } finally {
       setIsLoading(false)
     }
   }
@@ -219,7 +223,7 @@ export default function NewPage() {
             </label>
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => {
-                const isActive = cat === selectedCat;
+                const isActive = cat === selectedCat
                 return (
                   <button
                     key={cat}
@@ -233,7 +237,7 @@ export default function NewPage() {
                   >
                     {cat}
                   </button>
-                );
+                )
               })}
             </div>
           </div>
@@ -298,7 +302,18 @@ export default function NewPage() {
           </div>
         </section>
       </main>
+
+      {/* 응답 데이터 출력 */}
+      {responseData && (
+        <div className="max-w-5xl mx-auto mt-8 p-4 bg-gray-50 rounded-lg border">
+          <h2 className="font-medium mb-2">등록 결과</h2>
+          <pre className="text-xs overflow-auto">
+            {JSON.stringify(responseData, null, 2)}
+          </pre>
+        </div>
+      )}
+
       <Footer />
     </div>
-  );
+  )
 }
