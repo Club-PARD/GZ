@@ -1,4 +1,5 @@
 // pages/cert/register.tsx
+import { GetServerSideProps } from "next";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -33,7 +34,6 @@ export default function Register({ studentMail, schoolName }: Props) {
     text: string;
     type: "error" | "success";
   } | null>(null);
-  const [nicknameChecked, setNicknameChecked] = useState(false);
 
   const handleNicknameCheck = async () => {
     if (!nickname.trim()) {
@@ -43,32 +43,6 @@ export default function Register({ studentMail, schoolName }: Props) {
     if (nickname.length > 10) {
       setMsg({ text: "닉네임은 10자 이하로 입력해주세요.", type: "error" });
       return;
-    }
-
-    try {
-      const { data } = await axios.get("/api/check-nickname", {
-        params: { nickname },
-      });
-      console.log("닉네임 확인 응답:", data);
-
-      if (data.success === true || data.available === true) {
-        setMsg({ text: "사용 가능한 닉네임입니다.", type: "success" });
-        setNicknameChecked(true);
-      } else {
-        setMsg({
-          text: data.message || "이미 사용중인 닉네임입니다.",
-          type: "error",
-        });
-        setNicknameChecked(false);
-      }
-    } catch (error: any) {
-      console.error("닉네임 확인 에러:", error);
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "닉네임 확인에 실패했습니다.";
-      setMsg({ text: errorMessage, type: "error" });
-      setNicknameChecked(false);
     }
   };
 
@@ -88,12 +62,9 @@ export default function Register({ studentMail, schoolName }: Props) {
     if (!agreeTerms || !agreePrivacy) {
       return setMsg({ text: "필수 약관에 모두 동의해 주세요.", type: "error" });
     }
-    if (!nicknameChecked) {
-      return setMsg({ text: "닉네임 중복 확인을 해주세요.", type: "error" });
-    }
 
     try {
-      const { data } = await axios.post("/api/signup", {
+      const { data } = await axios.post("/api/auth/signUp", {
         studentMail,
         schoolName,
         nickname,
@@ -178,21 +149,11 @@ export default function Register({ studentMail, schoolName }: Props) {
               value={nickname}
               onChange={(e) => {
                 setNickname(e.target.value);
-                setNicknameChecked(false);
                 setMsg(null);
               }}
               placeholder="최대 10자"
-              className="w-[319px] h-[53px] p-[16px] border border-[#F3F3F5] rounded-lg bg-[#F3F3F5] text-[#232323] placeholder-[#C2C3C9] mr-[8px]"
+              className="w-[460px] h-[53px] p-[16px] border border-[#F3F3F5] rounded-lg bg-[#F3F3F5] text-[#232323] placeholder-[#C2C3C9]"
             />
-            <button
-              type="button"
-              onClick={handleNicknameCheck}
-              className={`w-[133px] h-[53px] text-white rounded-lg ${
-                nickname ? "bg-[#4C4C4E]" : "bg-[#C2C3C9]"
-              }`}
-            >
-              중복 확인하기
-            </button>
           </div>
 
           {/* 비밀번호 */}
@@ -267,15 +228,13 @@ export default function Register({ studentMail, schoolName }: Props) {
                 !nickname ||
                 password.length < 8 ||
                 !agreeTerms ||
-                !agreePrivacy ||
-                !nicknameChecked
+                !agreePrivacy
               }
               className={`justify items-center w-[180px] h-[53px] px-[24px] py-[16px] text-white rounded-lg mt-[28px] mb-[48px] ${
                 nickname &&
                 password.length >= 8 &&
                 agreeTerms &&
-                agreePrivacy &&
-                nicknameChecked
+                agreePrivacy
                   ? "bg-[#6849FE]"
                   : "bg-[#C2C3C9]"
               }`}
@@ -288,3 +247,25 @@ export default function Register({ studentMail, schoolName }: Props) {
     </main>
   );
 }
+
+// SSR: 쿠키에서 studentMail, schoolName 꺼내서 props로 넘기기
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+  req,
+}) => {
+  const cookies = parseCookies(req.headers.cookie);
+  const studentMail = cookies.studentMail || "";
+  const schoolName = cookies.schoolName || "";
+
+  if (!studentMail) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { studentMail, schoolName },
+  };
+};
