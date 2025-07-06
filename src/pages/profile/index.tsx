@@ -109,7 +109,7 @@ const TransactionHistory: React.FC = () => {
     //리턴값들
   }
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50 pt-16">
       <Header />
       <div className="max-w-250 mx-auto px-4">
         <main className="flex-grow container mx-auto p-4">

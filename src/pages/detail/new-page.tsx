@@ -111,9 +111,10 @@ export default function NewPage() {
   }
 
   return (
-    <div className="bg-white">
+    <div className="bg-white pt-16">
       <Header />
-      <main className="max-w-5xl mx-auto my-8 flex gap-12 mb-85 bg-white px-8">
+      
+      <main className="max-w-5xl mx-auto pt-20 flex gap-12 mb-85 bg-white px-8">
         {/* 좌측: 이미지 업로드 */}
         <section className="w-1/2 space-y-4">
           <div className="relative bg-[#F3F3F5] rounded-lg h-97 overflow-hidden">
@@ -301,7 +302,6 @@ export default function NewPage() {
           </div>
         </section>
       </main>
-
       <Footer />
     </div>
   );

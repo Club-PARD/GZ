@@ -29,6 +29,10 @@ const nextConfig: NextConfig = {
         source: "/api/auth/verifyCode",
         destination: "https://gz-zigu.store/auth/verifyCode",
       },
+      {
+        source: "/api/auth/check-nickname",
+        destination: "https://gz-zigu.store/auth/check-nickname",
+      },
     ];
   },
 };
