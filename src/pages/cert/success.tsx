@@ -8,7 +8,7 @@ import { PiCheckCircleFill } from "react-icons/pi";
 
 export default function Success() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
+  const [studentMail, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
 
@@ -16,7 +16,7 @@ export default function Success() {
     e.preventDefault()
     setError(null)
 
-    if (!email.trim() || !password) {
+    if (!studentMail.trim() || !password) {
       return setError('아이디와 비밀번호를 모두 입력해 주세요.')
     }
 
