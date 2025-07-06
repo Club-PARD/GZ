@@ -1,5 +1,4 @@
 // pages/cert/register.tsx
-import { GetServerSideProps } from "next";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -20,11 +19,11 @@ function parseCookies(cookieHeader?: string): Record<string, string> {
 }
 
 type Props = {
-  email: string;
-  univ: string;
+  studentMail: string;
+  schoolName: string;
 };
 
-export default function Register({ email, univ }: Props) {
+export default function Register({ studentMail, schoolName }: Props) {
   const router = useRouter();
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
@@ -94,9 +93,9 @@ export default function Register({ email, univ }: Props) {
     }
 
     try {
-      const { data } = await axios.post("/api/register", {
-        email,
-        univ,
+      const { data } = await axios.post("/api/signup", {
+        studentMail,
+        schoolName,
         nickname,
         password,
       });
@@ -163,7 +162,7 @@ export default function Register({ email, univ }: Props) {
             </label>
             <input
               type="email"
-              value={email}
+              value={studentMail}
               readOnly
               className="w-[460px] h-[53px] p-[16px] border border-[#F3F3F5] rounded-lg bg-[#F3F3F5] text-[#232323]"
             />
@@ -289,25 +288,3 @@ export default function Register({ email, univ }: Props) {
     </main>
   );
 }
-
-// SSR: 쿠키에서 email, univ 꺼내서 props로 넘기기
-export const getServerSideProps: GetServerSideProps<Props> = async ({
-  req,
-}) => {
-  const cookies = parseCookies(req.headers.cookie);
-  const email = cookies.email || "";
-  const univ = cookies.univ || "";
-
-  if (!email) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: { email, univ },
-  };
-};

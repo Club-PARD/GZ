@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from "next/router"
 import Image from "next/image"
 import Header from "@/components/home-header"
@@ -53,10 +53,10 @@ export default function NewPage() {
       const categoryEnumMap: Record<string, string> = {
         전자기기: "ELECTRONICS",
         건강: "HEALTH",
-        "취미/여가": "HOBBY",
-        "뷰티/패션": "BEAUTY",
-        "도서/학업": "STUDY",
-        생활용품: "LIFE",
+        "취미/여가": "INTEREST",
+        "뷰티/패션": "BEAUTYFASION",
+        "도서/학업": "ACADEMIC",
+        생활용품: "ESSENTIALS",
         기타: "ETC",
       }
       const categoryEnum = categoryEnumMap[selectedCat] || selectedCat
@@ -69,10 +69,6 @@ export default function NewPage() {
       form.append("pricePerDay", dayPrice || "0")
       form.append("category", categoryEnum)
       form.append("description", description)
-      form.append(
-        "caution",
-        "안전한 사용을 위해 사용 전 상태를 확인해주세요"
-      )
       images.forEach((file) => form.append("images", file))
 
       // FormData 내용 로그 출력
