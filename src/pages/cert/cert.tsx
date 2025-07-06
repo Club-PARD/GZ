@@ -148,12 +148,19 @@ export default function Home() {
                 disabled={isCodeSent}
               />
               <button
-                className={`w-[133px] h-[53px] text-white rounded-lg ${email.trim() ? 'bg-[#4C4C4E]' : 'bg-[#C2C3C9]'
-                  }`}
+                className={`w-[133px] h-[53px] text-white rounded-lg ${
+                  email.trim() && isSchoolVerified && cooldown === 0
+                    ? 'bg-[#4C4C4E]'
+                    : 'bg-[#C2C3C9]'
+                }`}
                 onClick={handleSendCode}
-                disabled={!isSchoolVerified || isCodeSent || !email.includes('@')}
+                disabled={!isSchoolVerified || !email.includes('@') || cooldown > 0}
               >
-                {isCodeSent ? '재발송' : '인증번호 받기'}
+                {isCodeSent
+                  ? cooldown > 0
+                    ? `${cooldown}s 후 재발송`
+                    : '재발송'
+                  : '인증번호 받기'}
               </button>
             </div>
           </div>

@@ -7,6 +7,7 @@ import Header from '@/components/cert-header';
 import { getSendbird } from '@/lib/sendbird';
 import { requestFcmToken } from '@/lib/firebase';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { FaSquareCheck } from "react-icons/fa6";
 
 export default function Login() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [agreePrivacy, setAgreePrivacy] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,11 +41,11 @@ export default function Login() {
         setIsLoading(false);
         return setError('Sendbird가 초기화되지 않았습니다. 잠시 후 다시 시도해 주세요.');
       }
-      
+
       await sb.connect(email.trim());
-      
+
       console.log('✅ Sendbird 연결 성공:', sb.currentUser);
-      
+
       // 로그인 성공 후 FCM 토큰을 Firestore에 저장하는 로직
       try {
         await requestFcmToken(async (token) => {
@@ -69,7 +71,7 @@ export default function Login() {
         console.warn('FCM 토큰 요청 실패:', fcmError);
         // FCM 실패는 로그인 자체에는 영향을 주지 않음
       }
-      
+
       localStorage.setItem('me', email.trim());
       console.log('✅ 로그인 성공, 메인 페이지로 이동');
       router.replace('/home');
@@ -85,58 +87,67 @@ export default function Login() {
   return (
     <main>
       <Header />
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-16">
-        <h1 className="text-3xl font-bold mb-6 text-black">로그인</h1>
+      <div className="min-h-screen bg-[#F3F3F5] flex flex-col items-center pt-[60px]">
+        <h1 className="text-3xl font-bold mb-[28px] text-[#232323]">로그인</h1>
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="w-full max-w-md bg-[#F5F5F5] p-8 rounded-2xl space-y-6"
+          className="w-[580px] h-[461px] bg-[#FFFFFF] px-[80px] pt-[80px] pb-[60px] rounded-2xl"
         >
           {/* 아이디 */}
           <div>
-            <label className="block mb-1 text-gray-700">아이디</label>
             <input
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="학교 이메일을 입력해 주세요."
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
+              placeholder="학교 메일"
+              className="w-[420px] h-[53px] p-[16px] border border-[#F3F3F5] rounded-lg bg-[#F3F3F5] text-[#232323] placeholder-[#C2C3C9]"
             />
           </div>
 
           {/* 비밀번호 */}
           <div>
-            <label className="block mb-1 text-gray-700">비밀번호</label>
             <input
               type="password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력해 주세요."
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
+              placeholder="비밀번호"
+              className="w-[420px] h-[53px] p-[16px] border border-[#F3F3F5] rounded-lg bg-[#F3F3F5] text-[#232323] placeholder-[#C2C3C9] mt-[20px]"
             />
-            <p className="mt-1 text-sm text-gray-500">
-              대/소문자, 특수기호 !&amp;$*5 ~~~
-            </p>
+            <label
+              className="flex items-center mt-[12px] ml-[4px] cursor-pointer"
+              onClick={() => setAgreePrivacy(prev => !prev)}
+            >
+              {agreePrivacy
+                ? <FaSquareCheck size={24} className="text-[#6849FE]" />
+                : <span className="w-[24px] h-[24px]  border border-[#ADAEB2] rounded-[4px]" />
+              }
+              <span className="ml-[8px] text-[#232323]">로그인 상태 유지하기</span>
+            </label>
           </div>
 
           {/* 오류 메시지 */}
           {error && <p className="text-red-600">{error}</p>}
 
-          {/* 아이디/비밀번호 찾기 링크 */}
-          <div className="flex justify-center space-x-2 text-sm text-gray-500">
-            <a href="#" className="hover:underline">아이디 찾기</a>
-            <span>|</span>
-            <a href="#" className="hover:underline">비밀번호 찾기</a>
-          </div>
-
           {/* 로그인 버튼 */}
           <button
             type="submit"
-            className="w-full py-3 bg-black text-white rounded-lg disabled:opacity-50"
+            className="w-[420px] h-[53px] p-[16px] bg-[#6849FE] text-white rounded-lg mt-[96px]"
             disabled={!email.trim() || !password || isLoading}
           >
             {isLoading ? '로그인 중...' : '로그인'}
           </button>
+
+          {/* 아이디/비밀번호 찾기 링크 */}
+          <div className="flex justify-center space-x-2 text-sm text-[#ADAEB2] mt-[16px]">
+            <a href="#" className="hover:underline">아이디 찾기</a>
+            <span>|</span>
+            <a href="#" className="hover:underline">비밀번호 찾기</a>
+            <span>|</span>
+            <a href="#" className="hover:underline">회원가입</a>
+          </div>
+
+
         </form>
       </div>
     </main>

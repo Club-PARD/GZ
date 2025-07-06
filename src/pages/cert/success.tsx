@@ -1,26 +1,10 @@
 // pages/cert/register.tsx
-import { GetServerSideProps } from 'next'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import Header from '@/components/cert-header';
 import Link from 'next/link';
+import { PiCheckCircleFill } from "react-icons/pi";
 
-// 쿠키 파싱 헬퍼
-function parseCookies(cookieHeader?: string): Record<string, string> {
-  const list: Record<string, string> = {}
-  if (!cookieHeader) return list
-  cookieHeader.split(';').forEach(pair => {
-    const [rawKey, rawVal] = pair.split('=')
-    if (rawKey && rawVal) {
-      list[rawKey.trim()] = decodeURIComponent(rawVal.trim())
-    }
-  })
-  return list
-}
-
-type Props = {
-  email: string
-}
 
 export default function Success() {
   const router = useRouter()
@@ -43,101 +27,48 @@ export default function Success() {
   return (
     <main>
       <Header />
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center pt-16">
-        {/* 제목 */}
-        <h1 className="text-3xl font-bold mb-6 text-black">회원가입이 완료되었습니다!</h1>
-
-        {/* Step Indicator */}
-        <div className="flex justify-center space-x-4 mb-8">
-          <div className="flex items-center bg-gray-200 rounded-lg px-4 py-2 space-x-2">
-            <span className="w-6 h-6 bg-gray-300 text-gray-500 rounded-lg flex items-center justify-center">1</span>
-            <span className="font-medium text-gray-500">학교 이메일 인증</span>
+      <div className="min-h-screen bg-[#F3F3F5] flex flex-col items-center pt-16">
+        <div className="flex justify-center space-x-[20px] mb-8">
+          <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">1</span>
+            <span className="text-[#ADAEB2] font-bold">학교 이메일 인증</span>
           </div>
-          <div className="flex items-center bg-gray-200 rounded-lg px-4 py-2 space-x-2">
-            <span className="w-6 h-6 bg-gray-300 text-gray-500 rounded-lg flex items-center justify-center">2</span>
-            <span className="font-medium text-gray-500">회원 정보 입력</span>
+          
+          <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">2</span>
+            <span className="font-bold text-[#ADAEB2]">회원 정보 입력</span>
           </div>
-          <div className="flex items-center bg-gray-200 rounded-lg px-4 py-2 space-x-2">
-            <span className="w-6 h-6 bg-black text-white rounded-lg flex items-center justify-center">3</span>
-            <span className="font-medium text-gray-700">가입 완료</span>
+          <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
+            <span className="w-[24px] h-[24px] bg-[#232323] text-white rounded-lg flex items-center justify-center font-bold">3</span>
+            <span className="text-[#232323] font-bold">회원가입 완료</span>
           </div>
         </div>
 
-        {/* Form Card */}
-        {/* 로그인 폼 */}
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-md bg-[#F5F5F5] p-8 rounded-2xl space-y-6"
+          className="w-[580px] h-[484px] bg-[#FFFFFF] rounded-2xl"
         >
-          <p className="text-2xl font-bold mb-6 text-black flex flex-col items-center">다시 로그인 해주세요</p>
-          {/* 아이디 */}
-          <div>
-            <label className="block mb-1 text-gray-700">아이디</label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="학교 이메일을 입력해 주세요."
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
-            />
+          <div className="flex justify-center">
+            <PiCheckCircleFill
+              className="w-[100px] h-[100px] text-[#6849FE] mt-[80px]" />
           </div>
+          <h1 className="text-[32px] text-center font-bold mt-[20px] text-[#232323]">회원가입이 완료되었습니다!</h1>
+          <p className="text-sm text-center text-[#616264] mt-[12px]">회원님의 회원가입을 진심으로 축하드립니다.</p>
+          <p className="text-sm text-center text-[#616264]">로그인 후 지구 서비스를 더 자세히 살펴볼 수 있습니다.</p>
+          <div className="flex justify-center">
 
-          {/* 비밀번호 */}
-          <div>
-            <label className="block mb-1 text-gray-700">비밀번호</label>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력해 주세요."
-              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-black placeholder-[#B3B3B3]"
-            />
-            <p className="mt-1 text-sm text-gray-500">
-              대/소문자, 특수기호 !&amp;$*5 ~~~
-            </p>
+            <Link href="/cert/login">
+              <button
+                type="submit"
+                className="w-[180px] h-[53px] px-[24px] py-[16px] bg-[#6849FE] text-white rounded-lg mt-[60px]"
+              >
+                로그인하러 가기
+              </button>
+            </Link>
           </div>
-
-          {/* 오류 메시지 */}
-          {error && <p className="text-red-600">{error}</p>}
-
-          {/* 아이디/비밀번호 찾기 링크 */}
-          <div className="flex justify-center space-x-2 text-sm text-gray-500">
-            <a href="#" className="hover:underline">아이디 찾기</a>
-            <span>|</span>
-            <a href="#" className="hover:underline">비밀번호 찾기</a>
-          </div>
-
-          {/* 로그인 버튼 */}
-          <Link href="/home">
-            <button
-              type="submit"
-              className="w-full py-3 bg-black text-white rounded-lg disabled:opacity-50"
-              disabled={!email.trim() || !password}
-            >
-              로그인
-            </button>
-          </Link>
         </form>
       </div>
     </main>
   )
 }
 
-// SSR: httpOnly 쿠키에서 email 꺼내서 props로 넘기기
-export const getServerSideProps: GetServerSideProps<Props> = async ({ req }) => {
-  const cookies = parseCookies(req.headers.cookie)
-  const email = cookies.email || ''
-
-  if (!email) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false
-      }
-    }
-  }
-
-  return {
-    props: { email }
-  }
-}
