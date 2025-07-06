@@ -139,7 +139,7 @@ export default function Home() {
             <span className="font-bold text-[#ADAEB2]">회원가입 완료</span>
           </div>
         </div>
-        <div className="w-[580px] h-[550px] bg-[#FFFFFF] px-[84px] py-[60px] rounded-2xl space-y-8">
+        <div className="w-[580px] h-[550px] bg-[#FFFFFF] px-[60px] py-[81px] rounded-2xl space-y-8">
           <div>
             <label className="block mb-[8px] text-[#232323]">학교</label>
             <div className="flex items-center space-x-[8px]">
