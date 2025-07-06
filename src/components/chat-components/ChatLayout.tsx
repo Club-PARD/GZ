@@ -14,7 +14,7 @@ export default function ChatLayout({ me }: ChatLayoutProps) {
   const [selectedChannelUrl, setSelectedChannelUrl] = useState<string>();
 
   return (
-    <div>
+    <div className="pt-16">
       {/* 헤더 (수정 없음) */}
       <Header />
       <div className="flex flex-col min-h-screen bg-[#F9F9FA]">

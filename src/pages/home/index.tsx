@@ -90,7 +90,7 @@ export default function Home() {
   ];
 
   return (
-    <main className="min-h-screen w-full flex flex-col relative bg-white">
+    <main className="min-h-screen w-full flex flex-col relative bg-white pt-16">
       <Header />
       <div
         className="w-full flex flex-col items-center justify-center h-[351px]"
