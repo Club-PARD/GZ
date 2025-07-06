@@ -1,5 +1,5 @@
 // pages/detail/detail-page-producer.tsx
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Header from '@/components/home-header'
 import Footer from '@/components/Footer'
@@ -7,7 +7,21 @@ import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs'
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
 
 export default function DetailPageProducer() {
-  const images = [
+  const [registeredItem, setRegisteredItem] = useState<any>(null)
+  
+  // 카테고리 한국어 변환
+  const categoryMap: Record<string, string> = {
+    'ELECTRONICS': '전자기기',
+    'HEALTH': '건강',
+    'INTEREST': '취미/여가',
+    'BEAUTYFASION': '뷰티/패션',
+    'ACADEMIC': '도서/학업',
+    'ESSENTIALS': '생활용품',
+    'ETC': '기타',
+  }
+  
+  // 기본 이미지 (등록된 이미지가 없을 경우 사용)
+  const defaultImages = [
     "/images/usb.jpg",
     "/images/bag.jpg",
     "/images/camera.jpg",
@@ -16,6 +30,22 @@ export default function DetailPageProducer() {
   ];
 
   const [current, setCurrent] = useState(0)
+  
+  // localStorage에서 등록된 아이템 정보 가져오기
+  useEffect(() => {
+    const storedItem = localStorage.getItem('registeredItem')
+    if (storedItem) {
+      try {
+        const itemData = JSON.parse(storedItem)
+        setRegisteredItem(itemData)
+      } catch (error) {
+        console.error('아이템 데이터 파싱 에러:', error)
+      }
+    }
+  }, [])
+
+  // 등록된 아이템이 있으면 해당 이미지, 없으면 기본 이미지 사용
+  const images = registeredItem?.imageUrls || defaultImages
   const lastIndex = images.length - 1
   const prevSlide = () =>
     setCurrent(current === 0 ? lastIndex : current - 1)
@@ -56,7 +86,7 @@ export default function DetailPageProducer() {
 
             {/* 닷츠 네비게이션 */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              {images.map((_, idx) => (
+              {images.map((_: string, idx: number) => (
                 <button
                   key={idx}
                   onClick={() => setCurrent(idx)}
@@ -70,7 +100,7 @@ export default function DetailPageProducer() {
 
           {/* 썸네일(필요 시 주석 해제 후 경로 수정) */}
           <div className="grid grid-cols-4 gap-2">
-            {images.slice(1).map((src, idx) => (
+            {images.slice(1).map((src: string, idx: number) => (
               <div
                 key={idx}
                 className="bg-[#F3F3F5] w-24 h-24 rounded-lg overflow-hidden relative"
@@ -101,9 +131,11 @@ export default function DetailPageProducer() {
 
           {/* 제목 · 카테고리 · 더보기 한 줄 */}
           <div className="flex items-center space-x-2 relative">
-            <h1 className="text-2xl font-bold">1TB USB 빌려드려요</h1>
+            <h1 className="text-2xl font-bold">
+              {registeredItem?.itemName || '1TB USB 빌려드려요'}
+            </h1>
             <span className="px-2 py-1 bg-[#F2E8FF] text-[#6B46C1] text-xs rounded-full">
-              전자기기
+              {registeredItem?.category ? categoryMap[registeredItem.category] || registeredItem.category : '전자기기'}
             </span>
             <span className="ml-auto cursor-pointer text-2xl leading-none">⋮</span>
           </div>
@@ -111,20 +143,38 @@ export default function DetailPageProducer() {
           {/* 대여 가격 */}
           <div>
             <p className="text-sm text-gray-500">대여 가격</p>
-            <p className="mt-1 text-lg font-semibold">3,000원 / 1시간</p>
-            <p className="mt-1 text-lg font-semibold">10,000원 / 1일</p>
+            {registeredItem?.pricePerHour && registeredItem.pricePerHour !== "0" && (
+              <p className="mt-1 text-lg font-semibold">
+                {Number(registeredItem.pricePerHour).toLocaleString()}원 / 1시간
+              </p>
+            )}
+            {registeredItem?.pricePerDay && registeredItem.pricePerDay !== "0" && (
+              <p className="mt-1 text-lg font-semibold">
+                {Number(registeredItem.pricePerDay).toLocaleString()}원 / 1일
+              </p>
+            )}
+            {/* 기본값 표시 (등록된 아이템이 없을 경우) */}
+            {!registeredItem && (
+              <>
+                <p className="mt-1 text-lg font-semibold">3,000원 / 1시간</p>
+                <p className="mt-1 text-lg font-semibold">10,000원 / 1일</p>
+              </>
+            )}
           </div>
 
           {/* 보증금 */}
           <div>
             <p className="text-sm text-gray-500">보증금</p>
-            <p className="mt-1 text-lg font-semibold">10,000원</p>
+            <p className="mt-1 text-lg font-semibold">
+              {registeredItem?.deposit ? `${Number(registeredItem.deposit).toLocaleString()}원` : '10,000원'}
+            </p>
           </div>
 
           {/* 설명 */}
           <div className="p-4 h-40 bg-[#F9F9FA] rounded-lg text-sm text-gray-700">
-            용량 커서 문제 없어요. 생활 기스 살짝 있는 거 말고는 훼손된 부분
-            딱히 없어요. 분실만 조심해주면 좋겠어요!
+            {registeredItem?.description || 
+              '용량 커서 문제 없어요. 생활 기스 살짝 있는 거 말고는 훼손된 부분 딱히 없어요. 분실만 조심해주면 좋겠어요!'
+            }
           </div>
         </section>
       </main>

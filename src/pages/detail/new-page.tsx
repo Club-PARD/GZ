@@ -31,8 +31,7 @@ export default function NewPage() {
     useState<(typeof categories)[number]>("전체")
   const [showWarningList, setShowWarningList] = useState(false)
 
-  // 응답 데이터를 저장할 state
-  const [responseData, setResponseData] = useState<any>(null)
+
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
@@ -89,8 +88,12 @@ export default function NewPage() {
 
       console.log("등록 성공 응답:", res.data)
 
-      // 화면에 응답을 보여주기 위해 state에 저장
-      setResponseData(res.data)
+      // 등록 성공 시 detail-page-producer로 이동
+      // 등록된 아이템 정보를 localStorage에 저장
+      localStorage.setItem('registeredItem', JSON.stringify(res.data))
+      
+      // detail-page-producer로 라우팅
+      router.push('/detail/detail-page-producer')
     } catch (err) {
       console.error(err)
       alert("등록 중 오류가 발생했습니다.")
@@ -303,15 +306,7 @@ export default function NewPage() {
         </section>
       </main>
 
-      {/* 응답 데이터 출력 */}
-      {responseData && (
-        <div className="max-w-5xl mx-auto mt-8 p-4 bg-gray-50 rounded-lg border">
-          <h2 className="font-medium mb-2">등록 결과</h2>
-          <pre className="text-xs overflow-auto">
-            {JSON.stringify(responseData, null, 2)}
-          </pre>
-        </div>
-      )}
+
 
       <Footer />
     </div>
