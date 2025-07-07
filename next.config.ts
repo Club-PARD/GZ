@@ -10,24 +10,12 @@ const nextConfig: NextConfig = {
         destination: "https://gz-zigu.store/post/create",
       },
       {
-        source: "/api/auth/register",
-        destination: "https://gz-zigu.store/auth/register",
+        source: "/api/auth/signUp",
+        destination: "https://gz-zigu.store/auth/signUp",
       },
       {
         source: "/api/auth/login", 
         destination: "https://gz-zigu.store/auth/login",
-      },
-      {
-        source: "/api/auth/univCheck",
-        destination: "https://gz-zigu.store/auth/univCheck",
-      },
-      {
-        source: "/api/auth/sendCode",
-        destination: "https://gz-zigu.store/auth/sendCode", 
-      },
-      {
-        source: "/api/auth/verifyCode",
-        destination: "https://gz-zigu.store/auth/verifyCode",
       },
       {
         source: "/api/auth/check-nickname",

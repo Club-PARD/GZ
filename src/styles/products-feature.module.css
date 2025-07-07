@@ -1,0 +1,31 @@
+/* 사진만 관여하는 모듈 CSS */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 220px);
+    justify-content: start; 
+    gap: 15px;             
+  }
+  
+  .wrapper {
+    width: 220px;
+    height: 220px;
+    position: relative;
+    border-radius: 0.75rem; /* rounded-lg */
+    overflow: hidden;
+  }
+  .captionBox {
+    width: 200px;
+    height: 48px;
+    background-color: #F3F3F5;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* 캡션 텍스트 */
+  .captionText {
+    font-size: 0.875rem; 
+    font-weight: 500;   
+    color: #1F2937;     
+  }

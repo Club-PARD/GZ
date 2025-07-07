@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from "next/router"
 import Image from "next/image"
 import Header from "@/components/home-header"
@@ -31,6 +31,8 @@ export default function NewPage() {
     useState<(typeof categories)[number]>("전체")
   const [showWarningList, setShowWarningList] = useState(false)
 
+
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
     const newFiles = Array.from(e.target.files).slice(0, 5 - images.length)
@@ -49,14 +51,14 @@ export default function NewPage() {
     setIsLoading(true)
 
     try {
-      const userId = "1"
+      const userId = "3"
       const categoryEnumMap: Record<string, string> = {
         전자기기: "ELECTRONICS",
         건강: "HEALTH",
-        "취미/여가": "HOBBY",
-        "뷰티/패션": "BEAUTY",
-        "도서/학업": "STUDY",
-        생활용품: "LIFE",
+        "취미/여가": "INTEREST",
+        "뷰티/패션": "BEAUTYFASION",
+        "도서/학업": "ACADEMIC",
+        생활용품: "ESSENTIALS",
         기타: "ETC",
       }
       const categoryEnum = categoryEnumMap[selectedCat] || selectedCat
@@ -69,10 +71,6 @@ export default function NewPage() {
       form.append("pricePerDay", dayPrice || "0")
       form.append("category", categoryEnum)
       form.append("description", description)
-      form.append(
-        "caution",
-        "안전한 사용을 위해 사용 전 상태를 확인해주세요"
-      )
       images.forEach((file) => form.append("images", file))
 
       // FormData 내용 로그 출력
@@ -85,16 +83,21 @@ export default function NewPage() {
         }
       }
 
-      const res = await axios.post("/api/post/create", form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
+      // axios가 multipart boundary를 자동 지정하도록 헤더 생략
+      const res = await axios.post("/api/post/create", form)
 
       console.log("등록 성공 응답:", res.data)
-      const data = res.data
-      router.push(`/detail/${data.id}`)
+
+      // 등록 성공 시 detail-page-producer로 이동
+      // 등록된 아이템 정보를 localStorage에 저장
+      localStorage.setItem('registeredItem', JSON.stringify(res.data))
+      
+      // detail-page-producer로 라우팅
+      router.push('/detail/detail-page-producer')
     } catch (err) {
       console.error(err)
       alert("등록 중 오류가 발생했습니다.")
+    } finally {
       setIsLoading(false)
     }
   }
@@ -223,7 +226,7 @@ export default function NewPage() {
             </label>
             <div className="flex flex-wrap gap-2">
               {categories.map((cat) => {
-                const isActive = cat === selectedCat;
+                const isActive = cat === selectedCat
                 return (
                   <button
                     key={cat}
@@ -237,7 +240,7 @@ export default function NewPage() {
                   >
                     {cat}
                   </button>
-                );
+                )
               })}
             </div>
           </div>
@@ -302,7 +305,10 @@ export default function NewPage() {
           </div>
         </section>
       </main>
+
+
+
       <Footer />
     </div>
-  );
+  )
 }

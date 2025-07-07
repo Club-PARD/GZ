@@ -1,0 +1,6 @@
+.iconContainer {
+  display: flex;
+  gap: 40px;
+  width: 100%;
+  justify-content: flex-end;
+}

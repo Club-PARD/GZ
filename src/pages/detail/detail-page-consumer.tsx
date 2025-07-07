@@ -31,11 +31,6 @@ export default function DetailPageConsumer() {
     '/images/camping.jpg',
     '/images/shoes.jpg',
   ];
-  const [current, setCurrent] = useState(0);
-  const lastIndex = images.length - 1;
-  const prevSlide = () => setCurrent(v => (v === 0 ? lastIndex : v - 1));
-  const nextSlide = () => setCurrent(v => (v === lastIndex ? 0 : v + 1));
-
   // 채팅 채널 URL 상태
   const [channelUrl, setChannelUrl] = useState<string>('');
 
@@ -55,61 +50,39 @@ export default function DetailPageConsumer() {
   };
 
   return (
-    <>
+    <div className="bg-white pt-[80px]">
       <Header />
 
-      <main className="max-w-5xl mx-70 my-8 flex gap-12 mb-85 pb-32 ">
-        {/* 좌측: 이미지 캐러셀 + 그 아래 영역 */}
+      <main className="max-w-5xl mx-40 my-8 flex gap-8 ">
+        {/* 좌측: 이미지 세로 나열 + 그 아래 영역 */}
         <section className="w-1/2 space-y-4">
-          <div className="relative bg-[#F3F3F5] rounded-lg h-97 overflow-hidden">
-            <Image
-              src={images[current]}
-              alt={`slide-${current}`}
-              fill
-              style={{ objectFit: 'cover' }}
-              className="absolute inset-0"
-            />
-
-            <button
-              onClick={prevSlide}
-              className="absolute left-4 top-1/2 z-10 transform -translate-y-1/2 rounded-full p-1 shadow"
-            >
-              <BsArrowLeftCircleFill color="white" size={24} />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="absolute right-4 top-1/2 z-10 transform -translate-y-1/2 rounded-full p-1 shadow"
-            >
-              <BsArrowRightCircleFill color="white" size={24} />
-            </button>
-
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              {images.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrent(idx)}
-                  className={`w-2 h-2 rounded-full ${
-                    idx === current ? 'bg-white' : 'bg-gray-300'
-                  }`}
-                />
-              ))}
+          {images.map((src: string, idx: number) => (
+            <div key={idx} className="relative bg-[#F3F3F5] rounded-lg h-80 overflow-hidden">
+              <Image
+                src={src}
+                alt={`image-${idx}`}
+                fill
+                style={{ objectFit: "cover" }}
+                className="absolute inset-0"
+              />
             </div>
-          </div>
+          ))}
+          
 
           {/* 채팅 전: 썸네일 4개 / 채팅 후: 정보 패널 */}
           {channelUrl ? (
             <div className="space-y-2 bg-white rounded-lg">
-              <h2 className="text-xl font-bold">1TB USB 빌려드려요</h2>
+              <h2 className="text-xl font-bold text-[#232323]">1TB USB 빌려드려요</h2>
               <p className="text-sm text-gray-500">대여 가격</p>
               <div className="p-4 bg-[#F9F9FA] rounded-lg">
-                <p className="mt-1 text-lg font-semibold">3,000원 / 1시간</p>
+                <p className="mt-1 text-lg font-semibold ">3,000원 / 1시간</p>
                 <p className="mt-1 text-lg font-semibold">10,000원 / 1일</p>
               </div>
               <div className="flex items-center justify-between bg-[#F3F0FF] p-4 rounded-lg">
                 <span className="text-lg font-medium">보증금 10,000원</span>
                 <button
                   onClick={startChat}
-                  className="px-4 py-2 bg-[#8769FF] text-white rounded-lg text-sm"
+                  className="px-4 py-2 bg-[#8769FF] text-white rounded-lg text-sm text-[#232323]"
                 >
                   대여 시작하기
                 </button>
@@ -117,18 +90,12 @@ export default function DetailPageConsumer() {
             </div>
           ) : (
             <div className="grid grid-cols-4 gap-2">
-              {images.slice(1).map((_, idx) => (
-                <div
-                  key={idx}
-                  className="bg-[#F3F3F5] w-24 h-24 rounded-lg overflow-hidden"
-                />
-              ))}
             </div>
           )}
         </section>
 
         {/* 우측: 상품 상세 정보 또는 채팅창 */}
-        <section className="w-1/2 space-y-4">
+        <section className="w-96 space-y-4 border border-gray-300 rounded-lg p-4 fixed right-0">
           {channelUrl ? (
             <div className="flex flex-col h-[600px]">
               <ChatWindow me={me} selectedChannelUrl={channelUrl} />
@@ -142,29 +109,29 @@ export default function DetailPageConsumer() {
                   alt="프로필"
                   className="w-8 h-8 rounded-full"
                 />
-                <span className="font-medium">{ownerId}</span>
+                <span className="font-medium text-[#232323]">{ownerId}</span>
               </div>
 
               {/* 제목·카테고리 */}
               <div className="flex items-center space-x-2">
-                <h1 className="text-2xl font-bold">1TB USB 빌려드려요</h1>
-                <span className="px-2 py-1 bg-[#F2E8FF] text-[#6B46C1] text-xs rounded-full">
-                  전자기기
-                </span>
+                <h1 className="text-2xl font-bold text-[#232323]">1TB USB 빌려드려요</h1>
+               
+              </div>
+              <div className=" border-b border-gray-200">
               </div>
 
               {/* 대여 가격 */}
-              <div>
-                <p className="text-sm text-gray-500">대여 가격</p>
-                <p className="mt-1 text-lg font-semibold">3,000원 / 1시간</p>
-                <p className="mt-1 text-lg font-semibold">10,000원 / 1일</p>
+              <div className="flex gap-4">
+                <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">1시간</p> {/*Db값으로 변경 */}
+                <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">3000</p> {/*Db값으로 변경 */}
+              </div>
+              <div className="flex gap-4">
+                <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">1알</p>  {/*Db값으로 변경 */}
+                <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">10000</p> {/*Db값으로 변경 */}
               </div>
 
-              {/* 보증금 */}
-              <div>
-                <p className="text-sm text-gray-500">보증금</p>
-                <p className="mt-1 text-lg font-semibold">10,000원</p>
-              </div>
+              <div className=" border-b border-gray-200 pt-[36px]">
+                </div>
 
               {/* 설명 */}
               <div className="p-4 h-40 bg-[#F9F9FA] rounded-lg text-sm text-gray-700">
@@ -190,6 +157,6 @@ export default function DetailPageConsumer() {
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 }

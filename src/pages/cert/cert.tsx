@@ -7,8 +7,8 @@ import { univCheck, sendCode, verifyCode } from "@/lib/firebase-functions";
 
 export default function Home() {
   const router = useRouter();
-  const [univ, setUniv] = useState("");
-  const [email, setEmail] = useState("");
+  const [schoolName, setUniv] = useState("");
+  const [studentMail, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [isSchoolVerified, setSchoolVerified] = useState(false);
   const [isCodeSent, setCodeSent] = useState(false);
@@ -32,7 +32,7 @@ export default function Home() {
   const handleSchoolVerify = async () => {
     setMsg(null);
     try {
-      const result = await univCheck(univ);
+      const result = await univCheck(schoolName);
       if (result.success) {
         setSchoolVerified(true);
         setMsg({ text: "학교 인증 완료", type: "success" });
@@ -63,7 +63,7 @@ export default function Home() {
       return;
     }
     try {
-      const result = await sendCode(univ, email);
+      const result = await sendCode(schoolName, studentMail);
       if (result.success) {
         setCodeSent(true);
         setResendCount((c) => c + 1);
@@ -89,13 +89,13 @@ export default function Home() {
       return;
     }
     try {
-      const result = await verifyCode(univ, email, code);
+      const result = await verifyCode(schoolName, studentMail, code);
       if (!result.success) {
         setMsg({ text: result.message!, type: "error" });
         return;
       }
-      document.cookie = `univ=${encodeURIComponent(univ)}; path=/;`;
-      document.cookie = `email=${encodeURIComponent(email)}; path=/;`;
+      document.cookie = `schoolName=${encodeURIComponent(schoolName)}; path=/;`;
+      document.cookie = `studentMail=${encodeURIComponent(studentMail)}; path=/;`;
       router.push("/cert/register");
     } catch (e) {
       const m = e instanceof Error ? e.message : "인증번호 확인 중 오류";
@@ -139,23 +139,23 @@ export default function Home() {
             <span className="font-bold text-[#ADAEB2]">회원가입 완료</span>
           </div>
         </div>
-        <div className="w-[580px] h-[550px] bg-[#FFFFFF] px-[84px] py-[60px] rounded-2xl space-y-8">
+        <div className="w-[580px] h-[550px] bg-[#FFFFFF] px-[60px] py-[81px] rounded-2xl space-y-8">
           <div>
             <label className="block mb-[8px] text-[#232323]">학교</label>
             <div className="flex items-center space-x-[8px]">
               <input
                 className="flex-1 w-[337px] h-[53px] p-[16px] border border-white rounded-lg bg-[#F3F3F5] text-black placeholder-[#C2C3C9]"
                 placeholder="재학 중인 학교명을 입력해 주세요"
-                value={univ}
+                value={schoolName}
                 onChange={(e) => setUniv(e.target.value)}
                 disabled={isSchoolVerified}
               />
               <button
                 className={`w-[133px] h-[53px] text-white rounded-lg ${
-                  univ.trim() ? "bg-[#4C4C4E]" : "bg-[#C2C3C9]"
+                  schoolName.trim() ? "bg-[#4C4C4E]" : "bg-[#C2C3C9]"
                 }`}
                 onClick={handleSchoolVerify}
-                disabled={isSchoolVerified || !univ.trim()}
+                disabled={isSchoolVerified || !schoolName.trim()}
               >
                 학교 확인하기
               </button>
@@ -167,18 +167,18 @@ export default function Home() {
               <input
                 className="flex-1 w-[337px] h-[53px] p-[16px] border border-white rounded-lg bg-[#F3F3F5] text-black placeholder-[#C2C3C9]"
                 placeholder="학교 메일을 정확하게 입력해 주세요"
-                value={email}
+                value={studentMail}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isCodeSent}
               />
               <button
                 className={`w-[133px] h-[53px] text-white rounded-lg ${
-                  email.trim() && isSchoolVerified && cooldown === 0
+                  studentMail.trim() && isSchoolVerified && cooldown === 0
                     ? 'bg-[#4C4C4E]'
                     : 'bg-[#C2C3C9]'
                 }`}
                 onClick={handleSendCode}
-                disabled={!isSchoolVerified || !email.includes('@') || cooldown > 0}
+                disabled={!isSchoolVerified || !studentMail.includes('@') || cooldown > 0}
               >
                 {isCodeSent
                   ? cooldown > 0
@@ -210,9 +210,9 @@ export default function Home() {
           <div className="flex justify-center mt-[40px]">
             <button
               onClick={handleNext}
-              disabled={!email || !code}
+              disabled={!studentMail || !code}
               className={`w-[180px] h-[53px] text-white rounded-lg font-medium px-[24px] py-[16px] ${
-                email.trim() && code.trim() ? "bg-[#6849FE]" : "bg-[#C2C3C9]"
+                studentMail.trim() && code.trim() ? "bg-[#6849FE]" : "bg-[#C2C3C9]"
               }`}
             >
               다음
