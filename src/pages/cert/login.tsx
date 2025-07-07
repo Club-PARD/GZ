@@ -73,9 +73,10 @@ export default function Login() {
         return;
       }
 
-      // 2) 로그인 성공 후 data.userId 꺼내서 문자열로 변환
+      // 2) 로그인 성공 후 data.userId, data.nickname 꺼내기
       const json = await res.json();
       const userId = String(json.data.userId);
+      const nickname = json.data.nickname ?? '';
       localStorage.setItem('me', userId);
 
       // 3) Sendbird 연결 (userId만 사용)
@@ -84,6 +85,17 @@ export default function Login() {
         throw new Error('Sendbird가 초기화되지 않았습니다.');
       }
       await sb.connect(userId);
+
+      // ─── 추가: 닉네임 업데이트 ───
+      if (nickname) {
+        try {
+          await sb.updateCurrentUserInfo({ nickname });
+          console.log('✅ Sendbird 닉네임 업데이트 성공:', nickname);
+        } catch (err) {
+          console.error('❌ Sendbird 닉네임 업데이트 실패:', err);
+        }
+      }
+
       console.log('✅ Sendbird 연결 성공:', sb.currentUser);
 
       // 4) FCM 토큰 요청 및 Firestore 저장
