@@ -76,8 +76,8 @@ export default function Login() {
       // 2) 로그인 성공 후 data.userId, data.nickname 꺼내기
       const json = await res.json();
       const userId = String(json.data.userId);
-      const nickname = json.data.nickname ?? '';
-      localStorage.setItem('me', userId);
+      const nickname = json.data.nickname;
+      localStorage.setItem('me', nickname);
 
       // 3) Sendbird 연결 (userId만 사용)
       const sb = getSendbird();
