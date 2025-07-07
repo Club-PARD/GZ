@@ -1,197 +1,262 @@
-// src/pages/ProfilePage.tsx
-import React, { useState } from 'react';
-import Header from '@/components/home-header';
-import Footer from '@/components/Footer';
+// src/pages/rentals/index.tsx
+import React, { useState, useMemo, useEffect } from 'react'
+import Header from '@/components/home-header'
+import Footer from '@/components/Footer'
 
+type Tab = 'borrow' | 'lend' | 'request';
 interface TransactionItem {
-  id: number;
-  title: string;
-  category: string;
-  duration: string;
-  price: number;
-  deposit: number;
-  status: string;
-  imageUrl: string;
+  id: number
+  title: string
+  category: string
+  duration: string
+  price: number
+  status: string
+  imageUrl: string
 }
-
-// 더미 데이터 예시
+const lentItems: TransactionItem[] = [ /* …원하는 데이터 추가… */ ]
+const requestItems: TransactionItem[]  = [{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납 요청', imageUrl: '/images/usb.jpg' },
+  { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '반납', imageUrl: '/images/bag.jpg' },
+  { id: 3, title: '망치 빌려드려요',     category: '도구',     duration: '1주일', price: 20000, status: '반납', imageUrl: '/images/hammer.jpg' },
+  { id: 4, title: '카메라 빌려드려요',   category: '전자기기', duration: '1일',    price: 15000, status: '반납', imageUrl: '/images/camera.jpg' },
+  { id: 5, title: '신발 빌려드려요',     category: '패션',     duration: '2주일', price:  5000, status: '거래', imageUrl: '/images/shoes.jpg' },
+  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납', imageUrl: '/images/camping.jpg' },];
 const borrowedItems: TransactionItem[] = [
-  {
-    id: 1,
-    title: '1TB USB 빌려드려요',
-    category: '전자기기',
-    duration: '10시간',
-    price: 30000,
-    deposit: 10000,
-    status: '반납 요청',
-    imageUrl: '/images/usb.jpg',
-  },
-  {
-    id: 2,
-    title: '가방 빌려드려요',
-    category: '패션',
-    duration: '3일',
-    price: 50000,
-    deposit: 20000,
-    status: '반납 수락',
-    imageUrl: '/images/bag.jpg',
-  },
-  {
-    id: 3,
-    title: '망치 빌려드려요',
-    category: '도구',
-    duration: '1주일',
-    price: 20000,
-    deposit: 5000,
-    status: '반납 요청',
-    imageUrl: '/images/hammer.jpg',
-  },
-  
-  
-];
+  { id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },
+  { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '거래', imageUrl: '/images/bag.jpg' },
+  { id: 3, title: '망치 빌려드려요',     category: '도구',     duration: '1주일', price: 20000, status: '거래', imageUrl: '/images/hammer.jpg' },
+  { id: 4, title: '카메라 빌려드려요',   category: '전자기기', duration: '1일',    price: 15000, status: '반납 수락', imageUrl: '/images/camera.jpg' },
+  { id: 5, title: '신발 빌려드려요',     category: '패션',     duration: '2주일', price:  5000, status: '반납 요청', imageUrl: '/images/shoes.jpg' },
+  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납 수락', imageUrl: '/images/camping.jpg' },
+]
 
-const lentItems: TransactionItem[] = [
-  {
-    id: 2,
-    title: '카메라 빌려드려요',
-    category: '전자기기',
-    duration: '1일',
-    price: 15000,
-    deposit: 5000,
-    status: '반납 수락',
-    imageUrl: '/images/camera.jpg',
-  }, {
-    id: 3,
-    title: '신발 빌려드려요',
-    category: '패션',
-    duration: '2주일',
-    price: 5000,
-    deposit: 1000,
-    status: '반납 요청',
-    imageUrl: '/images/shoes.jpg',
-  }, {
-    id: 4,
-    title: '캠핑용품 세트 빌려드려요',
-    category: '여행',
-    duration: '1달',
-    price: 30000,
-    deposit: 10000,
-    status: '반납 수락',
-    imageUrl: '/images/camping.jpg',
-  }
 
-  // ... 추가 아이템
-];
+const ITEMS_PER_PAGE = 5
 
-const TransactionHistory: React.FC = () => {
-  // useState 훅: 컴포넌트 내부에서 상태(state)를 관리하기 위한 React 훅입니다.
-  // activeTab은 현재 선택된 탭을 의미하며, 'borrow'(빌린 내역) 또는 'lend'(빌려준 내역) 값을 가집니다.
-  // setActiveTab 함수를 호출하여 activeTab 값을 업데이트할 수 있습니다.
-  const [activeTab, setActiveTab] = useState<'borrow' | 'lend'>('borrow');
 
-  // activeTab에 따라 보여줄 리스트를 선택
-  const items = activeTab === 'borrow' ? borrowedItems : lentItems;
 
-  // 렌더링할 컴포넌트 -> 받아온 길이가 0이면 "거래 내역이 없습니다."라는 문구를 보여줍니다.
-  if(borrowedItems.length === 0 && lentItems.length === 0) {
-    return (
-      <div className="text-center py-4">
-        <p className="text-gray-500">거래 내역이 없습니다.</p>
-      </div>
-    );
-  }
-  else if (lentItems.length === 0) {
-    return (
-      <div className="text-center py-4">
-        <p className="text-gray-500">빌려준 내역이 없습니다.</p>
-      </div>
-    );
-    //리턴값들
-  }
+const RentalsPage: React.FC = () => {
+  const [activeTab, setActiveTab] =  useState<Tab>('borrow');
+  const items =
+  activeTab === 'borrow'
+    ? borrowedItems
+    : activeTab === 'lend'
+      ? lentItems
+      : requestItems;
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE)
+
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(1)
+  }, [totalPages, currentPage])
+
+  const currentItems = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE
+    return items.slice(start, start + ITEMS_PER_PAGE)
+  }, [items, currentPage])
+
+  const pageNumbers = useMemo(
+    () => Array.from({ length: totalPages }, (_, i) => i + 1),
+    [totalPages]
+  )
+
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 pt-16">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      <div className="max-w-250 mx-auto px-4">
-        <main className="flex-grow container mx-auto p-4">
-          <h1 className="text-2xl font-semibold mb-6 text-center text-[#232323]">거래 내역</h1>
-          <div>
-            {/* 탭 - 수정 필요 */}
-            <div
-              className="
-     flex justify-center space-x-8
-     mb-1      /* 탭 아래 여백 조정 */
-     pb-4      /* 탭 내부 아래 여백 조정 */
-     border-b-2/* 선 두께: 2px (기본은 border-b = 1px) */
-     border-gray-200 /* 선 색상: 연한 회색 */
-   "
+      <main className="pb-[60px] flex-grow pt-16   ">
+        <div className="max-w-[980px] mx-auto  ">
+          {/* 타이틀 */}
+          <h1 className="pb-[60px] pt-[60px] text-[#232323]                    
+  px-106                       
+  [font-family:'Pretendard Variable']
+  text-[32px]                        
+  leading-[130%]                    
+  tracking-[-0.64px] ">
+            거래 내역
+          </h1>
+
+          {/* 탭 */}
+          <div className="flex justify-center space-x-5 mb-10">
+            <button
+              className={`pb-1 ${
+                activeTab === 'borrow'
+                  ? 'border-b-2 border-[#232323] text-[#232323] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
+                  : 'text-[#C2C3C9] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
+              }`}
+              onClick={() => {
+                setActiveTab('borrow')
+                setCurrentPage(1)
+              }}
             >
-              <button
-                className={`pb-2 mx-6 ${activeTab === 'borrow' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500'}`}
-                onClick={() => setActiveTab('borrow')}
-              >
-                빌린 내역
-              </button>
-              <button
-                className={`pb-2 mx-4 ${activeTab === 'lend' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500'}`}
-                onClick={() => setActiveTab('lend')}
-              >
-                빌려준 내역
-              </button>
-            </div>
+              빌린 내역
+            </button>
+            <button
+              className={`pb-1 ${
+                activeTab === 'lend'
+                  ? 'border-b-2 border-[#232323] text-[#232323] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
+                  : 'text-[#C2C3C9] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
+              }`}
+              onClick={() => {
+                setActiveTab('lend')
+                setCurrentPage(1)
+              }}
+            >
+              빌려준 내역
+            </button>
+            <button
+              className={`pb-1 ${
+                activeTab === 'request'
+                  ? 'border-b-2 border-[#232323] text-[#232323] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
+                  : 'text-[#C2C3C9] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
+              }`}
+              onClick={() => {
+                setActiveTab('request')
+                setCurrentPage(1)
+              }}
+            >
+              대여 요청
+            </button>
           </div>
-          <div className="inline-grid
-                grid-cols-4
-                
-                divide-y divide-gray-200
-                text-gray-600
-                font-medium">
-            {/* — 헤더 */}
-            <div className="px-2 py-3">물품 정보</div>
-            <div className="px-2 py-3 text-center">기간 및 금액</div>
-            <div className="px-2 py-3 text-center">보증금</div>
-            <div className="px-2 py-3 text-center">상태</div>
 
-            {/* — 아이템들 */}
-            
-            {items.map(item => (
-              <React.Fragment key={item.id}>
-                <div className="flex items-center space-x-4 px-2 py-3">
-                  {/* 물품 사진 */}
-                  <img src={item.imageUrl} alt="" className="w-20 h-20 rounded object-cover" />
-                  <div>
-                    {/* 폰트 */}
-                    <div className="font-semibold ">{item.title}</div>
-                    <div className="text-sm text-gray-500">{item.category}</div>
+          {/* 그리드 */}
+          <div className="overflow-x-auto border-b border-gray-200">
+            <div className="overflow-x-auto border-b border-gray-200">
+          </div>
+          <div
+            className="
+              grid w-full
+              [grid-template-columns:2fr_0.5fr_0.5fr]
+              divide-y divide-x divide-gray-200
+              border-x border-gray-200
+              text-gray-600 font-medium
+              border-t border-gray-200 
+            "
+          >
+            {/* 헤더 */}
+            <div className="px-6 py-4">물품 정보</div>
+            <div className="px-6 py-4 text-center">대여 기간 및 가격</div>
+            <div className="px-6 py-4 text-center">상태</div>
+
+            {/* 아이템들 or 빈 상태 */}
+            {currentItems.length > 0 ? (
+              currentItems.map(item => (
+                <React.Fragment key={item.id}>
+                  {/* 1) 물품 정보 */}
+                  <div className="flex items-center space-x-4 px-6 py-6">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="w-20 h-20 rounded object-cover"
+                    />
+                    <div>
+                      <div className="flex items-center font-semibold text-[#232323]">
+                        {item.title}
+                        <span className="ml-2 text-gray-400">&gt;</span>
+                      </div>
+                      <div className="text-sm text-gray-500">{item.category}</div>
+                    </div>
                   </div>
-                </div>
-                {/* 금액 정보 */}
-                <div className="px-2 py-3 text-center">
-                  <div className="text-sm text-gray-400">{item.duration}</div>
-                  <div className="font-medium">{item.price.toLocaleString()}원</div>
-                </div>
-                {/* 보증금 */}
-                <div className="px-2 py-3 text-center font-medium">
-                  {item.deposit.toLocaleString()}원
-                </div>
-                {/* 상태(반납, 내역) */}
-                <div className="flex flex-col items-center  space-y-2 px-2 py-3">
-                  <button className="px-3 py-2 border bg-[#FFFFFF] border-gray-300 rounded text-sm text-gray-500">
-                    내역 조회
-                  </button>
-                  <button className="px-3 py-2 bg-[#8769FF] text-white rounded text-sm">
-                    {activeTab === 'borrow' ? '반납 요청' : '반납 수락'}
-                  </button>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
-        
 
-        </main>
+                  {/* 2) 대여 기간 및 가격 */}
+                  <div className="flex flex-col justify-center items-center px-6 py-6 text-center">
+                    <div className="text-sm text-gray-400 mb-1">{item.duration}</div>
+                    <div className="text-lg font-bold">{item.price.toLocaleString()}원</div>
+                  </div>
+
+                  {/* 3) 상태 버튼 */}
+                  <div className="flex flex-col justify-center items-center space-y-2 px-6 py-6">
+                    
+                     {activeTab === 'borrow' ? (
+          <button
+            className={`flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg ${
+              item.status === '반납 요청'
+                ? 'bg-[var(--Purple-04,#6849FE)]'
+                : 'bg-[var(--Gray-05,#C2C3C9)]'
+            }`}
+          >
+            <span className="text-[var(--White,#FFF)] text-center [font-family:'Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
+              {item.status === '거래' ? '대여 중' : '반납 완료'}
+            </span>
+          </button>
+        ) : (
+          <>
+            <button className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Gray-05,#C2C3C9)]">
+              <div className="text-[var(--White,#FFF)] text-center [font-family:'Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
+                신청거절
+              </div>
+            </button>
+            <button className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Purple-04,#6849FE)]">
+              <div className="text-[var(--White,#FFF)] text-center [font-family:'Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
+                신청수락
+              </div>
+            </button>
+          </>
+        )}
       </div>
+                </React.Fragment>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20 col-span-3">
+                <img
+                  src="/images/emptyfolder.svg"
+                  alt="등록된 물건이 없어요"
+                  className="w-30 h-30 flex-shrink-0"
+                />
+                <p className="text-gray-500 mb-6">등록한 물건이 없어요</p>
+              </div>
+            )}
+          </div>
+          </div>
+
+          {/* 페이지 네비게이션 */}
+          <div className="flex justify-center items-center mt-8 space-x-2 text-sm text-gray-500">
+            <button
+              onClick={() => setCurrentPage(1)}
+              disabled={currentPage === 1}
+              className="px-2 disabled:opacity-50"
+            >
+              &laquo;
+            </button>
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-2 disabled:opacity-50"
+            >
+              &lt;
+            </button>
+            {pageNumbers.map(n => (
+              <button
+                key={n}
+                onClick={() => setCurrentPage(n)}
+                className={`px-3 py-1 rounded ${
+                  n === currentPage
+                    ? 'bg-gray-100 text-gray-800'
+                    : 'hover:text-gray-700'
+                }`}
+              >
+                {n}
+              </button>
+            ))}
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-2 disabled:opacity-50"
+            >
+              &gt;
+            </button>
+            <button
+              onClick={() => setCurrentPage(totalPages)}
+              disabled={currentPage === totalPages}
+              className="px-2 disabled:opacity-50"
+            >
+              &raquo;
+            </button>
+          </div>
+        </div>
+      </main>
       <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default TransactionHistory;
+export default RentalsPage
