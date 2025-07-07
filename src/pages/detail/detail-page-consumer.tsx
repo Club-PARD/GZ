@@ -82,7 +82,7 @@ export default function DetailPageConsumer() {
                 <span className="text-lg font-medium">보증금 10,000원</span>
                 <button
                   onClick={startChat}
-                  className="px-4 py-2 bg-[#8769FF] text-white rounded-lg text-sm text-[#232323]"
+                  className="px-4 py-2 bg-[#8769FF] text-white rounded-lg text-sm"
                 >
                   대여 시작하기
                 </button>

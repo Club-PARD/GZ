@@ -57,18 +57,23 @@ export default function Login() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           studentMail: email.trim(),
           password,
         }),
       });
-      const result = await res.json();
 
+      // ─── [1) 에러 바디 안전 처리 추가된 부분] ───
       if (!res.ok) {
-        setError(result.message || '로그인에 실패했습니다.');
+        const text = await res.text().catch(() => '');
+        console.error('로그인 실패 응답:', text);
+        setError(text || `서버 에러 ${res.status}`);
         setIsLoading(false);
         return;
       }
+      const result = await res.json();
+      // ─────────────────────────────────────────
 
       // (선택) JWT 사용 시
       // localStorage.setItem('token', result.token);
