@@ -1,17 +1,17 @@
 // src/pages/rentals/index.tsx
-import React, { useState, useMemo, useEffect } from 'react'
-import Header from '@/components/home-header'
-import Footer from '@/components/Footer'
+import React, { useState, useMemo, useEffect } from "react";
+import Header from "@/components/home-header";
+import Footer from "@/components/Footer";
 
-type Tab = 'borrow' | 'lend' | 'request';
+type Tab = "borrow" | "lend" | "request";
 interface TransactionItem {
-  id: number
-  title: string
-  category: string
-  duration: string
-  price: number
-  status: string
-  imageUrl: string
+  id: number;
+  title: string;
+  category: string;
+  duration: string;
+  price: number;
+  status: string;
+  imageUrl: string;
 }
 const lentItems: TransactionItem[] = [{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },
   { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '거래', imageUrl: '/images/bag.jpg' },
@@ -94,13 +94,13 @@ const handleReturnConfirm = (id: number) => {
 
   (lentItems);
   useEffect(() => {
-    if (currentPage > totalPages) setCurrentPage(1)
-  }, [totalPages, currentPage])
+    if (currentPage > totalPages) setCurrentPage(1);
+  }, [totalPages, currentPage]);
 
   const currentItems = useMemo(() => {
-    const start = (currentPage - 1) * ITEMS_PER_PAGE
-    return items.slice(start, start + ITEMS_PER_PAGE)
-  }, [items, currentPage])
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return items.slice(start, start + ITEMS_PER_PAGE);
+  }, [items, currentPage]);
 
   const pageNumbers = useMemo(
     () => Array.from({ length: totalPages }, (_, i) => i + 1),
@@ -133,12 +133,14 @@ const handleReturnConfirm = (id: number) => {
       <main className="pb-[60px] flex-grow pt-16   ">
         <div className="max-w-[980px] mx-auto  ">
           {/* 타이틀 */}
-          <h1 className="pb-[60px] pt-[60px] text-[#232323]                    
+          <h1
+            className="pb-[60px] pt-[60px] text-[#232323]                    
   px-106                       
   [font-family:'Pretendard Variable']
   text-[32px]                        
   leading-[130%]                    
-  tracking-[-0.64px] ">
+  tracking-[-0.64px] "
+          >
             거래 내역
           </h1>
 
@@ -146,39 +148,39 @@ const handleReturnConfirm = (id: number) => {
           <div className="flex justify-center space-x-5 mb-10">
             <button
               className={`pb-1 ${
-                activeTab === 'borrow'
-                  ? 'border-b-2 border-[#232323] text-[#232323] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
-                  : 'text-[#C2C3C9] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
+                activeTab === "borrow"
+                  ? "border-b-2 border-[#232323] text-[#232323] text-center  text-[22px] font-semibold leading-[130%] tracking-[-0.44px] "
+                  : "text-[#C2C3C9] text-center  text-[22px] font-semibold leading-[130%] tracking-[-0.44px] "
               }`}
               onClick={() => {
-                setActiveTab('borrow')
-                setCurrentPage(1)
+                setActiveTab("borrow");
+                setCurrentPage(1);
               }}
             >
               빌린 내역
             </button>
             <button
               className={`pb-1 ${
-                activeTab === 'lend'
-                  ? 'border-b-2 border-[#232323] text-[#232323] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
-                  : 'text-[#C2C3C9] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
+                activeTab === "lend"
+                  ? "border-b-2 border-[#232323] text-[#232323] text-center  text-[22px] font-semibold leading-[130%] tracking-[-0.44px] "
+                  : "text-[#C2C3C9] text-center  text-[22px] font-semibold leading-[130%] tracking-[-0.44px] "
               }`}
               onClick={() => {
-                setActiveTab('lend')
-                setCurrentPage(1)
+                setActiveTab("lend");
+                setCurrentPage(1);
               }}
             >
               빌려준 내역
             </button>
             <button
               className={`pb-1 ${
-                activeTab === 'request'
-                  ? 'border-b-2 border-[#232323] text-[#232323] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
-                  : 'text-[#C2C3C9] text-center [font-family:"Pretendard Variable"] text-[22px] font-semibold leading-[130%] tracking-[-0.44px] '
+                activeTab === "request"
+                  ? "border-b-2 border-[#232323] text-[#232323] text-center  text-[22px] font-semibold leading-[130%] tracking-[-0.44px] "
+                  : "text-[#C2C3C9] text-center  text-[22px] font-semibold leading-[130%] tracking-[-0.44px] "
               }`}
               onClick={() => {
-                setActiveTab('request')
-                setCurrentPage(1)
+                setActiveTab("request");
+                setCurrentPage(1);
               }}
             >
               대여 요청
@@ -187,10 +189,9 @@ const handleReturnConfirm = (id: number) => {
 
           {/* 그리드 */}
           <div className="overflow-x-auto border-b border-gray-200">
-            <div className="overflow-x-auto border-b border-gray-200">
-          </div>
-          <div
-            className="
+            <div className="overflow-x-auto border-b border-gray-200"></div>
+            <div
+              className="
               grid w-full
               [grid-template-columns:2fr_0.5fr_0.5fr]
               divide-y divide-x divide-gray-200
@@ -198,37 +199,43 @@ const handleReturnConfirm = (id: number) => {
               text-gray-600 font-medium
               border-t border-gray-200 
             "
-          >
-            {/* 헤더 */}
-            <div className="px-6 py-4">물품 정보</div>
-            <div className="px-6 py-4 text-center">대여 기간 및 가격</div>
-            <div className="px-6 py-4 text-center">상태</div>
+            >
+              {/* 헤더 */}
+              <div className="px-6 py-4">물품 정보</div>
+              <div className="px-6 py-4 text-center">대여 기간 및 가격</div>
+              <div className="px-6 py-4 text-center">상태</div>
 
-            {/* 아이템들 or 빈 상태 */}
-            {currentItems.length > 0 ? (
-              currentItems.map(item => (
-                <React.Fragment key={item.id}>
-                  {/* 1) 물품 정보 */}
-                  <div className="flex items-center space-x-4 px-6 py-6">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className="w-20 h-20 rounded object-cover"
-                    />
-                    <div>
-                      <div className="flex items-center font-semibold text-[#232323]">
-                        {item.title}
-                        <span className="ml-2 text-gray-400">&gt;</span>
+              {/* 아이템들 or 빈 상태 */}
+              {currentItems.length > 0 ? (
+                currentItems.map((item) => (
+                  <React.Fragment key={item.id}>
+                    {/* 1) 물품 정보 */}
+                    <div className="flex items-center space-x-4 px-6 py-6">
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="w-20 h-20 rounded object-cover"
+                      />
+                      <div>
+                        <div className="flex items-center font-semibold text-[#232323]">
+                          {item.title}
+                          <span className="ml-2 text-gray-400">&gt;</span>
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {item.category}
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-500">{item.category}</div>
                     </div>
-                  </div>
 
-                  {/* 2) 대여 기간 및 가격 */}
-                  <div className="flex flex-col justify-center items-center px-6 py-6 text-center">
-                    <div className="text-sm text-gray-400 mb-1">{item.duration}</div>
-                    <div className="text-lg font-bold">{item.price.toLocaleString()}원</div>
-                  </div>
+                    {/* 2) 대여 기간 및 가격 */}
+                    <div className="flex flex-col justify-center items-center px-6 py-6 text-center">
+                      <div className="text-sm text-gray-400 mb-1">
+                        {item.duration}
+                      </div>
+                      <div className="text-lg font-bold">
+                        {item.price.toLocaleString()}원
+                      </div>
+                    </div>
 
                   {/* 3) 상태 버튼 */}
                   <div className="flex flex-col justify-center items-center space-y-2 px-6 py-6">
@@ -357,7 +364,7 @@ const handleReturnConfirm = (id: number) => {
       </main>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default RentalsPage
+export default RentalsPage;
