@@ -17,7 +17,8 @@ export default function ChannelItem({
 }: ChannelItemProps) {
   const title =
     channel.name ||
-    channel.members.map((m) => m.userId).join(', ');
+    channel.members
+      .map(m => (m.nickname && m.nickname.length > 0 ? m.nickname : m.userId)).join(', ');
   const lastMsg = channel.lastMessage
     ? 'message' in channel.lastMessage
       ? channel.lastMessage.message
@@ -33,7 +34,7 @@ export default function ChannelItem({
       `}
     >
       <img
-        src = "/chat/chat-profile.svg"
+        src="/chat/chat-profile.svg"
         alt="프로필"
         className="w-10 h-10 rounded-full mr-3 flex-shrink-0"
       />
