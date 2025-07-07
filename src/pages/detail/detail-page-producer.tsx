@@ -1,4 +1,6 @@
 // pages/detail/detail-page-producer.tsx
+'use client';
+
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Header from '@/components/home-header'
@@ -29,8 +31,6 @@ export default function DetailPageProducer() {
     "/images/shoes.jpg",
   ];
 
-  const [current, setCurrent] = useState(0)
-  
   // localStorage에서 등록된 아이템 정보 가져오기
   useEffect(() => {
     const storedItem = localStorage.getItem('registeredItem')
@@ -46,79 +46,29 @@ export default function DetailPageProducer() {
 
   // 등록된 아이템이 있으면 해당 이미지, 없으면 기본 이미지 사용
   const images = registeredItem?.imageUrls || defaultImages
-  const lastIndex = images.length - 1
-  const prevSlide = () =>
-    setCurrent(current === 0 ? lastIndex : current - 1)
-  const nextSlide = () =>
-    setCurrent(current === lastIndex ? 0 : current + 1)
-
-  const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <div>
+    <div className="bg-white pt-[80px]">
       <Header />
 
-      <main className="max-w-5xl mx-70 my-8 flex gap-12 mb-85">
-        {/* 좌측: 이미지 캐러셀 */}
+      <main className="max-w-5xl mx-40 my-8 flex gap-8">
+        {/* 좌측: 이미지 세로 나열 */}
         <section className="w-1/2 space-y-4">
-          <div className="relative bg-[#F3F3F5] rounded-lg h-97 overflow-hidden">
-            <Image
-              src={images[current]}
-              alt={`slide-${current}`}
-              fill
-              style={{ objectFit: "cover" }}
-              className="absolute inset-0"
-            />
-
-            {/* 이전/다음 버튼 */}
-            <button
-              onClick={prevSlide}
-              className="absolute left-4 top-1/2 z-10 transform -translate-y-1/2 rounded-full p-1 shadow"
-            >
-              <BsArrowLeftCircleFill color="white" size={24} />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="absolute right-4 top-1/2 z-10 transform -translate-y-1/2 rounded-full p-1 shadow"
-            >
-              <BsArrowRightCircleFill color="white" size={24} />
-            </button>
-
-            {/* 닷츠 네비게이션 */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-              {images.map((_: string, idx: number) => (
-                <button
-                  key={idx}
-                  onClick={() => setCurrent(idx)}
-                  className={`w-2 h-2 rounded-full ${
-                    idx === current ? "bg-white" : "bg-gray-300"
-                  }`}
-                />
-              ))}
+          {images.map((src: string, idx: number) => (
+            <div key={idx} className="relative bg-[#F3F3F5] rounded-lg h-80 overflow-hidden">
+              <Image
+                src={src}
+                alt={`image-${idx}`}
+                fill
+                style={{ objectFit: "cover" }}
+                className="absolute inset-0"
+              />
             </div>
-          </div>
-
-          {/* 썸네일(필요 시 주석 해제 후 경로 수정) */}
-          <div className="grid grid-cols-4 gap-2">
-            {images.slice(1).map((src: string, idx: number) => (
-              <div
-                key={idx}
-                className="bg-[#F3F3F5] w-24 h-24 rounded-lg overflow-hidden relative"
-              >
-                {/* <Image
-                  src={src}
-                  alt={`thumb-${idx}`}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  className="absolute inset-0"
-                /> */}
-              </div>
-            ))}
-          </div>
+          ))}
         </section>
 
         {/* 우측: 상품 상세 정보 */}
-        <section className="w-1/2 space-y-4">
+        <section className="w-96 space-y-4 border border-gray-300 rounded-lg p-4 fixed right-0">
           {/* 프로필 */}
           <div className="flex items-center space-x-1 mb-2">
             <img
@@ -126,55 +76,51 @@ export default function DetailPageProducer() {
               alt="프로필"
               className="w-8 h-8 rounded-full"
             />
-            <span className="font-medium">user2</span>
+            <span className="font-medium text-[#232323]">user2</span>
           </div>
 
-          {/* 제목 · 카테고리 · 더보기 한 줄 */}
-          <div className="flex items-center space-x-2 relative">
-            <h1 className="text-2xl font-bold">
+          {/* 제목·카테고리 */}
+          <div className="flex items-center space-x-2">
+            <h1 className="text-2xl font-bold text-[#232323]">
               {registeredItem?.itemName || '1TB USB 빌려드려요'}
             </h1>
             <span className="px-2 py-1 bg-[#F2E8FF] text-[#6B46C1] text-xs rounded-full">
               {registeredItem?.category ? categoryMap[registeredItem.category] || registeredItem.category : '전자기기'}
             </span>
-            <span className="ml-auto cursor-pointer text-2xl leading-none">⋮</span>
           </div>
+          <div className="border-b border-gray-200"></div>
 
           {/* 대여 가격 */}
-          <div>
-            <p className="text-sm text-gray-500">대여 가격</p>
-            {registeredItem?.pricePerHour && registeredItem.pricePerHour !== "0" && (
-              <p className="mt-1 text-lg font-semibold">
-                {Number(registeredItem.pricePerHour).toLocaleString()}원 / 1시간
-              </p>
-            )}
-            {registeredItem?.pricePerDay && registeredItem.pricePerDay !== "0" && (
-              <p className="mt-1 text-lg font-semibold">
-                {Number(registeredItem.pricePerDay).toLocaleString()}원 / 1일
-              </p>
-            )}
-            {/* 기본값 표시 (등록된 아이템이 없을 경우) */}
-            {!registeredItem && (
-              <>
-                <p className="mt-1 text-lg font-semibold">3,000원 / 1시간</p>
-                <p className="mt-1 text-lg font-semibold">10,000원 / 1일</p>
-              </>
-            )}
-          </div>
-
-          {/* 보증금 */}
-          <div>
-            <p className="text-sm text-gray-500">보증금</p>
-            <p className="mt-1 text-lg font-semibold">
-              {registeredItem?.deposit ? `${Number(registeredItem.deposit).toLocaleString()}원` : '10,000원'}
+          <div className="flex gap-4">
+            <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">1시간</p>
+            <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">
+              {registeredItem?.pricePerHour || '3000'}
             </p>
           </div>
+          <div className="flex gap-4">
+            <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">1일</p>
+            <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">
+              {registeredItem?.pricePerDay || '10000'}
+            </p>
+          </div>
+
+          <div className="border-b border-gray-200 pt-[36px]"></div>
 
           {/* 설명 */}
           <div className="p-4 h-40 bg-[#F9F9FA] rounded-lg text-sm text-gray-700">
             {registeredItem?.description || 
               '용량 커서 문제 없어요. 생활 기스 살짝 있는 거 말고는 훼손된 부분 딱히 없어요. 분실만 조심해주면 좋겠어요!'
             }
+          </div>
+
+          {/* 수정/삭제 버튼 */}
+          <div className="flex justify-end space-x-4">
+            <button className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-800">
+              <AiOutlineEdit className="mr-1" /> 수정
+            </button>
+            <button className="flex items-center px-4 py-2 text-red-600 hover:text-red-800">
+              <AiOutlineDelete className="mr-1" /> 삭제
+            </button>
           </div>
         </section>
       </main>
