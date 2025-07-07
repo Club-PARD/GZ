@@ -55,7 +55,7 @@ export default function DetailPageProducer() {
         {/* 좌측: 이미지 세로 나열 */}
         <section className="w-1/2 space-y-4">
           {images.map((src: string, idx: number) => (
-            <div key={idx} className="relative bg-[#F3F3F5] rounded-lg h-80 overflow-hidden">
+            <div key={idx} className=" bg-[#F3F3F5] rounded-lg h-80 overflow-hidden ">
               <Image
                 src={src}
                 alt={`image-${idx}`}

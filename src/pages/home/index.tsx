@@ -5,7 +5,6 @@ import { IoLocationSharp } from "react-icons/io5";
 import styles from "./home.module.css";
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import Footer from "@/components/Footer";
 
 export default function Home() {
