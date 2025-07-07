@@ -54,15 +54,19 @@ export default function DetailPageConsumer() {
       <Header />
 
       <main className="max-w-5xl mx-40 my-8 flex gap-8 ">
-        {/* 좌측: 이미지 캐러셀 + 그 아래 영역 */}
+        {/* 좌측: 이미지 세로 나열 + 그 아래 영역 */}
         <section className="w-1/2 space-y-4">
-            <Image
-              src="/images/usb.jpg"
-              alt="main-image"
-              width={1000}
-              height={700}
-              style={{ objectFit: 'cover', }}
-            />
+          {images.map((src: string, idx: number) => (
+            <div key={idx} className="relative bg-[#F3F3F5] rounded-lg h-80 overflow-hidden">
+              <Image
+                src={src}
+                alt={`image-${idx}`}
+                fill
+                style={{ objectFit: "cover" }}
+                className="absolute inset-0"
+              />
+            </div>
+          ))}
           
 
           {/* 채팅 전: 썸네일 4개 / 채팅 후: 정보 패널 */}
@@ -91,7 +95,7 @@ export default function DetailPageConsumer() {
         </section>
 
         {/* 우측: 상품 상세 정보 또는 채팅창 */}
-        <section className="w-96 space-y-4 border border-gray-300 rounded-lg p-4">
+        <section className="w-96 space-y-4 border border-gray-300 rounded-lg p-4 fixed right-0">
           {channelUrl ? (
             <div className="flex flex-col h-[600px]">
               <ChatWindow me={me} selectedChannelUrl={channelUrl} />
