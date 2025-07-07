@@ -1,5 +1,3 @@
-
-
 .categoryButton {
   padding: 0.5rem 1rem;
   border-radius: 20px;
@@ -38,7 +36,7 @@
   border-radius: 16px;
   overflow: hidden;
   margin-bottom: 1rem;
-  border: 1px solid #D9D8D3;
+  border: 1px solid #d9d8d3;
   box-shadow: inset 0 0 0 1px #000000;
 }
 
@@ -66,6 +64,17 @@
 }
 
 .categoryTag {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.15rem 0.25rem;
+  background-color: #f3f3f5;
+  color: #828286;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  width: fit-content;
+  white-space: nowrap;
+}
+.rentalTag {
   display: inline-block;
   margin-top: 0.5rem;
   padding: 0.15rem 0.25rem;
