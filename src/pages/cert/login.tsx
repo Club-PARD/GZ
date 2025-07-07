@@ -84,6 +84,11 @@ export default function Login() {
       if (!sb) {
         throw new Error('Sendbird가 초기화되지 않았습니다.');
       }
+      try {
+        await sb.disconnect();
+      } catch (e) {
+        console.warn('이전 Sendbird 세션 해제 중 에러:', e);
+      }
       await sb.connect(userId);
 
       // ─── 추가: 닉네임 업데이트 ───
