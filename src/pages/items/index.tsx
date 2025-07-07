@@ -10,6 +10,7 @@ interface Post {
   hourlyPrice: number;
   dailyPrice: number;
   category: string;
+  state: string;
 }
 
 const MyPostsPage: React.FC = () => {
@@ -17,7 +18,30 @@ const MyPostsPage: React.FC = () => {
   const [hasPosts, setHasPosts] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
+
+
+  const dummyPosts: Post[] = [
+  {
+    id: 1,
+    imageUrl: "/images/bag.jpg",
+    title: "테스트 책상",
+    hourlyPrice: 1000,
+    dailyPrice: 5000,
+    category: "가구",
+    state: "대여중"
+  },
+  {
+    id: 2,
+    imageUrl: "/images/bag.jpg",
+    title: "테스트 의자",
+    hourlyPrice: 500,
+    dailyPrice: 3000,
+    category: "가구",
+    state:"대여중"
+  },
+];
+
+ /* useEffect(() => {
     fetch("/api/my-posts")
       .then((res) => res.json())
       .then((data: { items: Post[] }) => {
@@ -31,39 +55,93 @@ const MyPostsPage: React.FC = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, []); */
+
+useEffect(() => {
+  // 👇 실제 fetch 대신
+  setPosts(dummyPosts);
+  setHasPosts(dummyPosts.length > 0);
+  setIsLoading(false);
+}, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 pt-16">
+    <div className="min-h-screen flex flex-col bg-white pt-[60px] ">
       <Header />
 
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-semibold mb-8 text-center">내 게시물</h1>
+      <main className="flex-grow container mx-auto px-4 py-8 pb-[67px]">
+      <h1
+        style={{
+          color: "var(--Gray-10, #232323)",
+          textAlign: "center",
+          fontFamily: `"Pretendard Variable", sans-serif`,
+          fontSize: "32px",
+          fontStyle: "normal",
+          fontWeight: 600,
+          lineHeight: "130%",
+          letterSpacing: "-0.64px",
+        }}
+      >
+        내 물건
+      </h1>
 
         {isLoading ? (
           /* 로딩 스켈레톤이나 Spinner */
           <p className="text-center text-gray-400">불러오는 중...</p>
         ) : hasPosts ? (
-          <div className="grid grid-cols-4 gap-6">
+          <div className="grid 
+                          grid-cols-2 
+                          sm:grid-cols-3 
+                          md:grid-cols-4 
+                          lg:grid-cols-5 
+                          gap-6
+                          ">
             {posts.map(post => (
-              <div key={post.id} className="bg-white rounded-lg overflow-hidden shadow flex flex-col">
-                <img src={post.imageUrl} alt={post.title} className="w-full h-48 object-cover" />
-                <div className="p-4 flex-1 flex flex-col justify-between">
+              <div key={post.id} className="bg-[var(--White,#FFF)] rounded-lg overflow-hidden pt-[40px] ">
+                {/* 이미지 크기 */}
+                <img src={post.imageUrl} alt={post.title} 
+                className="w-[332.075px] h-[220px] flex-shrink-0 aspect-[332.08/220] rounded-lg aspect-square " />
+                {/* 물건 제목 */}
+                  <div
+                    className="
+                      pt-[16px]
+                      ml-[10px]
+                      text-[var(--Gray-10,#232323)]
+                      [font-family:'Pretendard Variable']
+                      text-[18px]
+                      font-medium
+                      leading-[130%]
+                      tracking-[-0.36px]
+                    "
+                  >
                   <div>
-                    <h2 className="font-semibold mb-2">{post.title}</h2>
-                    <span className="inline-block text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded">
-                      {post.category}
-                    </span>
+                    <h2 className="text-[var(--Gray-10)] [font-family:'Pretendard Variable'] text-[18px] font-medium leading-[130%] tracking-[-0.36px] mb-[16px]">{post.title}</h2>
+                    
                   </div>
                   <div className="mt-4 space-y-1">
                     <div className="flex items-baseline">
-                      <span className="text-lg font-bold">{post.hourlyPrice.toLocaleString()}원</span>
-                      <span className="ml-1 text-sm text-gray-500">/1시간</span>
+                      <span className="text-[var(--Gray-10,#232323)] [font-family:'Pretendard Variable'] text-[18px] font-semibold leading-[130%] tracking-[-0.36px]
+">{post.hourlyPrice.toLocaleString()}원</span>
+                      <span className="text-[var(--Gray-06,#ADAEB2)] [font-family:'Pretendard Variable'] text-[14px] font-medium leading-[130%] tracking-[-0.28px]
+                      pl-[4px]
+                    ">/1시간</span>
                     </div>
                     <div className="flex items-baseline">
-                      <span className="text-lg font-bold">{post.dailyPrice.toLocaleString()}원</span>
-                      <span className="ml-1 text-sm text-gray-500">/1일</span>
+                      <span className=" text-[var(--Gray-10,#232323)]
+                        [font-family:'Pretendard Variable']
+                        text-[18px]
+                        font-semibold     
+                        leading-[130%]
+                        tracking-[-0.36px]">{post.dailyPrice.toLocaleString()}원</span>
+                      <span className="text-[var(--Gray-06,#ADAEB2)] [font-family:'Pretendard Variable'] text-[14px] font-medium leading-[130%] tracking-[-0.28px]
+                      pl-[4px]">/1일</span>
                     </div>
+                    
+                    <span className="inline-block text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded mr-2">
+                      {post.state}
+                    </span>
+                    <span className="inline-block text-xs rounded bg-[var(--Gray-03,#F3F3F5)] text-[var(--Gray-07,#828286)] px-2 py-0.5 rounded">
+                      {post.category}
+                    </span>
                   </div>
                 </div>
               </div>
