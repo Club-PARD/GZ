@@ -13,39 +13,86 @@ interface TransactionItem {
   status: string
   imageUrl: string
 }
-const lentItems: TransactionItem[] = [ /* …원하는 데이터 추가… */ ]
-const requestItems: TransactionItem[]  = [{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납 요청', imageUrl: '/images/usb.jpg' },
-  { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '반납', imageUrl: '/images/bag.jpg' },
-  { id: 3, title: '망치 빌려드려요',     category: '도구',     duration: '1주일', price: 20000, status: '반납', imageUrl: '/images/hammer.jpg' },
-  { id: 4, title: '카메라 빌려드려요',   category: '전자기기', duration: '1일',    price: 15000, status: '반납', imageUrl: '/images/camera.jpg' },
-  { id: 5, title: '신발 빌려드려요',     category: '패션',     duration: '2주일', price:  5000, status: '거래', imageUrl: '/images/shoes.jpg' },
-  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납', imageUrl: '/images/camping.jpg' },];
+const lentItems: TransactionItem[] = [{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },
+  { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '거래', imageUrl: '/images/bag.jpg' },
+  { id: 3, title: '망치 빌려드려요',     category: '도구',     duration: '1주일', price: 20000, status: '거래', imageUrl: '/images/hammer.jpg' },
+  { id: 4, title: '카메라 빌려드려요',   category: '전자기기', duration: '1일',    price: 15000, status: '반납 수락', imageUrl: '/images/camera.jpg' },
+  { id: 5, title: '신발 빌려드려요',     category: '패션',     duration: '2주일', price:  5000, status: '반납 요청', imageUrl: '/images/shoes.jpg' },
+  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납 수락', imageUrl: '/images/camping.jpg' },{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },
+  { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '거래', imageUrl: '/images/bag.jpg' },
+  { id: 3, title: '망치 빌려드려요',     category: '도구',     duration: '1주일', price: 20000, status: '거래', imageUrl: '/images/hammer.jpg' },
+  { id: 4, title: '카메라 빌려드려요',   category: '전자기기', duration: '1일',    price: 15000, status: '반납 수락', imageUrl: '/images/camera.jpg' },
+  { id: 5, title: '신발 빌려드려요',     category: '패션',     duration: '2주일', price:  5000, status: '반납 요청', imageUrl: '/images/shoes.jpg' },
+  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납 수락', imageUrl: '/images/camping.jpg' },{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },
+  { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '거래', imageUrl: '/images/bag.jpg' },
+  { id: 3, title: '망치 빌려드려요',     category: '도구',     duration: '1주일', price: 20000, status: '거래', imageUrl: '/images/hammer.jpg' },
+  { id: 4, title: '카메라 빌려드려요',   category: '전자기기', duration: '1일',    price: 15000, status: '반납 수락', imageUrl: '/images/camera.jpg' },
+  { id: 5, title: '신발 빌려드려요',     category: '패션',     duration: '2주일', price:  5000, status: '반납 요청', imageUrl: '/images/shoes.jpg' },
+  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납 수락', imageUrl: '/images/camping.jpg' },]
+  // 대여 요청
+const requestItems: TransactionItem[]  = [{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },
+  { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '거래', imageUrl: '/images/bag.jpg' },
+  { id: 3, title: '망치 빌려드려요',     category: '도구',     duration: '1주일', price: 20000, status: '거래', imageUrl: '/images/hammer.jpg' },
+  { id: 4, title: '카메라 빌려드려요',   category: '전자기기', duration: '1일',    price: 15000, status: '반납 수락', imageUrl: '/images/camera.jpg' },
+  { id: 5, title: '신발 빌려드려요',     category: '패션',     duration: '2주일', price:  5000, status: '반납 요청', imageUrl: '/images/shoes.jpg' },
+  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납 수락', imageUrl: '/images/camping.jpg' },{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },
+  { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '거래', imageUrl: '/images/bag.jpg' },
+  { id: 3, title: '망치 빌려드려요',     category: '도구',     duration: '1주일', price: 20000, status: '거래', imageUrl: '/images/hammer.jpg' },
+  { id: 4, title: '카메라 빌려드려요',   category: '전자기기', duration: '1일',    price: 15000, status: '반납 수락', imageUrl: '/images/camera.jpg' },
+  { id: 5, title: '신발 빌려드려요',     category: '패션',     duration: '2주일', price:  5000, status: '반납 요청', imageUrl: '/images/shoes.jpg' },
+  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납 수락', imageUrl: '/images/camping.jpg' },{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },];
+// 빌린 내역
 const borrowedItems: TransactionItem[] = [
   { id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },
   { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '거래', imageUrl: '/images/bag.jpg' },
   { id: 3, title: '망치 빌려드려요',     category: '도구',     duration: '1주일', price: 20000, status: '거래', imageUrl: '/images/hammer.jpg' },
   { id: 4, title: '카메라 빌려드려요',   category: '전자기기', duration: '1일',    price: 15000, status: '반납 수락', imageUrl: '/images/camera.jpg' },
   { id: 5, title: '신발 빌려드려요',     category: '패션',     duration: '2주일', price:  5000, status: '반납 요청', imageUrl: '/images/shoes.jpg' },
-  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납 수락', imageUrl: '/images/camping.jpg' },
+  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납 수락', imageUrl: '/images/camping.jpg' },{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },
+  { id: 2, title: '가방 빌려드려요',     category: '패션',     duration: '3일',    price: 50000, status: '거래', imageUrl: '/images/bag.jpg' },
+  { id: 3, title: '망치 빌려드려요',     category: '도구',     duration: '1주일', price: 20000, status: '거래', imageUrl: '/images/hammer.jpg' },
+  { id: 4, title: '카메라 빌려드려요',   category: '전자기기', duration: '1일',    price: 15000, status: '반납 수락', imageUrl: '/images/camera.jpg' },
+  { id: 5, title: '신발 빌려드려요',     category: '패션',     duration: '2주일', price:  5000, status: '반납 요청', imageUrl: '/images/shoes.jpg' },
+  { id: 6, title: '캠핑용품 세트 빌려드려요', category: '여행', duration: '1달', price: 30000, status: '반납 수락', imageUrl: '/images/camping.jpg' },{ id: 1, title: '1TB USB 빌려드려요', category: '전자기기', duration: '10시간', price: 30000, status: '반납', imageUrl: '/images/usb.jpg' },
+
 ]
 
 
 const ITEMS_PER_PAGE = 5
+const BLOCK_SIZE = 5;
+
 
 
 
 const RentalsPage: React.FC = () => {
   const [activeTab, setActiveTab] =  useState<Tab>('borrow');
+     const [loanedItemsState, setLoanedItemsState] =
+    useState<TransactionItem[]>(lentItems);
+const handleReturnConfirm = (id: number) => {
+    setLoanedItemsState(prev =>
+      prev.map(item =>
+        item.id === id
+          ? { ...item, status: '반납 완료' }
+          : item
+      )
+    );
+  };
+
+
   const items =
   activeTab === 'borrow'
     ? borrowedItems
     : activeTab === 'lend'
-      ? lentItems
+      ? loanedItemsState
       : requestItems;
 
   const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE)
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
+  
+
+
+  (lentItems);
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(1)
   }, [totalPages, currentPage])
@@ -59,6 +106,26 @@ const RentalsPage: React.FC = () => {
     () => Array.from({ length: totalPages }, (_, i) => i + 1),
     [totalPages]
   )
+
+   const currentBlockStart =
+    Math.floor((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
+  const currentBlockEnd = Math.min(
+    currentBlockStart + BLOCK_SIZE - 1,
+    totalPages
+  );
+
+  const handlePrevBlock = () => {
+    const prevStart = Math.max(currentBlockStart - BLOCK_SIZE, 1);
+    setCurrentPage(prevStart);
+  };
+
+  const handleNextBlock = () => {
+    const nextStart = Math.min(
+      currentBlockStart + BLOCK_SIZE,
+      totalPages - BLOCK_SIZE + 1
+    );
+    setCurrentPage(nextStart);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -167,9 +234,10 @@ const RentalsPage: React.FC = () => {
                   <div className="flex flex-col justify-center items-center space-y-2 px-6 py-6">
                     
                      {activeTab === 'borrow' ? (
+                    // {빌린 내역}
           <button
             className={`flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg ${
-              item.status === '반납 요청'
+              item.status === '거래'
                 ? 'bg-[var(--Purple-04,#6849FE)]'
                 : 'bg-[var(--Gray-05,#C2C3C9)]'
             }`}
@@ -178,7 +246,26 @@ const RentalsPage: React.FC = () => {
               {item.status === '거래' ? '대여 중' : '반납 완료'}
             </span>
           </button>
-        ) : (
+        ) : activeTab === 'lend' ? (
+         /* 빌려준 내역 */
+          <button
+            onClick={() => handleReturnConfirm(item.id)}
+            disabled={item.status === '반납 완료'}
+            className={`flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg ${
+              item.status === '반납 완료'
+                ? 'bg-[var(--Gray-05,#C2C3C9)]'
+                : 'bg-[var(--Purple-04,#6849FE)]'
+            }`}
+          >
+            <span className="text-[var(--White,#FFF)] text-center [font-family:'Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
+              {item.status === '반납 완료' ? '반납 완료' : '반납 확인'}
+            </span>
+          </button>
+        )
+        
+        
+        
+        : (
           <>
             <button className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Gray-05,#C2C3C9)]">
               <div className="text-[var(--White,#FFF)] text-center [font-family:'Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
@@ -209,49 +296,63 @@ const RentalsPage: React.FC = () => {
           </div>
 
           {/* 페이지 네비게이션 */}
-          <div className="flex justify-center items-center mt-8 space-x-2 text-sm text-gray-500">
-            <button
-              onClick={() => setCurrentPage(1)}
-              disabled={currentPage === 1}
-              className="px-2 disabled:opacity-50"
-            >
-              &laquo;
-            </button>
-            <button
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="px-2 disabled:opacity-50"
-            >
-              &lt;
-            </button>
-            {pageNumbers.map(n => (
-              <button
-                key={n}
-                onClick={() => setCurrentPage(n)}
-                className={`px-3 py-1 rounded ${
-                  n === currentPage
-                    ? 'bg-gray-100 text-gray-800'
-                    : 'hover:text-gray-700'
-                }`}
-              >
-                {n}
-              </button>
-            ))}
-            <button
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="px-2 disabled:opacity-50"
-            >
-              &gt;
-            </button>
-            <button
-              onClick={() => setCurrentPage(totalPages)}
-              disabled={currentPage === totalPages}
-              className="px-2 disabled:opacity-50"
-            >
-              &raquo;
-            </button>
-          </div>
+<div className="flex justify-center items-center mt-8 space-x-2 text-sm text-gray-500">
+  {/* ‹‹ 블럭 뒤로 (5칸) */}
+  <button
+    onClick={handlePrevBlock}
+    disabled={currentBlockStart === 1}
+    className="px-2 disabled:opacity-50"
+  >
+    «
+  </button>
+
+  {/* < 한 칸 뒤로 */}
+  <button
+    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+    disabled={currentPage === 1}
+    className="px-2 disabled:opacity-50"
+  >
+    ‹
+  </button>
+
+  {/* 페이지 번호 (현재 블럭) */}
+  {Array.from(
+    { length: currentBlockEnd - currentBlockStart + 1 },
+    (_, i) => currentBlockStart + i
+  ).map(n => (
+    <button
+      key={n}
+      onClick={() => setCurrentPage(n)}
+      className={`px-3 py-1 rounded ${
+        n === currentPage
+          ? 'bg-gray-100 text-gray-800'
+          : 'hover:text-gray-700'
+      }`}
+    >
+      {n}
+    </button>
+  ))}
+
+  {/* > 한 칸 앞으로 */}
+  <button
+    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+    disabled={currentPage === totalPages}
+    className="px-2 disabled:opacity-50"
+  >
+    ›
+  </button>
+
+  {/* ›› 블럭 앞으로 (5칸) */}
+  <button
+    onClick={handleNextBlock}
+    disabled={currentBlockEnd === totalPages}
+    className="px-2 disabled:opacity-50"
+  >
+    »
+  </button>
+
+  
+</div>
         </div>
       </main>
       <Footer />
