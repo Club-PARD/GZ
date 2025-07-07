@@ -5,8 +5,8 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Header from '@/components/home-header'
 import Footer from '@/components/Footer'
-import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs'
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
+import styles from "../../styles/detail.module.css";
 
 export default function DetailPageProducer() {
   const [registeredItem, setRegisteredItem] = useState<any>(null)
@@ -55,20 +55,24 @@ export default function DetailPageProducer() {
         {/* 좌측: 이미지 세로 나열 */}
         <section className="w-1/2 space-y-4">
           {images.map((src: string, idx: number) => (
-            <div key={idx} className=" bg-[#F3F3F5] rounded-lg h-80 overflow-hidden ">
+            <div className={styles.imageContainer}>             
               <Image
                 src={src}
                 alt={`image-${idx}`}
-                fill
-                style={{ objectFit: "cover" }}
-                className="absolute inset-0"
+                width={580}
+                height={580}
+                style={{ 
+                  width: '100%',
+                  height: '100%',
+                  objectFit: "cover"
+                }}
               />
             </div>
           ))}
         </section>
 
         {/* 우측: 상품 상세 정보 */}
-        <section className="w-96 space-y-4 border border-gray-300 rounded-lg p-4 fixed right-0">
+        <section className="w-150 space-y-4 border border-gray-300 rounded-lg p-4 fixed right-40 bottom-70 top-[110px]">
           {/* 프로필 */}
           <div className="flex items-center space-x-1 mb-2">
             <img
@@ -113,15 +117,7 @@ export default function DetailPageProducer() {
             }
           </div>
 
-          {/* 수정/삭제 버튼 */}
-          <div className="flex justify-end space-x-4">
-            <button className="flex items-center px-4 py-2 text-gray-600 hover:text-gray-800">
-              <AiOutlineEdit className="mr-1" /> 수정
-            </button>
-            <button className="flex items-center px-4 py-2 text-red-600 hover:text-red-800">
-              <AiOutlineDelete className="mr-1" /> 삭제
-            </button>
-          </div>
+          
         </section>
       </main>
 

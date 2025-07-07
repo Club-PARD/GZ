@@ -1,0 +1,17 @@
+.imageContainer {
+    width: 580px;
+    height: 580px;
+    aspect-ratio: 1;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border: 1px solid #d9d8d3;
+    box-shadow: inset 0 0 0 1px #000000;
+  }
+  
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
