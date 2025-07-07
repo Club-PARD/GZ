@@ -5,7 +5,6 @@ import { IoLocationSharp } from "react-icons/io5";
 import styles from "./home.module.css";
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -174,9 +173,8 @@ export default function Home() {
                   <span className="text-[#A2A3A7]">/{item.timeUnit.day}</span>
                 </div>
                 <div className=" flex flex-row gap-2">
+                  <span className={styles.rentalTag}>대여중</span>
                   <span className={styles.categoryTag}>{item.category}</span>
-                  <span className={styles.categoryTag}>대여중</span>
-
                 </div>
               </Link>
             ))}
