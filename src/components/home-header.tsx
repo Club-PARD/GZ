@@ -52,7 +52,7 @@ export default function HomeHeader() {
             href="/items"
             className="text-black px-6 py-2 rounded-md hover:bg-gray-200 transition-colors"
           >
-            등록한 물건
+            내물건
           </Link>
           {/*---------------------------- 수정부분----태윤---------------------- */}
           <div className="relative inline-block group">
