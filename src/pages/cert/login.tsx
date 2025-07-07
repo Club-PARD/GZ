@@ -1,6 +1,6 @@
 // src/pages/cert/login.tsx
 'use client';
-//log
+
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/cert-header';
@@ -8,8 +8,6 @@ import { getSendbird } from '@/lib/sendbird';
 import { requestFcmToken } from '@/lib/firebase';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { FaSquareCheck } from "react-icons/fa6";
-import TermsModal from "@/components/Term-components/TermsModal";
-import PrivacyModal from "@/components/Term-components/PrivacyModal";
 
 export default function Login() {
   const router = useRouter();
