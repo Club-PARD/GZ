@@ -134,7 +134,13 @@ export default function ChatWindow({ me, selectedChannelUrl }: ChatWindowProps) 
   }
 
   // 실제 채팅창
-  const other = channel?.members.find(m => m.userId !== me)?.userId ?? '상대';
+  const otherMember = channel?.members.find(m => m.userId !== me);
+  const other = otherMember
+    ? (otherMember.nickname && otherMember.nickname.length > 0
+      ? otherMember.nickname
+      : otherMember.userId)
+    : '상대';
+
   return (
     <div className="flex flex-col h-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
       {/* 헤더 */}
@@ -189,7 +195,7 @@ export default function ChatWindow({ me, selectedChannelUrl }: ChatWindowProps) 
           className="ml-4 p-1"
           aria-label="파일 첨부"
         >
-          <BiSolidImage size={25} color="#C2C3C9"/>
+          <BiSolidImage size={25} color="#C2C3C9" />
         </button>
 
         {/* 전송 버튼 */}
