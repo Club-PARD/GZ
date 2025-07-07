@@ -1,11 +1,46 @@
-// components/deposit-feature.tsx
+// components/DepositFeature.tsx
+import Image from "next/image";
+
 export default function DepositFeature() {
   return (
-  <section className="max-w-4xl mx-auto text-center px-4 space-y-8 text-black bg-white">      <h3 className="text-2xl font-bold">
-        보증금 제도로<br/>
-        안심하고 물건을 빌려줘요
-      </h3>
-      <div className="w-lg h-56 bg-[#E9E9E9] border-gray-200 rounded-lg shadow-sm mx-auto" />
+    <section className="w-full h-[780px] px-[166px]">
+      <div className="flex">
+        {/* 왼쪽: 텍스트 + 하단 이미지 */}
+        <div className="w-[482px] flex flex-col mt-[120px] space-y-5">
+          <h2 className="text-4xl font-bold text-[#232323]"style={{ letterSpacing: '-2%' }}>
+            대여 신청서로 원하는 기간만큼
+            <br />
+            간편하게 빌릴 수 있어요!
+          </h2>
+          <p className=" text-base text-[#616264]">
+          대여 신청서에 기간을 입력하고 서비스 이용에 동의하면
+            <br />
+            필요한 물건을 간편하게 빌릴 수 있어요.
+          </p>
+
+          {/* 텍스트 바로 밑에 하단 이미지 */}
+          <div className="pt-[140px] flex justify-end">
+            <Image
+              src="/images/intro3-1.svg"
+              alt="staircase illustration 2"
+              width={280}
+              height={200}
+            />
+          </div>
+        </div>
+
+        {/* 오른쪽: 상단 이미지만 */}
+        <div className="flex-1">
+          <div className="mt-[120px] ml-[118px]">
+            <Image
+              src="/images/intro3-2.svg"
+              alt="staircase illustration 1"
+              width={580}
+              height={540}
+            />
+          </div>
+        </div>
+      </div>
     </section>
-  )
+  );
 }
