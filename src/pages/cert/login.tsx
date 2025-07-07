@@ -1,13 +1,13 @@
 // src/pages/cert/login.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/cert-header';
 import { getSendbird } from '@/lib/sendbird';
 import { requestFcmToken } from '@/lib/firebase';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import { FaSquareCheck } from "react-icons/fa6";
+import { FaSquareCheck } from 'react-icons/fa6';
 
 export default function Login() {
   const router = useRouter();
@@ -15,7 +15,32 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [agreePrivacy, setAgreePrivacy] = useState(false)
+  const [agreePrivacy, setAgreePrivacy] = useState(false);
+
+  // ★ 페이지 로드 시 저장된 자격증명 불러오기
+  useEffect(() => {
+    const saved = localStorage.getItem('savedCredentials');
+    if (saved) {
+      try {
+        const { email: e, password: p } = JSON.parse(saved);
+        setEmail(e);
+        setPassword(p);
+        setAgreePrivacy(true);
+      } catch {
+        localStorage.removeItem('savedCredentials');
+      }
+    }
+  }, []);
+
+  // ★ 체크박스 핸들러: 해제 시 저장된 정보 삭제 및 입력칸 비우기
+  const handleRememberToggle = () => {
+    if (agreePrivacy) {
+      localStorage.removeItem('savedCredentials');
+      setEmail('');
+      setPassword('');
+    }
+    setAgreePrivacy(prev => !prev);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +53,7 @@ export default function Login() {
     }
 
     try {
-      // TODO: 추후 백엔드와 실제 로그인 로직 연동 필요
+      // 테스트용 로그인 로직
       const testUsers = ['user1', 'user2', 'user3'];
       if (!testUsers.includes(email.trim())) {
         setError('테스트용 아이디는 user1, user2, user3만 가능합니다.');
@@ -36,40 +61,42 @@ export default function Login() {
         return;
       }
 
+      // Sendbird 연결
       const sb = getSendbird();
       if (!sb) {
-        setIsLoading(false);
-        return setError('Sendbird가 초기화되지 않았습니다. 잠시 후 다시 시도해 주세요.');
+        throw new Error('Sendbird가 초기화되지 않았습니다.');
       }
-
       await sb.connect(email.trim());
-
       console.log('✅ Sendbird 연결 성공:', sb.currentUser);
 
-      // 로그인 성공 후 FCM 토큰을 Firestore에 저장하는 로직
+      // FCM 토큰 요청 및 Firestore 저장
       try {
-        await requestFcmToken(async (token) => {
+        await requestFcmToken(async token => {
           if (token && sb.currentUser) {
-            try {
-              // Firestore 인스턴스를 가져옵니다.
-              const db = getFirestore();
-              // 'fcm_tokens' 컬렉션에 사용자 ID를 문서 ID로 하여 토큰을 저장합니다.
-              await setDoc(doc(db, 'fcm_tokens', sb.currentUser.userId), { token: token, updatedAt: new Date() });
-              console.log('✅ Firestore에 FCM 토큰 저장 성공');
-
-              // Sendbird에도 토큰을 등록합니다 (선택사항, 하지만 해두는 것이 좋습니다).
-              sb.registerFCMPushTokenForCurrentUser(token)
-                .then(() => console.log('Sendbird에 FCM 토큰 등록 성공'))
-                .catch((err: any) => console.error('Sendbird FCM 토큰 등록 실패:', err));
-
-            } catch (dbError) {
-              console.error('Firestore 토큰 저장 실패:', dbError);
-            }
+            const db = getFirestore();
+            await setDoc(doc(db, 'fcm_tokens', sb.currentUser.userId), {
+              token,
+              updatedAt: new Date(),
+            });
+            console.log('✅ Firestore에 FCM 토큰 저장 성공');
+            sb
+              .registerFCMPushTokenForCurrentUser(token)
+              .then(() => console.log('Sendbird에 FCM 토큰 등록 성공'))
+              .catch(err => console.error('Sendbird FCM 토큰 등록 실패:', err));
           }
         });
       } catch (fcmError) {
         console.warn('FCM 토큰 요청 실패:', fcmError);
-        // FCM 실패는 로그인 자체에는 영향을 주지 않음
+      }
+
+      // ★ 로그인 성공 후: 체크 여부에 따라 저장 또는 삭제
+      if (agreePrivacy) {
+        localStorage.setItem(
+          'savedCredentials',
+          JSON.stringify({ email: email.trim(), password })
+        );
+      } else {
+        localStorage.removeItem('savedCredentials');
       }
 
       localStorage.setItem('me', email.trim());
@@ -77,7 +104,7 @@ export default function Login() {
       router.replace('/home');
 
     } catch (err: any) {
-      console.error('Sendbird 연결 실패:', err);
+      console.error('로그인 에러:', err);
       setError('로그인에 실패했습니다. 아이디를 확인해 주세요.');
     } finally {
       setIsLoading(false);
@@ -116,18 +143,19 @@ export default function Login() {
             />
             <label
               className="flex items-center mt-[12px] ml-[4px] cursor-pointer"
-              onClick={() => setAgreePrivacy(prev => !prev)}
+              onClick={handleRememberToggle}
             >
-              {agreePrivacy
-                ? <FaSquareCheck size={24} className="text-[#6849FE]" />
-                : <span className="w-[24px] h-[24px]  border border-[#ADAEB2] rounded-[4px]" />
-              }
+              {agreePrivacy ? (
+                <FaSquareCheck size={24} className="text-[#6849FE]" />
+              ) : (
+                <span className="w-[24px] h-[24px] border border-[#ADAEB2] rounded-[4px]" />
+              )}
               <span className="ml-[8px] text-[#232323]">로그인 상태 유지하기</span>
             </label>
           </div>
 
           {/* 오류 메시지 */}
-          {error && <p className="text-red-600">{error}</p>}
+          {error && <p className="text-red-600 mt-[12px]">{error}</p>}
 
           {/* 로그인 버튼 */}
           <button
@@ -146,8 +174,6 @@ export default function Login() {
             <span>|</span>
             <a href="#" className="hover:underline">회원가입</a>
           </div>
-
-
         </form>
       </div>
     </main>
