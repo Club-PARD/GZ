@@ -87,7 +87,7 @@ export default function DetailPageConsumer() {
               <div className="flex items-center justify-between p-4 rounded-lg">
                 <button
                   onClick={startChat}
-                  className="px-4 py-2 bg-[#8769FF] text-white rounded-lg text-sm text-[#232323]"
+                  className="px-4 py-2 bg-[#8769FF] text-white rounded-lg text-sm"
                 >
                   대여 시작하기
                 </button>

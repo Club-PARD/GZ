@@ -53,15 +53,34 @@ export default function Login() {
     }
 
     try {
-      // 테스트용 로그인 로직
-      const testUsers = ['user1', 'user2', 'user3'];
-      if (!testUsers.includes(email.trim())) {
-        setError('테스트용 아이디는 user1, user2, user3만 가능합니다.');
+      // 1) 백엔드에 실제 로그인 요청
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          studentMail: email.trim(),
+          password,
+        }),
+      });
+
+      // ─── [1) 에러 바디 안전 처리 추가된 부분] ───
+      if (!res.ok) {
+        const text = await res.text().catch(() => '');
+        console.error('로그인 실패 응답:', text);
+        setError(text || `서버 에러 ${res.status}`);
         setIsLoading(false);
         return;
       }
+      const result = await res.json();
+      // ─────────────────────────────────────────
 
-      // Sendbird 연결
+      // (선택) JWT 사용 시
+      // localStorage.setItem('token', result.token);
+      // 로그인 성공한 userId 저장
+      localStorage.setItem('me', result.userId);
+
+      // 2) Sendbird 연결
       const sb = getSendbird();
       if (!sb) {
         throw new Error('Sendbird가 초기화되지 않았습니다.');
@@ -69,7 +88,7 @@ export default function Login() {
       await sb.connect(email.trim());
       console.log('✅ Sendbird 연결 성공:', sb.currentUser);
 
-      // FCM 토큰 요청 및 Firestore 저장
+      // 3) FCM 토큰 요청 및 Firestore 저장
       try {
         await requestFcmToken(async token => {
           if (token && sb.currentUser) {
@@ -89,7 +108,7 @@ export default function Login() {
         console.warn('FCM 토큰 요청 실패:', fcmError);
       }
 
-      // ★ 로그인 성공 후: 체크 여부에 따라 저장 또는 삭제
+      // 4) 로그인 상태 저장/삭제
       if (agreePrivacy) {
         localStorage.setItem(
           'savedCredentials',
@@ -99,13 +118,11 @@ export default function Login() {
         localStorage.removeItem('savedCredentials');
       }
 
-      localStorage.setItem('me', email.trim());
       console.log('✅ 로그인 성공, 메인 페이지로 이동');
       router.replace('/home');
-
     } catch (err: any) {
       console.error('로그인 에러:', err);
-      setError('로그인에 실패했습니다. 아이디를 확인해 주세요.');
+      setError('로그인 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
