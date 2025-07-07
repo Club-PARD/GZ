@@ -5,7 +5,7 @@ export default function Header() {
   return (
     <div className=" pl-[260px] pr-[272px] bg-white h-[68px]">
       <header className="w-full flex justify-between items-center px-8 py-4 h-full">
-        <Link href={'/home'}>
+        <Link href={'/'}>
           <Image src="/images/blogo.svg" alt="로고" width={94} height={20} />
         </Link>
 
