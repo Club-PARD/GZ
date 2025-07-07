@@ -8,6 +8,8 @@ import { getSendbird } from '@/lib/sendbird';
 import { requestFcmToken } from '@/lib/firebase';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { FaSquareCheck } from "react-icons/fa6";
+import TermsModal from "@/components/Term-components/TermsModal";
+import PrivacyModal from "@/components/Term-components/PrivacyModal";
 
 export default function Login() {
   const router = useRouter();
