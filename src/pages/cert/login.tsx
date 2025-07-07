@@ -64,7 +64,7 @@ export default function Login() {
         }),
       });
 
-      // ─── [1) 에러 바디 안전 처리 추가된 부분] ───
+      // ─── 에러 바디 안전 처리 ───
       if (!res.ok) {
         const text = await res.text().catch(() => '');
         console.error('로그인 실패 응답:', text);
@@ -72,23 +72,21 @@ export default function Login() {
         setIsLoading(false);
         return;
       }
-      const result = await res.json();
-      // ─────────────────────────────────────────
 
-      // (선택) JWT 사용 시
-      // localStorage.setItem('token', result.token);
-      // 로그인 성공한 userId 저장
-      localStorage.setItem('me', result.userId);
+      // 2) 로그인 성공 후 data.userId 꺼내서 문자열로 변환
+      const json = await res.json();
+      const userId = String(json.data.userId);
+      localStorage.setItem('me', userId);
 
-      // 2) Sendbird 연결
+      // 3) Sendbird 연결 (userId만 사용)
       const sb = getSendbird();
       if (!sb) {
         throw new Error('Sendbird가 초기화되지 않았습니다.');
       }
-      await sb.connect(email.trim());
+      await sb.connect(userId);
       console.log('✅ Sendbird 연결 성공:', sb.currentUser);
 
-      // 3) FCM 토큰 요청 및 Firestore 저장
+      // 4) FCM 토큰 요청 및 Firestore 저장
       try {
         await requestFcmToken(async token => {
           if (token && sb.currentUser) {
@@ -108,7 +106,7 @@ export default function Login() {
         console.warn('FCM 토큰 요청 실패:', fcmError);
       }
 
-      // 4) 로그인 상태 저장/삭제
+      // 5) 로그인 상태 저장/삭제
       if (agreePrivacy) {
         localStorage.setItem(
           'savedCredentials',
@@ -119,6 +117,22 @@ export default function Login() {
       }
 
       console.log('✅ 로그인 성공, 메인 페이지로 이동');
+
+      try {
+        const homeRes = await fetch('/http://localhost:8080/home', {
+          method: 'GET',
+          credentials: 'include', // 다시 세션 쿠키 보내기
+        });
+        if (homeRes.ok) {
+          const { payload } = await homeRes.json(); // PostHomeResDto
+          console.log('🏠 홈 페이지 데이터:', payload);
+        } else {
+          console.error('❌ 홈 요청 실패:', homeRes.status);
+        }
+      } catch (homeErr) {
+        console.error('🏠 홈 요청 중 에러 발생:', homeErr);
+      }
+
       router.replace('/home');
     } catch (err: any) {
       console.error('로그인 에러:', err);
