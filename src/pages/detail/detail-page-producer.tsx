@@ -16,7 +16,7 @@ interface ApiResponse<T> {
   data: T;
 }
 
-// 2. registeredItem 데이터 타입
+// 2. registeredItem 데이터 타입 (Swagger 응답에 맞춤)
 interface RegisteredItem {
   user_id: number;
   post_id: number;
@@ -28,16 +28,36 @@ interface RegisteredItem {
       writer: {
         id: number;
         nickname: string;
+        password: string;
+        school: {
+          id: number;
+          schoolName: string;
+          users: string[];
+          posts: string[];
+        };
+        studentMail: string;
+        borrowedList: any[];
+        applierList: any[];
       };
+      isBorrowable: string;
       itemName: string;
+      images: string[];
       category: string;
-      pricePerHour: number;
-      pricePerDay: number;
-      // 필요 시 추가 필드 명시
+      pricePerHour: number; // camelCase
+      pricePerDay: number;  // camelCase
+      description: string;
+      school: {
+        id: number;
+        schoolName: string;
+        users: string[];
+        posts: string[];
+      };
+      borrowedList: any[];
+      applyList: any[];
     };
   }>;
-  price_per_hour: number;
-  price_per_day: number;
+  price_per_hour: number; // snake_case
+  price_per_day: number;  // snake_case
   description: string;
   category: string;
 }
@@ -94,11 +114,10 @@ export default function DetailPageProducer() {
       const userId = userIdRaw ? parseInt(userIdRaw, 10) : undefined;
 
       try {
-        // 2) Spring Boot 백엔드로 요청
-        const backend =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+        // 2) 프록시를 통해 백엔드로 요청
+        console.log('🔄 상세 정보 요청:', { postId, userId });
         const res = await axios.get<ApiResponse<RegisteredItem>>(
-          `${backend}/api/post/detail`,
+          `/api/post/detail`,
           {
             params: { postId, userId },
             withCredentials: true,
@@ -141,15 +160,20 @@ export default function DetailPageProducer() {
     );
   }
 
-  // 렌더링용 데이터 가공
+  // 렌더링용 데이터 가공 (안전한 접근)
   const images =
-    registeredItem.images.length > 0
-      ? registeredItem.images.map((img) => img.s3Key)
+    registeredItem.images && registeredItem.images.length > 0
+      ? registeredItem.images.map((img) => {
+          // s3Key가 URL이 아닌 경우 풀 URL로 변환
+          return img.s3Key.startsWith('http') 
+            ? img.s3Key 
+            : `https://gz-zigu.store/${img.s3Key}`;
+        })
       : defaultImages;
 
-  const firstPost = registeredItem.images[0].post;
-  const writerNickname = firstPost.writer.nickname;
-  const itemName = firstPost.itemName;
+  const firstPost = registeredItem.images?.[0]?.post;
+  const writerNickname = firstPost?.writer?.nickname || "알 수 없음";
+  const itemName = firstPost?.itemName || registeredItem.description || "제목 없음";
   const categoryLabel =
     categoryMap[registeredItem.category] || registeredItem.category;
 

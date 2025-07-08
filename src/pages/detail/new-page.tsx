@@ -75,18 +75,18 @@ export default function NewPage() {
       }
       const categoryEnum = categoryEnumMap[selectedCat] || selectedCat
 
+      // multipart/form-data 방식으로 다시 시도
       const form = new FormData()
-      form.append("userId", userId)
       form.append("isBorrowable", "POSSIBLE")
       form.append("itemName", title)
-      form.append("pricePerHour", hourPrice || "0")
-      form.append("pricePerDay", dayPrice || "0")
+      form.append("pricePerHour", String(parseInt(hourPrice) || 0))
+      form.append("pricePerDay", String(parseInt(dayPrice) || 0))
       form.append("category", categoryEnum)
       form.append("description", description)
       images.forEach((file) => form.append("images", file))
 
       // FormData 내용 로그 출력
-      console.log("보내는 데이터:")
+      console.log("보내는 데이터 (multipart/form-data):")
       for (let [key, value] of form.entries()) {
         if (value instanceof File) {
           console.log(`${key}: File(${value.name}, ${value.size}bytes)`)
@@ -95,9 +95,12 @@ export default function NewPage() {
         }
       }
 
-      // axios가 multipart boundary를 자동 지정하도록 헤더 생략
-      const res = await axios.post("/api/post/create", form, {
-        withCredentials: true
+      // 프록시를 통해 백엔드로 multipart 요청 (userId를 query parameter로)
+      const res = await axios.post(`/api/post/create?userId=${userId}`, form, {
+        withCredentials: true,
+        headers: {
+          // axios가 multipart boundary를 자동 설정하도록 Content-Type 헤더 생략
+        }
       })
 
       console.log("등록 성공 응답:", res.data)
