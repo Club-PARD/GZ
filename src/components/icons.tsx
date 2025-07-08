@@ -15,10 +15,14 @@ import { PiSirenBold } from "react-icons/pi";
 import { GoArrowRight } from "react-icons/go";
 import { MdEdit } from "react-icons/md";
 import { AiFillDelete } from "react-icons/ai";
+import { CgMathPlus } from "react-icons/cg";
+import { CgMathMinus } from "react-icons/cg";
 
 
 
-export { FaLocationDot, IoSearchOutline, BiSolidImage, AiFillWarning, 
+export {
+    FaLocationDot, IoSearchOutline, BiSolidImage, AiFillWarning,
     BsArrowRightCircleFill, BsArrowLeftCircleFill,
-     AiFillSetting, MdPolicy, BsHeadset, MdManageAccounts,
-     PiCheckCircleFill, CgClose, FiMoreVertical, PiSirenBold, GoArrowRight, MdEdit, AiFillDelete};
+    AiFillSetting, MdPolicy, BsHeadset, MdManageAccounts,
+    PiCheckCircleFill, CgClose, FiMoreVertical, PiSirenBold, GoArrowRight, MdEdit, AiFillDelete, CgMathPlus, CgMathMinus
+};
