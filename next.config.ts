@@ -21,6 +21,14 @@ const nextConfig: NextConfig = {
         source: "/api/auth/check-nickname",
         destination: "https://gz-zigu.store/auth/check-nickname",
       },
+      {
+        source: "/api/post/home",
+        destination: "https://gz-zigu.store/post/home",
+      },
+      {
+        source: "/posts/:path*",
+        destination: "https://gz-zigu.store/posts/:path*",
+      },
     ];
   },
 };
