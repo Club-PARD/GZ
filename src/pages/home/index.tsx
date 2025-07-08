@@ -11,6 +11,76 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { getHomeData } from "@/lib/api";
 
+// 여러 경로를 시도하는 이미지 컴포넌트
+function ImageWithFallback({ imagePath, alt, className }: { imagePath: string; alt: string; className: string }) {
+  const [currentSrc, setCurrentSrc] = useState<string>('');
+  const [attemptIndex, setAttemptIndex] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [hasError, setHasError] = useState<boolean>(false);
+
+  // 시도할 경로들
+  const possiblePaths = [
+    `https://gz-zigu.store/${imagePath}`,
+    `https://gz-zigu.store/files/${imagePath}`,  
+    `https://gz-zigu.store/uploads/${imagePath}`,
+    `https://gz-zigu.store/api/files/${imagePath}`,
+  ];
+
+  useEffect(() => {
+    if (attemptIndex < possiblePaths.length) {
+      setCurrentSrc(possiblePaths[attemptIndex]);
+      setIsLoading(true);
+      setHasError(false);
+    } else {
+      setHasError(true);
+      setIsLoading(false);
+    }
+  }, [attemptIndex, imagePath]);
+
+  const handleError = () => {
+    console.log(`❌ 이미지 로드 실패 (${attemptIndex + 1}/${possiblePaths.length}):`, possiblePaths[attemptIndex]);
+    setAttemptIndex(prev => prev + 1);
+  };
+
+  const handleLoad = () => {
+    console.log(`✅ 이미지 로드 성공:`, possiblePaths[attemptIndex]);
+    setIsLoading(false);
+    setHasError(false);
+  };
+
+  if (hasError || attemptIndex >= possiblePaths.length) {
+    return (
+      <div className={`${className} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}>
+        <div className="text-center">
+          <div className="text-gray-400 text-2xl mb-1">📷</div>
+          <span className="text-gray-500 text-xs">이미지 로드 실패</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {isLoading && (
+        <div className={`${className} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}>
+          <div className="text-center">
+            <div className="text-gray-400 text-2xl mb-1">⏳</div>
+            <span className="text-gray-500 text-xs">로딩 중...</span>
+          </div>
+        </div>
+      )}
+      <img
+        src={currentSrc}
+        alt={alt}
+        className={className}
+        style={{ display: isLoading ? 'none' : 'block' }}
+        onLoad={handleLoad}
+        onError={handleError}
+      />
+    </>
+  );
+}
+
 // API 응답 타입 정의
 interface HomeResponse {
   status: number;
@@ -25,11 +95,7 @@ interface HomeResponse {
 
 interface HomePost {
   post_id: number;
-  post_fir_Image?: {  // 선택적 필드로 변경
-    id: number;
-    s3Key: string;
-    // post 필드는 여기서 쓰지 않으므로 생략
-  } | null;  // null도 허용
+  firstImageUrl?: string | null;  // 백엔드에서 오는 실제 필드명
   itemName: string;
   category: string;
   price_per_hour: number;
@@ -80,6 +146,16 @@ export default function Home() {
         console.log("✅ 홈 요청 성공:", json);
         
         if (json.success) {
+          // 이미지 URL 정보를 자세히 로그
+          console.log("🖼️ 이미지 URL 정보:");
+          json.data.posts.forEach((post: any, index: number) => {
+            console.log(`포스트 ${index + 1}:`, {
+              postId: post.post_id,
+              firstImageUrl: post.firstImageUrl,
+              itemName: post.itemName
+            });
+          });
+          
           setPosts(json.data.posts);
         } else {
           console.error("❌ 홈 API 오류:", json.message);
@@ -185,18 +261,11 @@ export default function Home() {
               className={styles.itemCard}
             >
               <div className={styles.imageContainer}>
-                {post.post_fir_Image && post.post_fir_Image.s3Key ? (
-                  <img
-                    src={post.post_fir_Image.s3Key.startsWith('http') 
-                      ? post.post_fir_Image.s3Key 
-                      : `https://gz-zigu.store/${post.post_fir_Image.s3Key}`
-                    }
+                {post.firstImageUrl ? (
+                  <ImageWithFallback 
+                    imagePath={post.firstImageUrl}
                     alt={post.itemName}
                     className={styles.image}
-                    onError={(e) => {
-                      console.log('이미지 로드 실패:', post.post_fir_Image?.s3Key);
-                      e.currentTarget.style.display = 'none'; // 이미지 숨김
-                    }}
                   />
                 ) : (
                   <div className={`${styles.image} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}>

@@ -90,7 +90,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       res.setHeader('Content-Type', 'application/json');
       try {
         const jsonData = JSON.parse(data);
-        console.log('✅ 포스트 생성 성공:', jsonData);
+        
+        // 실제 상태코드에 따라 올바른 로그 메시지 출력
+        if (backendResponse.status >= 200 && backendResponse.status < 300) {
+          console.log('✅ 포스트 생성 성공:', jsonData);
+        } else {
+          console.error(`❌ 포스트 생성 실패 (${backendResponse.status}):`, jsonData);
+        }
+        
         return res.json(jsonData);
       } catch (parseError) {
         console.error('❌ JSON 파싱 실패:', parseError);
