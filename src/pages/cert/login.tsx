@@ -136,7 +136,7 @@ export default function Login() {
       console.log('✅ 로그인 성공, 메인 페이지로 이동');
 
       try {
-        const homeRes = await fetch('/http://localhost:8080/home', {
+        const homeRes = await fetch('/http://:8080/home', {
           method: 'GET',
           credentials: 'include', // 다시 세션 쿠키 보내기
         });
