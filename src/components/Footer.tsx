@@ -11,6 +11,7 @@ export default function Footer() {
               alt="logo"
               width={64}
               height={32}
+              style={{width: 'auto', height: 'auto'}}
             />
    
           </div>
