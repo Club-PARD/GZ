@@ -6,7 +6,14 @@ export default function Header() {
     <div className=" pl-[260px] pr-[272px] bg-white h-[68px]">
       <header className="w-full flex justify-between items-center px-8 py-4 h-full">
         <Link href={'/'}>
-          <Image src="/images/blogo.svg" alt="로고" width={94} height={20} style={{width: 'auto', height: 'auto'}} />
+          <Image 
+          src="/images/blogo.svg" 
+          alt="로고" 
+          width={94} 
+          height={20} 
+          style={{width: 'auto', height: 'auto'}} 
+          priority
+        />
         </Link>
 
         <div className="flex items-center gap-2">

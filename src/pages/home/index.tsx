@@ -25,11 +25,11 @@ interface HomeResponse {
 
 interface HomePost {
   post_id: number;
-  post_fir_Image: {
+  post_fir_Image?: {  // 선택적 필드로 변경
     id: number;
     s3Key: string;
     // post 필드는 여기서 쓰지 않으므로 생략
-  };
+  } | null;  // null도 허용
   itemName: string;
   category: string;
   price_per_hour: number;
@@ -90,8 +90,11 @@ export default function Home() {
         
         // 401/403 에러인 경우 로그인 페이지로 리다이렉트
         if (err.response?.status === 401 || err.response?.status === 403) {
+          console.log("🔄 인증 실패로 인한 로그인 페이지 리다이렉트");
           localStorage.removeItem("me");
+          localStorage.removeItem("savedCredentials"); // 저장된 자격증명도 제거
           router.replace('/cert/login');
+          return;
         }
       } finally {
         setIsLoading(false);
@@ -182,18 +185,27 @@ export default function Home() {
               className={styles.itemCard}
             >
               <div className={styles.imageContainer}>
-                <img
-                  src={post.post_fir_Image.s3Key.startsWith('http') 
-                    ? post.post_fir_Image.s3Key 
-                    : `https://gz-zigu.store/${post.post_fir_Image.s3Key}`
-                  }
-                  alt={post.itemName}
-                  className={styles.image}
-                  onError={(e) => {
-                    console.log('이미지 로드 실패:', post.post_fir_Image.s3Key);
-                    e.currentTarget.style.display = 'none'; // 이미지 숨김
-                  }}
-                />
+                {post.post_fir_Image && post.post_fir_Image.s3Key ? (
+                  <img
+                    src={post.post_fir_Image.s3Key.startsWith('http') 
+                      ? post.post_fir_Image.s3Key 
+                      : `https://gz-zigu.store/${post.post_fir_Image.s3Key}`
+                    }
+                    alt={post.itemName}
+                    className={styles.image}
+                    onError={(e) => {
+                      console.log('이미지 로드 실패:', post.post_fir_Image?.s3Key);
+                      e.currentTarget.style.display = 'none'; // 이미지 숨김
+                    }}
+                  />
+                ) : (
+                  <div className={`${styles.image} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}>
+                    <div className="text-center">
+                      <div className="text-gray-400 text-2xl mb-1">📷</div>
+                      <span className="text-gray-500 text-xs">이미지 없음</span>
+                    </div>
+                  </div>
+                )}
               </div>
               <h3 className={styles.itemTitle}>{post.itemName}</h3>
               <div className={styles.priceContainer}>
