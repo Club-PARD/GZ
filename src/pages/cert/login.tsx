@@ -135,20 +135,7 @@ export default function Login() {
 
       console.log('✅ 로그인 성공, 메인 페이지로 이동');
 
-      try {
-        const homeRes = await fetch('/http://localhost:8080/home', {
-          method: 'GET',
-          credentials: 'include', // 다시 세션 쿠키 보내기
-        });
-        if (homeRes.ok) {
-          const { payload } = await homeRes.json(); // PostHomeResDto
-          console.log('🏠 홈 페이지 데이터:', payload);
-        } else {
-          console.error('❌ 홈 요청 실패:', homeRes.status);
-        }
-      } catch (homeErr) {
-        console.error('🏠 홈 요청 중 에러 발생:', homeErr);
-      }
+
 
       router.replace('/home');
     } catch (err: any) {

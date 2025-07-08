@@ -117,7 +117,7 @@ export default function DetailPageConsumer() {
         </section>
 
         {/* 우측: 상품 상세 정보 또는 채팅창 */}
-        <section className="w-150 space-y-4 rounded-lg p-4 fixed right-40 bottom-70 top-[110px]">
+        <section className="w-150 space-y-4 rounded-lg p-4 fixed right-20 bottom-70 top-[96px]">
           {channelUrl ? (
             <div className="relative h-[600px]">
               {/* ChatWindow가 배경 레이어를 채움 */}

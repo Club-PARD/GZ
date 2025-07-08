@@ -30,8 +30,14 @@ export default function NewPage() {
   const [selectedCat, setSelectedCat] =
     useState<(typeof categories)[number]>("전체")
   const [showWarningList, setShowWarningList] = useState(false)
+  const [userId, setUserId] = useState<string | null>(null);
 
-
+  useEffect(() => {
+    const storedUserId = localStorage.getItem('me');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, []);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
@@ -50,8 +56,14 @@ export default function NewPage() {
     if (!isFormValid) return
     setIsLoading(true)
 
+    if (!userId) {
+      alert("로그인이 필요합니다.");
+      setIsLoading(false);
+      router.push('/cert/login');
+      return;
+    }
+
     try {
-      const userId = "3"
       const categoryEnumMap: Record<string, string> = {
         전자기기: "ELECTRONICS",
         건강: "HEALTH",
@@ -84,13 +96,26 @@ export default function NewPage() {
       }
 
       // axios가 multipart boundary를 자동 지정하도록 헤더 생략
-      const res = await axios.post("/api/post/create", form)
+      const res = await axios.post("/api/post/create", form, {
+        withCredentials: true
+      })
 
       console.log("등록 성공 응답:", res.data)
 
       // 등록 성공 시 detail-page-producer로 이동
-      // 등록된 아이템 정보를 localStorage에 저장
-      localStorage.setItem('registeredItem', JSON.stringify(res.data))
+      // 등록된 아이템 정보를 localStorage에 저장 (서버 응답 + 사용자 입력 데이터)
+      const itemDataForStorage = {
+        ...res.data, // 서버 응답 (postId 포함)
+        userInput: {
+          itemName: title,
+          description: description,
+          price_per_hour: parseInt(hourPrice) || 0,
+          price_per_day: parseInt(dayPrice) || 0,
+          category: categoryEnum,
+          images: images.map(file => ({ name: file.name, size: file.size }))
+        }
+      };
+      localStorage.setItem('registeredItem', JSON.stringify(itemDataForStorage))
 
       // 저장된 데이터 확인용 로그
       const storedItem = localStorage.getItem('registeredItem');
@@ -313,8 +338,6 @@ export default function NewPage() {
           </div>
         </section>
       </main>
-
-
 
       <Footer />
     </div>
