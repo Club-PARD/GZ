@@ -91,12 +91,20 @@ export default function NewPage() {
       // 등록 성공 시 detail-page-producer로 이동
       // 등록된 아이템 정보를 localStorage에 저장
       localStorage.setItem('registeredItem', JSON.stringify(res.data))
+
+      // 저장된 데이터 확인용 로그
+      const storedItem = localStorage.getItem('registeredItem');
+      console.log('localStorage에 저장된 값:', storedItem);
       
       // detail-page-producer로 라우팅
       router.push('/detail/detail-page-producer')
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
-      alert("등록 중 오류가 발생했습니다.")
+      let errorMessage = "등록 중 오류가 발생했습니다."
+      if (err.response) {
+        errorMessage += `\n서버 응답: ${JSON.stringify(err.response.data)}`;
+      }
+      alert(errorMessage)
     } finally {
       setIsLoading(false)
     }
