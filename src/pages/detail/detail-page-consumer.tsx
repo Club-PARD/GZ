@@ -2,16 +2,14 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Header from "@/components/home-header";
 import Footer from "@/components/Footer";
-import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from "react-icons/bs";
-import styles from "../../styles/detail.module.css";
 import { initSendbird } from "@/lib/sendbird";
 import ChatWindow from "@/components/chat-components/ChatWindow";
 import Application from "@/components/Term-components/Applicaton";
-
 import {
   FiMoreVertical,
   PiSirenBold,
@@ -19,121 +17,189 @@ import {
   MdEdit,
   AiFillDelete,
 } from "@/components/icons";
+import styles from "../../styles/detail.module.css";
+
+// API 응답 래퍼 타입
+interface ApiResponse<T> {
+  status: number;
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+// 상세페이지 데이터 타입 (Swagger 반영)
+interface PostDetail {
+  user_id: number;
+  post_id: number;
+  imageUrls: string[];
+  price_per_hour: number;
+  price_per_day: number;
+  description: string;
+  category: string;
+}
 
 export default function DetailPageConsumer() {
   const router = useRouter();
+  const { postId } = router.query;
+  console.log("[LOG] router.query:", router.query);
+
   const [me, setMe] = useState<string>("");
+  const [post, setPost] = useState<PostDetail | null>(null);
+  const [images, setImages] = useState<string[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showApplication, setApplication] = useState(false);
-  
+  const [channelUrl, setChannelUrl] = useState<string>("");
 
+  // 기본 이미지 (fallback)
+  const defaultImages = ["/images/camera.jpg"];
+
+  // 닉네임 API 준비 전까지 임시 하드코딩
+  const writerNickname = "닉네임 없음";
+
+  // 1) 로그인된 사용자 ID 불러오기
   useEffect(() => {
-    // 로그인 후 localStorage에 저장된 내 ID 읽기
     const stored = localStorage.getItem("me") || "";
+    console.log("[LOG] localStorage.me:", stored);
     setMe(stored);
   }, []);
 
-  const ownerId = "owner_id"; // 임시로 하드코딩
+  // 2) 상세 데이터 불러오기
+  useEffect(() => {
+    console.log("[LOG] useEffect(fetchDetail) fired: isReady=", router.isReady, "postId=", postId);
+    if (!router.isReady || !postId) return;
 
-  // 이미지 슬라이더 데이터
-  const images = [
-    "/images/usb.jpg",
-    "/images/bag.jpg",
-    "/images/camera.jpg",
-    "/images/camping.jpg",
-    "/images/shoes.jpg",
-  ];
+    (async function fetchDetail() {
+      try {
+        console.log(`[LOG] → GET /api/post/detail?postId=${postId}`);
+        const res = await axios.get<ApiResponse<PostDetail>>(
+          "/api/post/detail",
+          { params: { postId } }
+        );
+        console.log("[LOG] ← status:", res.status, "data:", res.data);
 
-  // 채팅 채널 URL 상태
-  const [channelUrl, setChannelUrl] = useState<string>("");
+        if (!res.data.success) {
+          console.warn("[WARN] API 응답 success=false:", res.data.message);
+          setImages(defaultImages);
+          return;
+        }
 
-  // 채팅 시작 로직
+        const data = res.data.data;
+        console.log("[LOG] mapped data:", data);
+        setPost(data);
+
+        const imgs = data.imageUrls && data.imageUrls.length > 0
+          ? data.imageUrls
+          : defaultImages;
+        console.log("[LOG] setting images:", imgs);
+        setImages(imgs);
+      } catch (err: any) {
+        console.error("[ERROR] fetchDetail failed:", err.message, err);
+        setImages(defaultImages);
+      }
+    })();
+  }, [router.isReady, postId]);
+
+  // 3) 채팅 시작 로직
   const startChat = async () => {
+    console.log("[LOG] startChat() called, me=", me, "post?.user_id=", post?.user_id);
     if (!me) {
+      console.warn("[WARN] No logged-in user");
       alert("로그인된 사용자가 없습니다.");
       return;
     }
-    const sb = initSendbird(process.env.NEXT_PUBLIC_SENDBIRD_APP_ID!);
-    await sb.connect(me);
-    const ch = await sb.groupChannel.createChannel({
-      invitedUserIds: [me, ownerId].sort(),
-      isDistinct: true,
-    });
-    setChannelUrl(ch.url);
+    try {
+      const sb = initSendbird(process.env.NEXT_PUBLIC_SENDBIRD_APP_ID!);
+      console.log("[LOG] connecting to Sendbird with user:", me);
+      await sb.connect(me);
+      const ch = await sb.groupChannel.createChannel({
+        invitedUserIds: [me, String(post?.user_id)].sort(),
+        isDistinct: true,
+      });
+      console.log("[LOG] channel created:", ch.url);
+      setChannelUrl(ch.url);
+    } catch (err: any) {
+      console.error("[ERROR] startChat failed:", err.message, err);
+      alert("채팅 시작 중 오류가 발생했습니다.");
+    }
   };
+
+  // 4) 메뉴 토글 로깅
+  const toggleMenu = () => {
+    console.log("[LOG] toggle menu, isMenuOpen was", isMenuOpen);
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  if (!post) {
+    console.log("[LOG] post is null → showing loading");
+    return (
+      <div className="flex items-center justify-center h-screen">
+        로딩 중...
+      </div>
+    );
+  }
+
+  console.log("[LOG] rendering UI with post:", post, "images:", images);
 
   return (
     <div className="bg-white pt-[80px]">
       <Header />
 
-      <main className="max-w-5xl mx-40 my-8 flex gap-8 ">
+      <main className="max-w-5xl mx-40 my-8 flex gap-8">
         {/* 좌측: 이미지 리스트 */}
         <section className="w-1/2 space-y-4">
-          {/* 첫 번째 이미지 */}
-          <div className={styles.imageContainer}>
-            <Image
-              src={images[0]}
-              alt="첫 번째 이미지"
-              width={500}
-              height={320}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </div>
+          {images.map((src, idx) => (
+            <div key={idx} className={styles.imageContainer}>
+              <Image
+                src={src}
+                alt={`image-${idx + 1}`}
+                width={580}
+                height={580}
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                unoptimized
+                onError={(e) => {
+                  console.error(`[ERROR] image load failed at index ${idx}:`, src);
+                  const img = e.currentTarget as HTMLImageElement;
+                  img.src = defaultImages[0];
+                }}
+              />
+            </div>
+          ))}
 
           {/* 채팅 후 정보 패널 */}
           {channelUrl && (
             <div className="space-y-2 bg-white rounded-lg p-4">
               <h2 className="text-xl font-bold text-[#232323]">
-                1TB USB 빌려드려요
+                {post.description}
               </h2>
               <p className="text-sm text-[#232323]">대여 가격</p>
               <div className="p-4 rounded-lg">
                 <div className="grid grid-cols-[max-content_auto] gap-x-4 gap-y-1">
                   <p className="text-lg font-semibold text-[#ADAEB2]">1시간</p>
                   <p className="text-lg font-semibold text-[#232323]">
-                    {Number(3000).toLocaleString()}원
+                    {post.price_per_hour.toLocaleString()}원
                   </p>
                   <p className="text-lg font-semibold text-[#ADAEB2]">1일</p>
                   <p className="text-lg font-semibold text-[#232323]">
-                    {Number(10000).toLocaleString()}원
+                    {post.price_per_day.toLocaleString()}원
                   </p>
                 </div>
                 <div className="mt-4 p-4 h-40 rounded-lg text-sm text-gray-700">
-                  용량 커서 문제 없어요. 생활 기스 살짝 있는 거 말고는 훼손된
-                  부분 딱히 없어요. 분실만 조심해주면 좋겠어요!
+                  {post.description}
                 </div>
               </div>
             </div>
           )}
-
-          {/* 나머지 이미지들 */}
-          {images.slice(1).map((src, idx) => (
-            <div key={idx} className={styles.imageContainer}>
-              <Image
-                src={src}
-                alt={`image-${idx + 2}`}
-                width={580}
-                height={580}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            </div>
-          ))}
         </section>
 
         {/* 우측: 상품 상세 정보 또는 채팅창 */}
-        <section className="w-150 space-y-4 rounded-lg p-4 fixed right-20 bottom-70 top-[96px]">
+        <section className="w-[560px] space-y-4 p-4 fixed right-20 bottom-70 top-[96px] bg-white rounded-lg shadow">
           {channelUrl ? (
             <div className="relative h-[600px]">
-              {/* ChatWindow가 배경 레이어를 채움 */}
-              <div className="absolute inset-0">
-                <ChatWindow me={me} selectedChannelUrl={channelUrl} />
-              </div>
-
-              {/* 버튼을 ChatWindow 헤더 오른쪽에 오버레이 */}
-              <div className="absolute top-0 right-0 z-10 flex h-14 items-center pr-6">
+              <ChatWindow me={me} selectedChannelUrl={channelUrl} />
+              <div className="absolute top-0 right-0 p-4">
                 <button
-                  onClick={() => { setApplication(true)}}
-                  className="px-4 py-2 bg-[#8769FF] text-white rounded-lg text-sm"
+                  onClick={() => setApplication(true)}
+                  className="bg-[#8769FF] text-white px-4 py-2 rounded-lg text-sm"
                 >
                   대여 시작하기
                 </button>
@@ -141,122 +207,85 @@ export default function DetailPageConsumer() {
             </div>
           ) : (
             <>
-              {/* 프로필 */}
-              <div className="flex items-center space-x-1 mb-2">
-                <img
+              {/* 프로필 & 닉네임 */}
+              <div className="flex items-center space-x-2 mb-4">
+                <Image
                   src="/chat/chat-profile.svg"
                   alt="프로필"
-                  className="w-8 h-8 rounded-full"
+                  width={32}
+                  height={32}
+                  unoptimized
                 />
-                <span className="font-medium text-[#232323]">{ownerId}</span>
+                <span className="font-medium text-[#232323]">
+                  {writerNickname}
+                </span>
               </div>
 
-              {/* 제목·카테고리 & 미트볼 버튼 */}
+              {/* 제목 & 옵션 버튼 */}
               <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-[#232323]">
-                  1TB USB 빌려드려요
+                  {post.description}
                 </h1>
                 <div className="relative">
-                  <button
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="p-2 rounded-full hover:bg-gray-100"
-                  >
-                    <FiMoreVertical size={20} color="#232323" />
+                  <button onClick={toggleMenu} className="p-2 rounded-full hover:bg-gray-100">
+                    <FiMoreVertical size={20} />
                   </button>
                   {isMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-[127px] bg-white rounded-lg z-10">
-                      <ul className="py-1">
-                        {me === ownerId ? (
-                          <>
-                            <li>
-                              <a
-                                href="#"
-                                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  console.log("수정하기 클릭");
-                                  setIsMenuOpen(false);
-                                }}
-                              >
-                                수정하기
-                                <MdEdit className="ml-auto w-[24px] h-[24px] text-[#C2C3C9]" />
-                              </a>
-                            </li>
-                            <li>
-                              <a
-                                href="#"
-                                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  console.log("삭제하기 클릭");
-                                  setIsMenuOpen(false);
-                                }}
-                              >
-                                삭제하기
-                                <AiFillDelete className="ml-auto w-[24px] h-[24px] text-[#C2C3C9]" />
-                              </a>
-                            </li>
-                          </>
-                        ) : (
-                          <li>
-                            <a
-                              href="#"
-                              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                console.log("신고하기 클릭");
-                                setIsMenuOpen(false);
-                              }}
-                            >
-                              신고하기
-                              <PiSirenBold className="ml-auto w-[24px] h-[24px]" />
-                            </a>
+                    <ul className="absolute right-0 mt-2 bg-white shadow rounded-lg">
+                      {me === String(post.user_id) ? (
+                        <>
+                          <li className="px-4 py-2 hover:bg-gray-100 flex items-center">
+                            <MdEdit className="mr-2" /> 수정하기
                           </li>
-                        )}
-                      </ul>
-                    </div>
+                          <li className="px-4 py-2 hover:bg-gray-100 flex items-center">
+                            <AiFillDelete className="mr-2" /> 삭제하기
+                          </li>
+                        </>
+                      ) : (
+                        <li className="px-4 py-2 hover:bg-gray-100 flex items-center">
+                          <PiSirenBold className="mr-2" /> 신고하기
+                        </li>
+                      )}
+                    </ul>
                   )}
                 </div>
               </div>
 
-              <div className="border-b border-gray-200"></div>
+              <div className="border-t border-gray-200 my-4" />
 
-              {/* 대여 가격 */}
-              <div className="grid grid-cols-[max-content_auto] gap-x-4 gap-y-2 mt-1">
+              {/* 가격 정보 */}
+              <div className="grid grid-cols-[max-content_auto] gap-x-4 gap-y-2">
                 <p className="text-lg font-semibold text-[#ADAEB2]">1시간</p>
                 <p className="text-lg font-semibold text-[#232323]">
-                  {Number(3000).toLocaleString()}원
+                  {post.price_per_hour.toLocaleString()}원
                 </p>
                 <p className="text-lg font-semibold text-[#ADAEB2]">1일</p>
                 <p className="text-lg font-semibold text-[#232323]">
-                  {Number(10000).toLocaleString()}원
+                  {post.price_per_day.toLocaleString()}원
                 </p>
               </div>
 
-              <div className="border-b border-gray-200 pt-[36px]"></div>
+              <div className="border-t border-gray-200 my-4" />
 
               {/* 설명 */}
-              <div className="p-4 h-40 rounded-lg text-sm text-gray-700">
-                용량 커서 문제 없어요. 생활 기스 살짝 있는 거 말고는 훼손된 부분
-                딱히 없어요. 분실만 조심해주면 좋겠어요!
+              <div className="p-4 h-40 bg-[#F9F9FA] rounded-lg text-sm text-gray-700 overflow-auto">
+                {post.description}
               </div>
 
-              {/* 채팅 시작 버튼 */}
-              <div className="flex justify-center">
-                <button
-                  onClick={startChat}
-                  className="w-[460px] h-[50px] px-6 py-3 bg-[#6849FE] text-white rounded-lg text-sm font-semibold flex items-center justify-center"
-                >
-                  <span className="mr-2">채팅방 입장하기</span>
-                  <GoArrowRight className="w-[24px] h-[24px]" />
-                </button>
-              </div>
+              {/* 채팅방 입장 버튼 */}
+              <button
+                onClick={startChat}
+                className="w-full mt-4 bg-[#6849FE] text-white py-3 rounded-lg text-sm font-semibold flex items-center justify-center"
+              >
+                채팅방 입장하기
+                <GoArrowRight className="inline-block ml-2" />
+              </button>
             </>
           )}
         </section>
       </main>
-      <Application open={showApplication} onClose={() => setApplication(false)} />
 
+      <Application open={showApplication} onClose={() => setApplication(false)} />
       <Footer />
     </div>
   );
