@@ -35,7 +35,8 @@ export default function OptimizedImage({
 
   // gz-zigu.store 이미지에 대한 다양한 경로 시도
   const generatePossiblePaths = (originalSrc: string): string[] => {
-    if (originalSrc.startsWith('https://gz-zigu.store/')) {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://gz-zigu.store';
+    if (originalSrc.startsWith(baseUrl)) {
       // 이미 전체 URL인 경우
       const paths = [
         `/api/image/proxy?url=${encodeURIComponent(originalSrc)}`, // 프록시 사용

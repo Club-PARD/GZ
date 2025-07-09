@@ -5,15 +5,22 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { getMyPosts } from '@/lib/api';
+
+interface ApiResponse {
+  status: number;
+  success: boolean;
+  message: string;
+  data: Post[];
+}
 
 interface Post {
-  id: number;
-  imageUrl: string;
-  title: string;
-  hourlyPrice: number;
-  dailyPrice: number;
+  post_id: number;
+  firstImageUrl: string;
+  itemName: string;
   category: string;
-  state: string;
+  price_per_hour: number;
+  price_per_day: number;
 }
 
 const MyPostsPage: React.FC = () => {
@@ -21,34 +28,61 @@ const MyPostsPage: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [hasPosts, setHasPosts] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [me, setMe] = useState<string>("");
 
-  const dummyPosts: Post[] = [
-    {
-      id: 1,
-      imageUrl: "/images/usb.jpg",
-      title: "테스트 책상",
-      hourlyPrice: 1000,
-      dailyPrice: 5000,
-      category: "가구",
-      state: "대여중"
-    },
-    {
-      id: 2,
-      imageUrl: "/images/bag.jpg",
-      title: "테스트 의자",
-      hourlyPrice: 500,
-      dailyPrice: 3000,
-      category: "가구",
-      state: "대여중"
-    },
-  ];
+  // 로그인 상태 확인
+  useEffect(() => {
+    const stored = typeof window !== "undefined" ? localStorage.getItem("me") : null;
+    if (!stored) {
+      router.replace("/cert/login");
+      return;
+    }
+    setMe(stored);
+  }, [router]);
 
   useEffect(() => {
-    // 실제 fetch 대신 더미 데이터 사용
-    setPosts(dummyPosts);
-    setHasPosts(dummyPosts.length > 0);
-    setIsLoading(false);
-  }, []);
+    const fetchMyPosts = async () => {
+      if (!me) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const json: ApiResponse = await getMyPosts();
+        if (json.success) {
+          setPosts(json.data);
+          setHasPosts(json.data.length > 0);
+        } else {
+          console.error('API 오류:', json.message);
+          setPosts([]);
+          setHasPosts(false);
+        }
+      } catch (err: any) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          localStorage.removeItem("me");
+          localStorage.removeItem("savedCredentials");
+          router.replace("/cert/login");
+          return;
+        }
+        console.error('데이터 가져오기 실패:', err);
+        setPosts([]);
+        setHasPosts(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMyPosts();
+  }, [me, router]);
+
+  // 로딩 중 UI
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">내 물건 목록을 불러오는 중...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-white pt-[60px]">
@@ -69,47 +103,47 @@ const MyPostsPage: React.FC = () => {
           내 물건
         </h1>
 
-        {isLoading ? (
-          <p className="text-center text-gray-400">불러오는 중...</p>
-        ) : hasPosts ? (
+        {hasPosts ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {posts.map(post => (
               <Link
-                key={post.id}
+                key={post.post_id}
                 href="/detail/detail-page-producer"
                 className="block cursor-pointer hover:opacity-80 transition-opacity"
               >
                 <div className="bg-white rounded-lg overflow-hidden">
                   <div className="relative w-full h-[220px]">
                     <Image
-                      src={post.imageUrl}
-                      alt={post.title}
+                      src={post.firstImageUrl ? `/api/image-proxy?url=${post.firstImageUrl}` : '/images/camera.jpg'}
+                      alt={post.itemName}
                       fill
                       style={{ objectFit: 'cover' }}
                       className="rounded-t-lg"
+                      unoptimized
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/images/camera.jpg';
+                      }}
                     />
                   </div>
                   <div className="p-4">
                     <h2 className="text-[18px] font-medium text-gray-900 mb-2">
-                      {post.title}
+                      {post.itemName}
                     </h2>
                     <div className="space-y-1">
                       <div className="flex items-baseline">
                         <span className="text-[18px] font-semibold text-gray-900">
-                          {post.hourlyPrice.toLocaleString()}원
+                          {post.price_per_hour.toLocaleString()}원
                         </span>
                         <span className="text-[14px] text-gray-500 pl-1">/1시간</span>
                       </div>
                       <div className="flex items-baseline">
                         <span className="text-[18px] font-semibold text-gray-900">
-                          {post.dailyPrice.toLocaleString()}원
+                          {post.price_per_day.toLocaleString()}원
                         </span>
                         <span className="text-[14px] text-gray-500 pl-1">/1일</span>
                       </div>
                       <div className="flex items-center gap-2 mt-2">
-                        <span className="inline-block text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded">
-                          {post.state}
-                        </span>
                         <span className="inline-block text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
                           {post.category}
                         </span>
