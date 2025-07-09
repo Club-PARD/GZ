@@ -19,7 +19,7 @@ export default function DepositFeature() {
           </div>
         </div>
         {/* 왼쪽: 텍스트 + 하단 이미지 */}
-        <div className="w-[482px] flex flex-col mt-[120px] space-y-5">
+        <div className="w-[482px] mt-[160px] space-y-5">
           <p className="text-[#6849FE] text-[18px] font-semibold">대여 신청하기</p>
           <h2 className="text-4xl font-bold text-[#232323]"style={{ letterSpacing: '-2%' }}>
             대여 신청서로 원하는 기간만큼
