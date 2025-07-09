@@ -1,3 +1,4 @@
+// src/pages/api/image-proxy.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -5,20 +6,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
+  const { url } = req.query;
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ message: 'Image URL is required' });
+  }
+
+  // 안전한 URL 검증
+  if (!url.startsWith('https://gz-zigu.store/')) {
+    return res.status(400).json({ message: 'Invalid image URL' });
+  }
+
   try {
-    const { url } = req.query;
-    
-    if (!url || typeof url !== 'string') {
-      return res.status(400).json({ message: 'Image URL is required' });
-    }
-
-    // 안전한 URL 검증
-    if (!url.startsWith('https://gz-zigu.store/')) {
-      return res.status(400).json({ message: 'Invalid image URL' });
-    }
-
-    console.log('🖼️ 이미지 프록시 요청:', url);
-
     // 헤더 설정 (인증 정보 포함)
     const forwardHeaders: Record<string, string> = {
       'User-Agent': 'Mozilla/5.0 (compatible; ZiguApp/1.0)',
@@ -27,12 +25,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       'Cache-Control': 'max-age=3600',
     };
 
-    // 쿠키 전달
     if (req.headers.cookie) {
       forwardHeaders['Cookie'] = req.headers.cookie;
     }
-
-    // Authorization 헤더 전달
     if (req.headers.authorization) {
       forwardHeaders['Authorization'] = req.headers.authorization;
     }
@@ -43,10 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       headers: forwardHeaders,
     });
 
-    console.log('📊 이미지 응답 상태:', backendResponse.status);
-
     if (!backendResponse.ok) {
-      console.error('❌ 이미지 로드 실패:', backendResponse.status, backendResponse.statusText);
       return res.status(backendResponse.status).json({ 
         message: `Failed to load image: ${backendResponse.statusText}` 
       });
@@ -57,22 +49,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (contentType) {
       res.setHeader('Content-Type', contentType);
     }
-
     // 캐시 헤더 설정
     res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=3600');
-    
+
     // 이미지 데이터 스트리밍
     const imageBuffer = await backendResponse.arrayBuffer();
     res.setHeader('Content-Length', imageBuffer.byteLength);
-    
-    console.log('✅ 이미지 프록시 성공:', url);
-    return res.send(Buffer.from(imageBuffer));
 
-  } catch (error) {
-    console.error('❌ 이미지 프록시 에러:', error);
+    return res.send(Buffer.from(imageBuffer));
+  } catch (err: any) {
     return res.status(500).json({ 
       message: 'Internal server error',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: err.message ?? 'Unknown error',
     });
   }
-} 
+}

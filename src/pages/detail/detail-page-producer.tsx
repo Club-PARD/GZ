@@ -20,6 +20,7 @@ interface ApiResponse<T> {
 // 2. registeredItem 데이터 타입 (Swagger 응답에 맞춤)
 interface RegisteredItem {
   user_id: number;
+  nickname: string;
   post_id: number;
   imageUrls: string[];
   price_per_hour: number;
@@ -53,7 +54,6 @@ export default function DetailPageProducer() {
       // 1) 로컬스토리지에서 postId 불러오기
       const raw = localStorage.getItem('registeredItem');
       if (!raw) {
-        console.error('로컬스토리지에 registeredItem이 없습니다.');
         setLoading(false);
         return;
       }
@@ -62,14 +62,12 @@ export default function DetailPageProducer() {
       try {
         parsed = JSON.parse(raw);
       } catch (e) {
-        console.error('registeredItem 파싱 에러:', e);
         setLoading(false);
         return;
       }
 
       const postId = parsed.data?.postId;
       if (!postId) {
-        console.error('postId를 찾을 수 없습니다.');
         setLoading(false);
         return;
       }
@@ -78,24 +76,16 @@ export default function DetailPageProducer() {
       const userId    = userIdRaw ? parseInt(userIdRaw, 10) : undefined;
 
       try {
-        console.log('🔄 상세 정보 요청:', { postId, userId });
         const res = await axios.get<ApiResponse<RegisteredItem>>(
           '/api/post/detail',
           { params: { postId, userId }, withCredentials: true }
         );
 
         if (res.data.success) {
-          console.log('⚙️ imageUrls from API:', res.data.data.imageUrls);
           setRegisteredItem(res.data.data);
-        } else {
-          console.error('API 오류:', res.data.message);
         }
       } catch (err: any) {
-        console.error('아이템 데이터 처리 중 에러 발생:', err);
-        if (err.response) {
-          console.error('에러 상태:', err.response.status);
-          console.error('에러 데이터:', err.response.data);
-        }
+        // 에러 처리만 하고 로그는 제거
       } finally {
         setLoading(false);
       }
@@ -123,12 +113,10 @@ export default function DetailPageProducer() {
 
   // 렌더링용 데이터 가공
   const images = (registeredItem.imageUrls && registeredItem.imageUrls.length > 0)
-    ? registeredItem.imageUrls.map(url => `/api/image-proxy?url=${url}`)  // 간단하게 프록시 사용
+    ? registeredItem.imageUrls.map(url => `/api/image-proxy?url=${url}`)
     : defaultImages;
-
-  // imageUrls가 string[]이므로 첫 번째 이미지만 사용해서 post 정보 추출 불가
-  // writerNickname, itemName 등은 registeredItem에서 직접 추출
-  const writerNickname = '알 수 없음'; // post 정보가 없으므로 임시값
+  // API에서 받은 닉네임 사용
+  const nickname = registeredItem.nickname || '알 수 없음';
   const itemName       = registeredItem.description || '제목 없음';
   const categoryLabel  = categoryMap[registeredItem.category] || registeredItem.category;
 
@@ -149,14 +137,9 @@ export default function DetailPageProducer() {
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 unoptimized
                 onError={(e) => {
-                  console.log(`❌ 이미지 로드 실패: ${src}`);
                   // 기본 이미지로 대체
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/camera.jpg';
-                  
-                  // 이미지 로드 실패 시 사용자에게 알림
-                  console.log('💡 이미지 로드 실패: 백엔드 인증 설정 문제로 추정됩니다.');
-                  console.log('💡 해결 방안: 백엔드에서 이미지 접근 권한 설정 또는 별도 API 제공 필요');
                 }}
               />
             </div>
@@ -175,7 +158,7 @@ export default function DetailPageProducer() {
               height={32}
               unoptimized
             />
-            <span className="font-medium text-[#232323]">{writerNickname}</span>
+            <span className="font-medium text-[#232323]">{nickname}</span>
           </div>
           <div className="flex items-center space-x-2">
             <h1 className="text-2xl font-bold text-[#232323]">{itemName}</h1>
