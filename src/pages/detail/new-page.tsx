@@ -85,16 +85,6 @@ export default function NewPage() {
       form.append("description", description)
       images.forEach((file) => form.append("images", file))
 
-      // FormData 내용 로그 출력
-      console.log("보내는 데이터 (multipart/form-data):")
-      for (let [key, value] of form.entries()) {
-        if (value instanceof File) {
-          console.log(`${key}: File(${value.name}, ${value.size}bytes)`)
-        } else {
-          console.log(`${key}: ${value}`)
-        }
-      }
-
       // 프록시를 통해 백엔드로 multipart 요청 (userId를 query parameter로)
       const res = await axios.post(`/api/post/create?userId=${userId}`, form, {
         withCredentials: true,
@@ -102,8 +92,6 @@ export default function NewPage() {
           // axios가 multipart boundary를 자동 설정하도록 Content-Type 헤더 생략
         }
       })
-
-      console.log("등록 성공 응답:", res.data)
 
       // 등록 성공 시 detail-page-producer로 이동
       // 등록된 아이템 정보를 localStorage에 저장 (서버 응답 + 사용자 입력 데이터)
@@ -119,30 +107,11 @@ export default function NewPage() {
         }
       };
       
-      // 서버 응답 상세 로그 추가
-      console.log("📊 서버 응답 전체:", JSON.stringify(res.data, null, 2));
-      console.log("📊 응답 헤더:", res.headers);
-      
-      // 이미지 URL이 응답에 포함되어 있는지 확인
-      if (res.data.data && res.data.data.imageUrls) {
-        console.log("📸 서버에서 받은 이미지 URL들:", res.data.data.imageUrls);
-        res.data.data.imageUrls.forEach((url: string, index: number) => {
-          console.log(`📸 이미지 ${index + 1}: ${url}`);
-        });
-      } else {
-        console.log("⚠️ 서버 응답에 imageUrls가 없습니다");
-      }
-      
       localStorage.setItem('registeredItem', JSON.stringify(itemDataForStorage))
-
-      // 저장된 데이터 확인용 로그
-      const storedItem = localStorage.getItem('registeredItem');
-      console.log('localStorage에 저장된 값:', storedItem);
       
       // detail-page-producer로 라우팅
       router.push('/detail/detail-page-producer')
     } catch (err: any) {
-      console.error(err)
       let errorMessage = "등록 중 오류가 발생했습니다."
       if (err.response) {
         errorMessage += `\n서버 응답: ${JSON.stringify(err.response.data)}`;
