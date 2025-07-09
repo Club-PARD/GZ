@@ -9,11 +9,45 @@ import { AiFillSetting } from "react-icons/ai";
 import { MdPolicy } from "react-icons/md";
 import { BsHeadset } from "react-icons/bs";
 import { MdManageAccounts } from "react-icons/md";
+import axios from 'axios';
+interface UserInfo {
+  nickname: string;
+  schoolName: string;
+  studentMail: string;
+}
 
 export default function HomeHeader() {
   const router = useRouter();
   const queryMe = router.query.me as string | undefined;
   const [me, setMe] = useState<string | undefined>(undefined);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  // 1) me 가져오기
+  useEffect(() => {
+    if (queryMe) {
+      setMe(queryMe);
+    } else {
+      const stored =
+        typeof window !== "undefined" ? localStorage.getItem("me") : null;
+      if (stored) setMe(stored);
+    }
+  }, [queryMe]);
+
+  // 2) me(id)를 이용해서 사용자 정보 조회
+  useEffect(() => {
+    if (!me) return;
+    const fetchUserInfo = async () => {
+      try {
+        const res = await axios.get<{ data: UserInfo }>("/api/user/info", {
+          params: { userId: Number(me) },
+          withCredentials: true,
+        });
+        setUserInfo(res.data.data);
+      } catch (err) {
+        console.error("헤더 사용자 정보 조회 에러:", err);
+      }
+    };
+    fetchUserInfo();
+  }, [me]);
 
   useEffect(() => {
     if (queryMe) {
@@ -108,7 +142,7 @@ export default function HomeHeader() {
                     tracking-[-0.36px]      /* letter-spacing: -0.36px; */
                   "
                   >
-                    닉네임
+                    {userInfo ? userInfo.nickname : "..."}
                   </div>
                   <div
                     className="
@@ -119,7 +153,9 @@ export default function HomeHeader() {
                     tracking-[-0.32px]      /* letter-spacing: -0.32px */
                   "
                   >
-                    학교 메일
+                     {userInfo
+                      ? `${userInfo.schoolName} `
+                      : "..."}
                   </div>
 
                   <hr className="mx-4 h-[1px] bg-[#F3F3F5] border-none" />
