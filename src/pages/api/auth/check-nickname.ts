@@ -7,9 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { nickname } = req.body;
-    console.log('닉네임 중복확인 요청 받음:', { nickname });
-    
+    const { nickname } = req.body;    
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/check-nickname`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

@@ -12,10 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const apiHost = process.env.NEXT_PUBLIC_API_URL?.replace('https://', '').replace('http://', '');
   if (!url.includes(apiHost || 'gz-zigu.store')) {
     return res.status(403).end('허용되지 않은 도메인')
-  }
-
-  console.log('[프록시] 요청 URL:', url);
-  
+  }  
   try {
     const backendRes = await axios.get(url, {
       responseType: 'stream',
