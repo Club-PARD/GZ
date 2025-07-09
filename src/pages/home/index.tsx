@@ -170,7 +170,7 @@ export default function Home() {
           {filtered.map((post) => (
             <Link
               key={post.post_id}
-              href={`/detail/detail-page-consumer?postId=${post.post_id}`}
+              href={`/detail/${post.post_id}`}
               className={styles.itemCard}
             >
               <div className={styles.imageContainer}>

@@ -5,7 +5,26 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/home-header";
 import Footer from "@/components/Footer";
-import { getMyPosts, deletePosts, ApiResponse, Post } from "@/lib/api";
+import { getMyPosts, deletePosts } from "@/lib/api";
+
+// API 응답 래퍼 타입
+interface ApiResponse<T> {
+  status: number;
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+// Post 타입 정의
+interface Post {
+  post_id: number;
+  firstImageUrl?: string | null;
+  itemName: string;
+  category: string;
+  price_per_hour: number;
+  price_per_day: number;
+}
+
 const MyPostsPage: React.FC = () => {
   const router = useRouter();
   const [posts, setPosts] = useState<Post[]>([]);
@@ -102,7 +121,7 @@ const MyPostsPage: React.FC = () => {
       try {
         // 실제 삭제 API 호출
         const postIdsArray = Array.from(selectedItems);
-        const response: ApiResponse = await deletePosts(postIdsArray);
+        const response: ApiResponse<any> = await deletePosts(postIdsArray);
 
         if (response.success) {
           // 성공시 삭제된 항목들을 목록에서 제거
@@ -241,7 +260,7 @@ const MyPostsPage: React.FC = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <Link
-                              href="/detail/detail-page-producer"
+                              href={`/detail/detail-page-producer?postId=${post.post_id}`}
                               className="text-sm font-medium text-gray-900 hover:text-[#6849FE] cursor-pointer flex items-center"
                             >
                               {post.itemName}
