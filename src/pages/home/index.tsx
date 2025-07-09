@@ -12,8 +12,16 @@ import { useRouter } from "next/router";
 import { getHomeData } from "@/lib/api";
 
 // 여러 경로를 시도하는 이미지 컴포넌트
-function ImageWithFallback({ imagePath, alt, className }: { imagePath: string; alt: string; className: string }) {
-  const [currentSrc, setCurrentSrc] = useState<string>('');
+function ImageWithFallback({
+  imagePath,
+  alt,
+  className,
+}: {
+  imagePath: string;
+  alt: string;
+  className: string;
+}) {
+  const [currentSrc, setCurrentSrc] = useState<string>("");
   const [attemptIndex, setAttemptIndex] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [hasError, setHasError] = useState<boolean>(false);
@@ -21,7 +29,7 @@ function ImageWithFallback({ imagePath, alt, className }: { imagePath: string; a
   // 시도할 경로들
   const possiblePaths = [
     `https://gz-zigu.store/${imagePath}`,
-    `https://gz-zigu.store/files/${imagePath}`,  
+    `https://gz-zigu.store/files/${imagePath}`,
     `https://gz-zigu.store/uploads/${imagePath}`,
     `https://gz-zigu.store/api/files/${imagePath}`,
   ];
@@ -38,8 +46,11 @@ function ImageWithFallback({ imagePath, alt, className }: { imagePath: string; a
   }, [attemptIndex, imagePath]);
 
   const handleError = () => {
-    console.log(`❌ 이미지 로드 실패 (${attemptIndex + 1}/${possiblePaths.length}):`, possiblePaths[attemptIndex]);
-    setAttemptIndex(prev => prev + 1);
+    console.log(
+      `❌ 이미지 로드 실패 (${attemptIndex + 1}/${possiblePaths.length}):`,
+      possiblePaths[attemptIndex]
+    );
+    setAttemptIndex((prev) => prev + 1);
   };
 
   const handleLoad = () => {
@@ -50,7 +61,9 @@ function ImageWithFallback({ imagePath, alt, className }: { imagePath: string; a
 
   if (hasError || attemptIndex >= possiblePaths.length) {
     return (
-      <div className={`${className} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}>
+      <div
+        className={`${className} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}
+      >
         <div className="text-center">
           <div className="text-gray-400 text-2xl mb-1">📷</div>
           <span className="text-gray-500 text-xs">이미지 로드 실패</span>
@@ -62,7 +75,9 @@ function ImageWithFallback({ imagePath, alt, className }: { imagePath: string; a
   return (
     <>
       {isLoading && (
-        <div className={`${className} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}>
+        <div
+          className={`${className} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}
+        >
           <div className="text-center">
             <div className="text-gray-400 text-2xl mb-1">⏳</div>
             <span className="text-gray-500 text-xs">로딩 중...</span>
@@ -73,7 +88,7 @@ function ImageWithFallback({ imagePath, alt, className }: { imagePath: string; a
         src={currentSrc}
         alt={alt}
         className={className}
-        style={{ display: isLoading ? 'none' : 'block' }}
+        style={{ display: isLoading ? "none" : "block" }}
         onLoad={handleLoad}
         onError={handleError}
       />
@@ -95,7 +110,7 @@ interface HomeResponse {
 
 interface HomePost {
   post_id: number;
-  firstImageUrl?: string | null;  // 백엔드에서 오는 실제 필드명
+  firstImageUrl?: string | null; // 백엔드에서 오는 실제 필드명
   itemName: string;
   category: string;
   price_per_hour: number;
@@ -122,10 +137,11 @@ export default function Home() {
 
   // 로그인 상태 확인
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("me") : null;
+    const stored =
+      typeof window !== "undefined" ? localStorage.getItem("me") : null;
     if (!stored) {
       console.log("로그인되지 않은 사용자, 로그인 페이지로 이동");
-      router.replace('/cert/login');
+      router.replace("/cert/login");
       return;
     }
     setMe(stored);
@@ -144,7 +160,7 @@ export default function Home() {
         console.log("🔄 홈 요청 시작");
         const json: HomeResponse = await getHomeData();
         console.log("✅ 홈 요청 성공:", json);
-        
+
         if (json.success) {
           // 이미지 URL 정보를 자세히 로그
           console.log("🖼️ 이미지 URL 정보:");
@@ -152,10 +168,10 @@ export default function Home() {
             console.log(`포스트 ${index + 1}:`, {
               postId: post.post_id,
               firstImageUrl: post.firstImageUrl,
-              itemName: post.itemName
+              itemName: post.itemName,
             });
           });
-          
+
           setPosts(json.data.posts);
         } else {
           console.error("❌ 홈 API 오류:", json.message);
@@ -163,13 +179,13 @@ export default function Home() {
       } catch (err: any) {
         console.error("❌ 홈 요청 실패:", err.response?.status || err.message);
         console.error("홈 데이터 로드 실패:", err);
-        
+
         // 401/403 에러인 경우 로그인 페이지로 리다이렉트
         if (err.response?.status === 401 || err.response?.status === 403) {
           console.log("🔄 인증 실패로 인한 로그인 페이지 리다이렉트");
           localStorage.removeItem("me");
           localStorage.removeItem("savedCredentials"); // 저장된 자격증명도 제거
-          router.replace('/cert/login');
+          router.replace("/cert/login");
           return;
         }
       } finally {
@@ -215,11 +231,12 @@ export default function Home() {
           </h1>
           <div className="w-[780px] h-[68px] relative">
             <input
-              className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF]"
+              className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border text-black
+               border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF]"
               type="text"
               placeholder="지금 어떤 물건을 구매하고 있나요?"
             />
-            <div className="absolute left-5 top-1/2 -translate-y-1/2">
+            <div className="absolute left-5 top-1/2 -translate-y-1/2 tetx-black">
               <IoSearchOutline size={24} color="#A2A3A7" />
             </div>
           </div>
@@ -262,13 +279,15 @@ export default function Home() {
             >
               <div className={styles.imageContainer}>
                 {post.firstImageUrl ? (
-                  <ImageWithFallback 
+                  <ImageWithFallback
                     imagePath={post.firstImageUrl}
                     alt={post.itemName}
                     className={styles.image}
                   />
                 ) : (
-                  <div className={`${styles.image} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}>
+                  <div
+                    className={`${styles.image} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}
+                  >
                     <div className="text-center">
                       <div className="text-gray-400 text-2xl mb-1">📷</div>
                       <span className="text-gray-500 text-xs">이미지 없음</span>

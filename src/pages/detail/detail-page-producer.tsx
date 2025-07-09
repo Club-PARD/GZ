@@ -126,37 +126,27 @@ export default function DetailPageProducer() {
   ? registeredItem.imageUrls.map((src, index) => {
       console.log(`🔄 이미지 ${index + 1} 변환 시작:`, src);
       
-      // 1) uploads/posts 로 보정 (절대 URL과 상대 URL 모두 처리)
+      // 서버에서 받은 URL을 그대로 사용 (경로 변환 제거)
       let absoluteUrl = src;
       
+      // 이미 절대 URL인 경우 그대로 사용
       if (src.startsWith('http')) {
-        // 이미 절대 URL인 경우: /posts/ → /uploads/posts/ 변환
-        if (src.includes('/posts/')) {
-          absoluteUrl = src.replace('/posts/', '/uploads/posts/');
-          console.log(`📁 절대 URL 경로 보정: ${src} → ${absoluteUrl}`);
-        }
+        absoluteUrl = src;
+        console.log(`🌐 절대 URL 그대로 사용: ${absoluteUrl}`);
       } else {
-        // 상대 URL인 경우
-        let path = src;
-        if (src.startsWith('/posts') || src.startsWith('posts')) {
-          // '/posts/...' 또는 'posts/...' → '/uploads/posts/...'
-          path = src.startsWith('/') 
-            ? `/uploads${src}`       
-            : `/uploads/${src}`;
-          console.log(`📁 상대 경로 보정: ${src} → ${path}`);
-        } else {
-          // 그 외 상대경로
-          path = `/${src}`;
-          console.log(`📁 상대경로 처리: ${src} → ${path}`);
-        }
-        absoluteUrl = `https://gz-zigu.store${path}`;
+        // 상대 URL인 경우에만 gz-zigu.store 도메인 추가
+        absoluteUrl = `https://gz-zigu.store${src.startsWith('/') ? src : `/${src}`}`;
+        console.log(`🌐 상대 URL을 절대 URL로 변환: ${src} → ${absoluteUrl}`);
       }
 
       console.log(`🌐 최종 절대 URL: ${absoluteUrl}`);
 
-      // 2) 프록시 호출용으로 인코딩
+      // 프록시 호출용으로 인코딩
       const proxyUrl = `/api/image-proxy?url=${encodeURIComponent(absoluteUrl)}`;
       console.log(`🔗 프록시 URL: ${proxyUrl}`);
+      
+      // 임시 테스트: 프록시 없이 직접 URL 사용
+      // return absoluteUrl;  // 이 줄을 주석 해제하면 프록시 없이 직접 접근
       
       return proxyUrl;
     })
@@ -189,6 +179,10 @@ export default function DetailPageProducer() {
                   // 기본 이미지로 대체
                   const target = e.target as HTMLImageElement;
                   target.src = '/images/camera.jpg';
+                  
+                  // 이미지 로드 실패 시 사용자에게 알림
+                  console.log('💡 이미지 로드 실패: 백엔드 인증 설정 문제로 추정됩니다.');
+                  console.log('💡 해결 방안: 백엔드에서 이미지 접근 권한 설정 또는 별도 API 제공 필요');
                 }}
               />
             </div>
