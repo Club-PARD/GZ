@@ -5,6 +5,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 export const config = {
   api: {
     bodyParser: false,
+    responseLimit: false,
+    externalResolver: true,
   },
 };
 
@@ -14,9 +16,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // raw body 읽기
+    // raw body 읽기 with size limit check
     const chunks: Buffer[] = [];
+    let totalSize = 0;
+    const maxSize = 50 * 1024 * 1024; // 50MB
+
     req.on('data', (chunk: Buffer) => {
+      totalSize += chunk.length;
+      if (totalSize > maxSize) {
+        res.status(413).json({ 
+          message: 'Request too large', 
+          error: 'PAYLOAD_TOO_LARGE',
+          maxSize: '50MB'
+        });
+        return;
+      }
       chunks.push(chunk);
     });
     await new Promise<void>(resolve => req.on('end', resolve));
@@ -39,12 +53,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const queryString = req.url?.includes('?') ? req.url.split('?')[1] : '';
     const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/post/create${queryString ? `?${queryString}` : ''}`;
 
-    // 백엔드 API 호출
+    // 백엔드 API 호출 with extended timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60초 timeout
+
     const backendResponse = await fetch(backendUrl, {
       method: 'POST',
       headers: forwardHeaders,
       body,
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     const data = await backendResponse.text();
 
