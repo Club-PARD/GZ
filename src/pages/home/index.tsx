@@ -26,7 +26,7 @@ interface HomeResponse {
 
 interface HomePost {
   post_id: number;
-  firstImageUrl?: string | null; // 백엔드에서 오는 실제 필드명
+  firstImageUrl?: string | null;
   itemName: string;
   category: string;
   price_per_hour: number;
@@ -53,10 +53,8 @@ export default function Home() {
 
   // 로그인 상태 확인
   useEffect(() => {
-    const stored =
-      typeof window !== "undefined" ? localStorage.getItem("me") : null;
+    const stored = typeof window !== "undefined" ? localStorage.getItem("me") : null;
     if (!stored) {
-      console.log("로그인되지 않은 사용자, 로그인 페이지로 이동");
       router.replace("/cert/login");
       return;
     }
@@ -65,52 +63,33 @@ export default function Home() {
 
   useEffect(() => {
     const fetchHome = async () => {
-      // 로그인된 사용자만 API 호출
       if (!me) {
         setIsLoading(false);
         return;
       }
 
       try {
-        // api.ts의 getHomeData 함수 사용
-        console.log("🔄 홈 요청 시작");
         const json: HomeResponse = await getHomeData();
-        console.log("✅ 홈 요청 성공:", json);
-
         if (json.success) {
-          // 이미지 URL 정보를 자세히 로그
-          console.log("🖼️ 이미지 URL 정보:");
-          json.data.posts.forEach((post: any, index: number) => {
-            console.log(`포스트 ${index + 1}:`, {
-              postId: post.post_id,
-              firstImageUrl: post.firstImageUrl,
-              itemName: post.itemName,
-            });
-          });
-
           setPosts(json.data.posts);
         } else {
-          console.error("❌ 홈 API 오류:", json.message);
+          // 필요에 따라 사용자에게 오류 처리 UI 추가
         }
       } catch (err: any) {
-        console.error("❌ 홈 요청 실패:", err.response?.status || err.message);
-        console.error("홈 데이터 로드 실패:", err);
-
-        // 401/403 에러인 경우 로그인 페이지로 리다이렉트
         if (err.response?.status === 401 || err.response?.status === 403) {
-          console.log("🔄 인증 실패로 인한 로그인 페이지 리다이렉트");
           localStorage.removeItem("me");
-          localStorage.removeItem("savedCredentials"); // 저장된 자격증명도 제거
+          localStorage.removeItem("savedCredentials");
           router.replace("/cert/login");
           return;
         }
+        // 필요에 따라 사용자에게 네트워크 오류 UI 추가
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchHome();
-  }, [me]);
+  }, [me, router]);
 
   // 로딩 중 UI
   if (isLoading) {
@@ -204,8 +183,6 @@ export default function Home() {
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     unoptimized
                     onError={(e) => {
-                      console.log(`❌ 이미지 로드 실패: ${post.firstImageUrl}`);
-                      // 기본 이미지로 대체
                       const target = e.target as HTMLImageElement;
                       target.src = '/images/camera.jpg';
                     }}
@@ -231,11 +208,8 @@ export default function Home() {
                 <span className="text-[#A2A3A7]">/1일</span>
               </div>
               <div className="flex flex-row gap-2">
-                {/* 대여중 태그는 API에 따로 없으므로 임의로 숨김 or 표시 로직 추가 */}
-                {/* <span className={styles.rentalTag}>대여중</span> */}
                 <span className={styles.categoryTag}>
-                  {categories.find((c) => c.id === post.category)?.name ||
-                    post.category}
+                  {categories.find((c) => c.id === post.category)?.name || post.category}
                 </span>
               </div>
             </Link>
