@@ -78,9 +78,9 @@ export default function Application({
                   <td className="px-[32px] py-[32px]">
                     <div className="flex items-center space-x-[16px]">
                       <div className="border border-[#F3F3F5] rounded-lg flex items-center justify-center bg-[#F3F3F5]">
-                        <CgMathPlus onClick={increase} className="w-10 h-10 text-xl" />
+                        <CgMathPlus onClick={increase} className="w-[20px] h-[20px] text-xl" />
                         <span className="w-10 text-center text-base">{duration}</span>
-                        <CgMathMinus onClick={decrease} className="w-10 h-10 text-xl" />
+                        <CgMathMinus onClick={decrease} className="w-[20px] h-[20px] text-xl" />
                       </div>
                       <div className="flex bg-[#F3F3F5] w-[144px] h-[48px] rounded-lg overflow-hidden text-[18px] font-medium leading-[130%]">
                         {(["일", "시간"] as const).map((u, i) => (
