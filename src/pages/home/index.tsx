@@ -53,7 +53,8 @@ export default function Home() {
 
   // 로그인 상태 확인
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("me") : null;
+    const stored =
+      typeof window !== "undefined" ? localStorage.getItem("me") : null;
     if (!stored) {
       router.replace("/cert/login");
       return;
@@ -180,11 +181,15 @@ export default function Home() {
                     width={280}
                     height={280}
                     className={styles.image}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
                     unoptimized
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = '/images/camera.jpg';
+                      target.src = "/images/camera.jpg";
                     }}
                   />
                 ) : (
@@ -209,7 +214,8 @@ export default function Home() {
               </div>
               <div className="flex flex-row gap-2">
                 <span className={styles.categoryTag}>
-                  {categories.find((c) => c.id === post.category)?.name || post.category}
+                  {categories.find((c) => c.id === post.category)?.name ||
+                    post.category}
                 </span>
               </div>
             </Link>

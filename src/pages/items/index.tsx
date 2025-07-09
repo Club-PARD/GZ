@@ -5,8 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/home-header";
 import Footer from "@/components/Footer";
-import { getMyPosts, ApiResponse, Post } from "@/lib/api";
-
+import { getMyPosts, deletePosts, ApiResponse, Post } from "@/lib/api";
 const MyPostsPage: React.FC = () => {
   const router = useRouter();
   const [posts, setPosts] = useState<Post[]>([]);
@@ -66,10 +65,13 @@ const MyPostsPage: React.FC = () => {
   // 체크박스 관련 함수들
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      const allIds = new Set(posts.map((post) => post.post_id));
-      setSelectedItems(allIds);
+      const currentPageIds = new Set(currentPosts.map((post) => post.post_id));
+      setSelectedItems(new Set([...selectedItems, ...currentPageIds]));
     } else {
-      setSelectedItems(new Set());
+      const currentPageIds = new Set(currentPosts.map((post) => post.post_id));
+      const newSelected = new Set(selectedItems);
+      currentPageIds.forEach((id) => newSelected.delete(id));
+      setSelectedItems(newSelected);
     }
   };
 
@@ -89,27 +91,59 @@ const MyPostsPage: React.FC = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentPosts = posts.slice(startIndex, endIndex);
 
-  // getStatusText 함수 삭제하고 삭제 함수도 수정
+  // 선택된 항목들을 삭제하는 함수
   const handleDeleteSelected = async () => {
     if (selectedItems.size === 0) {
-      alert('삭제할 항목을 선택해주세요.');
+      alert("삭제할 항목을 선택해주세요.");
       return;
     }
 
     if (confirm(`${selectedItems.size}개의 항목을 삭제하시겠습니까?`)) {
       try {
-        // 여기에 실제 삭제 API 호출 로직 추가
-        // await deletePostsApi(Array.from(selectedItems));
-        
-        // 임시로 로컬에서 삭제 (실제로는 API 호출 후 데이터 다시 가져오기)
-        const updatedPosts = posts.filter(post => !selectedItems.has(post.post_id));
-        setPosts(updatedPosts);
-        setSelectedItems(new Set());
-        
-        console.log('삭제할 항목들:', Array.from(selectedItems));
-      } catch (error) {
-        console.error('삭제 실패:', error);
-        alert('삭제 중 오류가 발생했습니다.');
+        // 실제 삭제 API 호출
+        const postIdsArray = Array.from(selectedItems);
+        const response: ApiResponse = await deletePosts(postIdsArray);
+
+        if (response.success) {
+          // 성공시 삭제된 항목들을 목록에서 제거
+          const updatedPosts = posts.filter(
+            (post) => !selectedItems.has(post.post_id)
+          );
+          setPosts(updatedPosts);
+          setHasPosts(updatedPosts.length > 0);
+          setSelectedItems(new Set());
+
+          // 현재 페이지에 아이템이 없으면 이전 페이지로 이동
+          const newTotalPages = Math.ceil(updatedPosts.length / itemsPerPage);
+          if (currentPage > newTotalPages && newTotalPages > 0) {
+            setCurrentPage(newTotalPages);
+          }
+
+          alert(`${postIdsArray.length}개의 항목이 삭제되었습니다.`);
+        } else {
+          alert(response.message || "삭제 중 오류가 발생했습니다.");
+        }
+      } catch (error: any) {
+        console.error("삭제 실패 상세:", {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          localStorage.removeItem("me");
+          localStorage.removeItem("authToken");
+          router.replace("/cert/login");
+          return;
+        }
+
+        if (error.response?.status === 500) {
+          alert("서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        } else {
+          alert(
+            error.response?.data?.message || "삭제 중 오류가 발생했습니다."
+          );
+        }
       }
     }
   };
@@ -149,7 +183,10 @@ const MyPostsPage: React.FC = () => {
                   type="checkbox"
                   className="h-4 w-4 text-[#6849FE] focus:ring-[#6849FE] border-gray-300 rounded mr-4"
                   checked={
-                    selectedItems.size === posts.length && posts.length > 0
+                    currentPosts.length > 0 &&
+                    currentPosts.every((post) =>
+                      selectedItems.has(post.post_id)
+                    )
                   }
                   onChange={(e) => handleSelectAll(e.target.checked)}
                 />
@@ -263,7 +300,7 @@ const MyPostsPage: React.FC = () => {
                   <button className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     선택 차순
                   </button>
-                  <button 
+                  <button
                     onClick={handleDeleteSelected}
                     className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
