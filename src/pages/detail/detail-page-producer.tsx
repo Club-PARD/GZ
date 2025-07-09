@@ -1,142 +1,241 @@
 // pages/detail/detail-page-producer.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
-import Header from '@/components/home-header'
-import Footer from '@/components/Footer'
-import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
-import styles from "../../styles/detail.module.css";
-import LoadingBalls from "@/components/loading-components/loding-ball";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Image from 'next/image';
+import Header from '@/components/home-header';
+import Footer from '@/components/Footer';
+import LoadingBalls from '@/components/loading-components/loding-ball';
+import styles from '../../styles/detail.module.css';
+
+// 1. API 응답 래퍼 타입
+interface ApiResponse<T> {
+  status: number;
+  success: boolean;
+  message: string;
+  data: T;
+}
+
+// 2. registeredItem 데이터 타입 (Swagger 응답에 맞춤)
+interface RegisteredItem {
+  user_id: number;
+  post_id: number;
+  imageUrls: string[];
+  price_per_hour: number;
+  price_per_day: number;
+  description: string;
+  category: string;
+}
 
 export default function DetailPageProducer() {
-  const [registeredItem, setRegisteredItem] = useState<any>(null)
-  const [loading, setLoading] = useState(true);
-  
-  // 카테고리 한국어 변환
+  const [registeredItem, setRegisteredItem] = useState<RegisteredItem | null>(null);
+  const [loading, setLoading]                   = useState<boolean>(true);
+
+  // 카테고리 한글 매핑
   const categoryMap: Record<string, string> = {
-    'ELECTRONICS': '전자기기',
-    'HEALTH': '건강',
-    'INTEREST': '취미/여가',
-    'BEAUTYFASION': '뷰티/패션',
-    'ACADEMIC': '도서/학업',
-    'ESSENTIALS': '생활용품',
-    'ETC': '기타',
-  }
-  
-  // 기본 이미지 (등록된 이미지가 없을 경우 사용)
-  const defaultImages = [
-    "/images/camera.jpg",
-  ];
+    ELECTRONICS:  '전자기기',
+    HEALTH:       '건강',
+    INTEREST:     '취미/여가',
+    BEAUTYFASION: '뷰티/패션',
+    ACADEMIC:     '도서/학업',
+    ESSENTIALS:   '생활용품',
+    ETC:          '기타',
+  };
 
-  // localStorage에서 등록된 아이템 정보 가져오기
+  // 기본 이미지
+  const defaultImages = ['/images/camera.jpg'];
+
   useEffect(() => {
-    const storedItem = localStorage.getItem('registeredItem')
-    if (storedItem) {
-      try {
-        const responseData = JSON.parse(storedItem)
-        // Swagger 명세에 따라 response의 data 필드를 사용합니다.
-        setRegisteredItem(responseData.data)
-      } catch (error) {
-        console.error('아이템 데이터 파싱 에러:', error)
+    const fetchPostData = async () => {
+      setLoading(true);
+
+      // 1) 로컬스토리지에서 postId 불러오기
+      const raw = localStorage.getItem('registeredItem');
+      if (!raw) {
+        console.error('로컬스토리지에 registeredItem이 없습니다.');
+        setLoading(false);
+        return;
       }
-    }
-    setLoading(false);
-  }, [])
 
-  // 등록된 아이템(data 객체)이 있으면 해당 이미지, 없으면 기본 이미지 사용
-  // Swagger 명세에 따라 images 배열의 각 객체에서 s3Key를 이미지 소스로 사용합니다.
-  const images = registeredItem?.images?.length > 0 
-    ? registeredItem.images.map((img: any) => img.s3Key) 
-    : defaultImages;
+      let parsed: any;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (e) {
+        console.error('registeredItem 파싱 에러:', e);
+        setLoading(false);
+        return;
+      }
 
-  // Swagger 명세에 따라 데이터 필드에 접근합니다.
-  const writerNickname = registeredItem?.images?.[0]?.post?.writer?.nickname || '작성자';
-  const itemName = registeredItem?.images?.[0]?.post?.itemName || '상품명 없음';
+      const postId = parsed.data?.postId;
+      if (!postId) {
+        console.error('postId를 찾을 수 없습니다.');
+        setLoading(false);
+        return;
+      }
 
+      const userIdRaw = localStorage.getItem('me');
+      const userId    = userIdRaw ? parseInt(userIdRaw, 10) : undefined;
+
+      try {
+        console.log('🔄 상세 정보 요청:', { postId, userId });
+        const res = await axios.get<ApiResponse<RegisteredItem>>(
+          '/api/post/detail',
+          { params: { postId, userId }, withCredentials: true }
+        );
+
+        if (res.data.success) {
+          console.log('⚙️ imageUrls from API:', res.data.data.imageUrls);
+          setRegisteredItem(res.data.data);
+        } else {
+          console.error('API 오류:', res.data.message);
+        }
+      } catch (err: any) {
+        console.error('아이템 데이터 처리 중 에러 발생:', err);
+        if (err.response) {
+          console.error('에러 상태:', err.response.status);
+          console.error('에러 데이터:', err.response.data);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPostData();
+  }, []);
 
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-        <div className="flex space-x-2 mb-4">
-          <LoadingBalls />
-        </div>
-        <p className="text-gray-600">상품 정보를 불러오는 중입니다...</p>
+        <LoadingBalls />
+        <p className="text-gray-600 mt-4">상품 정보를 불러오는 중입니다...</p>
       </div>
     );
   }
+
+  if (!registeredItem) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">상품 정보를 불러올 수 없습니다.</p>
+      </div>
+    );
+  }
+
+  // 렌더링용 데이터 가공
+  const images = (registeredItem.imageUrls && registeredItem.imageUrls.length > 0)
+  ? registeredItem.imageUrls.map((src, index) => {
+      console.log(`🔄 이미지 ${index + 1} 변환 시작:`, src);
+      
+      // 1) uploads/posts 로 보정 (절대 URL과 상대 URL 모두 처리)
+      let absoluteUrl = src;
+      
+      if (src.startsWith('http')) {
+        // 이미 절대 URL인 경우: /posts/ → /uploads/posts/ 변환
+        if (src.includes('/posts/')) {
+          absoluteUrl = src.replace('/posts/', '/uploads/posts/');
+          console.log(`📁 절대 URL 경로 보정: ${src} → ${absoluteUrl}`);
+        }
+      } else {
+        // 상대 URL인 경우
+        let path = src;
+        if (src.startsWith('/posts') || src.startsWith('posts')) {
+          // '/posts/...' 또는 'posts/...' → '/uploads/posts/...'
+          path = src.startsWith('/') 
+            ? `/uploads${src}`       
+            : `/uploads/${src}`;
+          console.log(`📁 상대 경로 보정: ${src} → ${path}`);
+        } else {
+          // 그 외 상대경로
+          path = `/${src}`;
+          console.log(`📁 상대경로 처리: ${src} → ${path}`);
+        }
+        absoluteUrl = `https://gz-zigu.store${path}`;
+      }
+
+      console.log(`🌐 최종 절대 URL: ${absoluteUrl}`);
+
+      // 2) 프록시 호출용으로 인코딩
+      const proxyUrl = `/api/image-proxy?url=${encodeURIComponent(absoluteUrl)}`;
+      console.log(`🔗 프록시 URL: ${proxyUrl}`);
+      
+      return proxyUrl;
+    })
+  : defaultImages;
+
+  // imageUrls가 string[]이므로 첫 번째 이미지만 사용해서 post 정보 추출 불가
+  // writerNickname, itemName 등은 registeredItem에서 직접 추출
+  const writerNickname = '알 수 없음'; // post 정보가 없으므로 임시값
+  const itemName       = registeredItem.description || '제목 없음';
+  const categoryLabel  = categoryMap[registeredItem.category] || registeredItem.category;
 
   return (
     <div className="bg-white pt-[80px]">
       <Header />
 
       <main className="max-w-5xl mx-40 my-8 flex gap-8">
-        {/* 좌측: 이미지 세로 나열 */}
+        {/* 왼쪽: 이미지 세로 나열 */}
         <section className="w-1/2 space-y-4">
-          {images.map((src: string, idx: number) => (
-            <div key={idx} className={styles.imageContainer}>             
+          {images.map((src, idx) => (
+            <div key={idx} className={styles.imageContainer}>
               <Image
                 src={src}
                 alt={`image-${idx}`}
                 width={580}
                 height={580}
-                style={{ 
-                  width: '100%',
-                  height: '100%',
-                  objectFit: "cover"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                unoptimized
+                onError={(e) => {
+                  console.log(`❌ 이미지 로드 실패: ${src}`);
+                  // 기본 이미지로 대체
+                  const target = e.target as HTMLImageElement;
+                  target.src = '/images/camera.jpg';
                 }}
-                // 이미지가 외부 URL일 경우 에러 처리가 필요할 수 있습니다.
-                onError={(e) => e.currentTarget.src = defaultImages[0]}
               />
             </div>
           ))}
         </section>
 
-        {/* 우측: 상품 상세 정보 */}
-        <section className="w-150 space-y-4 border border-gray-300 rounded-lg p-4 fixed right-40 bottom-70 top-[110px]">
-          {/* 프로필 */}
+        {/* 오른쪽: 상품 상세 */}
+        <section
+          className="w-[560px] h-[500px] space-y-4 border border-gray-300 rounded-lg p-4 fixed right-40 bottom-16 top-[113px]"
+        >
           <div className="flex items-center space-x-1 mb-2">
-            <img
+            <Image
               src="/chat/chat-profile.svg"
               alt="프로필"
-              className="w-8 h-8 rounded-full"
+              width={32}
+              height={32}
+              unoptimized
             />
             <span className="font-medium text-[#232323]">{writerNickname}</span>
           </div>
-
-          {/* 제목·카테고리 */}
           <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold text-[#232323]">
-              {itemName}
-            </h1>
+            <h1 className="text-2xl font-bold text-[#232323]">{itemName}</h1>
             <span className="px-2 py-1 bg-[#F2E8FF] text-[#6B46C1] text-xs rounded-full">
-              {registeredItem?.category ? categoryMap[registeredItem.category] || registeredItem.category : '카테고리 없음'}
+              {categoryLabel}
             </span>
           </div>
-          <div className="border-b border-gray-200"></div>
 
-          {/* 대여 가격 */}
+          <div className="border-b border-gray-200" />
+
           <div className="flex gap-4">
-            <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">1시간</p>
-            <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">
-              {registeredItem?.price_per_hour != null ? `${registeredItem.price_per_hour}원` : '가격 정보 없음'}
+            <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-12">1시간</p>
+            <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-20 text-right">
+              {registeredItem.price_per_hour}원
             </p>
           </div>
           <div className="flex gap-4">
-            <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">1일</p>
-            <p className="mt-1 text-lg font-semibold text-[#ADAEB2]">
-              {registeredItem?.price_per_day != null ? `${registeredItem.price_per_day}원` : '가격 정보 없음'}
+            <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-12">1일</p>
+            <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-20 text-right">
+              {registeredItem.price_per_day}원
             </p>
           </div>
 
-          <div className="border-b border-gray-200 pt-[36px]"></div>
+          <div className="border-b border-gray-200 pt-[36px]" />
 
-          {/* 설명 */}
-          <div className="p-4 h-40 bg-[#F9F9FA] rounded-lg text-sm text-gray-700">
-            {registeredItem?.description || '설명이 없습니다.'}
+          <div className="p-4 h-40 bg-[#F9F9FA] rounded-lg text-sm text-gray-700 overflow-auto">
+            {registeredItem.description || '설명이 없습니다.'}
           </div>
-
-          
         </section>
       </main>
 

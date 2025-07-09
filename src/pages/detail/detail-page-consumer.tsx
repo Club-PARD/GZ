@@ -10,6 +10,8 @@ import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from "react-icons/bs";
 import styles from "../../styles/detail.module.css";
 import { initSendbird } from "@/lib/sendbird";
 import ChatWindow from "@/components/chat-components/ChatWindow";
+import Application from "@/components/Term-components/Applicaton";
+
 import {
   FiMoreVertical,
   PiSirenBold,
@@ -22,6 +24,8 @@ export default function DetailPageConsumer() {
   const router = useRouter();
   const [me, setMe] = useState<string>("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showApplication, setApplication] = useState(false);
+  
 
   useEffect(() => {
     // 로그인 후 localStorage에 저장된 내 ID 읽기
@@ -117,7 +121,7 @@ export default function DetailPageConsumer() {
         </section>
 
         {/* 우측: 상품 상세 정보 또는 채팅창 */}
-        <section className="w-150 space-y-4 rounded-lg p-4 fixed right-40 bottom-70 top-[110px]">
+        <section className="w-150 space-y-4 rounded-lg p-4 fixed right-20 bottom-70 top-[96px]">
           {channelUrl ? (
             <div className="relative h-[600px]">
               {/* ChatWindow가 배경 레이어를 채움 */}
@@ -128,10 +132,7 @@ export default function DetailPageConsumer() {
               {/* 버튼을 ChatWindow 헤더 오른쪽에 오버레이 */}
               <div className="absolute top-0 right-0 z-10 flex h-14 items-center pr-6">
                 <button
-                  onClick={() => {
-                    // TODO: 대여 시작하기 로직
-                    alert("대여 시작하기");
-                  }}
+                  onClick={() => { setApplication(true)}}
                   className="px-4 py-2 bg-[#8769FF] text-white rounded-lg text-sm"
                 >
                   대여 시작하기
@@ -254,6 +255,7 @@ export default function DetailPageConsumer() {
           )}
         </section>
       </main>
+      <Application open={showApplication} onClose={() => setApplication(false)} />
 
       <Footer />
     </div>

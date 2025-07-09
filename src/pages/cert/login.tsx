@@ -78,6 +78,12 @@ export default function Login() {
       const userId = String(json.data.userId);
       const nickname = json.data.nickname;
       localStorage.setItem('me', userId);
+      
+      // 토큰이 있다면 저장 (백엔드에서 제공하는 경우)
+      if (json.data.token || json.token) {
+        localStorage.setItem('authToken', json.data.token || json.token);
+        console.log('✅ 인증 토큰 저장됨');
+      }
 
       // 3) Sendbird 연결 (userId만 사용)
       const sb = getSendbird();
@@ -133,24 +139,11 @@ export default function Login() {
         localStorage.removeItem('savedCredentials');
       }
 
-      console.log('✅ 로그인 성공, 메인 페이지로 이동');
+      console.log('✅ 로그인 성공, 쿠키 동기화를 위해 페이지 이동...');
 
-      try {
-        const homeRes = await fetch('/http://localhost:8080/home', {
-          method: 'GET',
-          credentials: 'include', // 다시 세션 쿠키 보내기
-        });
-        if (homeRes.ok) {
-          const { payload } = await homeRes.json(); // PostHomeResDto
-          console.log('🏠 홈 페이지 데이터:', payload);
-        } else {
-          console.error('❌ 홈 요청 실패:', homeRes.status);
-        }
-      } catch (homeErr) {
-        console.error('🏠 홈 요청 중 에러 발생:', homeErr);
-      }
-
-      router.replace('/home');
+      // 6) 쿠키 동기화를 위해 브라우저 새로고침으로 페이지 이동
+      console.log('🔄 홈페이지로 새로고침 이동...');
+      window.location.href = '/home';
     } catch (err: any) {
       console.error('로그인 에러:', err);
       setError('로그인 중 오류가 발생했습니다.');
