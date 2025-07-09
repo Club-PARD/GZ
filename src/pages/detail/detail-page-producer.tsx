@@ -123,34 +123,8 @@ export default function DetailPageProducer() {
 
   // 렌더링용 데이터 가공
   const images = (registeredItem.imageUrls && registeredItem.imageUrls.length > 0)
-  ? registeredItem.imageUrls.map((src, index) => {
-      console.log(`🔄 이미지 ${index + 1} 변환 시작:`, src);
-      
-      // 서버에서 받은 URL을 그대로 사용 (경로 변환 제거)
-      let absoluteUrl = src;
-      
-      // 이미 절대 URL인 경우 그대로 사용
-      if (src.startsWith('http')) {
-        absoluteUrl = src;
-        console.log(`🌐 절대 URL 그대로 사용: ${absoluteUrl}`);
-      } else {
-        // 상대 URL인 경우에만 gz-zigu.store 도메인 추가
-        absoluteUrl = `https://gz-zigu.store${src.startsWith('/') ? src : `/${src}`}`;
-        console.log(`🌐 상대 URL을 절대 URL로 변환: ${src} → ${absoluteUrl}`);
-      }
-
-      console.log(`🌐 최종 절대 URL: ${absoluteUrl}`);
-
-      // 프록시 호출용으로 인코딩
-      const proxyUrl = `/api/image-proxy?url=${encodeURIComponent(absoluteUrl)}`;
-      console.log(`🔗 프록시 URL: ${proxyUrl}`);
-      
-      // 임시 테스트: 프록시 없이 직접 URL 사용
-      // return absoluteUrl;  // 이 줄을 주석 해제하면 프록시 없이 직접 접근
-      
-      return proxyUrl;
-    })
-  : defaultImages;
+    ? registeredItem.imageUrls.map(url => `/api/image-proxy?url=${url}`)  // 간단하게 프록시 사용
+    : defaultImages;
 
   // imageUrls가 string[]이므로 첫 번째 이미지만 사용해서 post 정보 추출 불가
   // writerNickname, itemName 등은 registeredItem에서 직접 추출
