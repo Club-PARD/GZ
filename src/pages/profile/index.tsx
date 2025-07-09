@@ -1,5 +1,6 @@
-// pages/profile.tsx
-import React, { useState } from 'react';
+// src/pages/profile/index.tsx
+'use client';  // ← 클라이언트 컴포넌트로 지정
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/home-header';
 import Footer from '@/components/Footer';
 import Sidebar from './sidebar';
@@ -12,9 +13,25 @@ import AccountSection from './AccountSection';
 type TabKey = 'info' | 'settings' | 'policies' | 'support' | 'account';
 
 export default function ProfilePage() {
+  // 탭 상태
   const [activeTab, setActiveTab] = useState<TabKey>('info');
 
-  // 정책(약관) 섹션 상태
+  // userId 상태 추가
+  const [userId, setUserId] = useState<number | null>(null);
+
+  // 프로필 수정용 상태
+  const [nickname, setNickname] = useState('');
+  const [currentPw, setCurrentPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [confirmPw, setConfirmPw] = useState('');
+  const isValid =
+    nickname.trim() !== '' &&
+    currentPw.trim() !== '' &&
+    newPw.trim() !== '' &&
+    confirmPw.trim() !== '' &&
+    newPw === confirmPw;
+
+  // 약관/개인정보 동의 상태
   const [expanded, setExpanded] = useState<{ terms: boolean; privacy: boolean }>({
     terms: false,
     privacy: false,
@@ -28,17 +45,13 @@ export default function ProfilePage() {
   const toggleAgree = (key: 'terms' | 'privacy') =>
     setAgreed(a => ({ ...a, [key]: !a[key] }));
 
-  // 프로필 수정 용 상태
-  const [nickname, setNickname] = useState('');
-  const [currentPw, setCurrentPw] = useState('');
-  const [newPw, setNewPw] = useState('');
-  const [confirmPw, setConfirmPw] = useState('');
-  const isValid =
-    nickname.trim() !== '' &&
-    currentPw.trim() !== '' &&
-    newPw.trim() !== '' &&
-    confirmPw.trim() !== '' &&
-    newPw === confirmPw;
+  // 마운트 시 localStorage에서 userId 가져오기
+  useEffect(() => {
+    const me = localStorage.getItem('me');
+    if (me) {
+      setUserId(Number(me));
+    }
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen h-[1080px] bg-white">
@@ -47,8 +60,9 @@ export default function ProfilePage() {
         <div className="w-[1280px] flex bg-white">
           <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
           <main className="flex-1 p-10 overflow-y-auto">
-            {activeTab === 'info' && (
+            {activeTab === 'info' && userId !== null && (
               <InfoSection
+                userId={userId}
                 nickname={nickname}
                 setNickname={setNickname}
                 currentPw={currentPw}
