@@ -1,4 +1,4 @@
-// src/pages/index.tsx
+// src/pages/home/index.tsx
 "use client";
 
 import Header from "@/components/home-header";
@@ -6,10 +6,10 @@ import Footer from "@/components/Footer";
 import { IoSearchOutline } from "@/components/icons";
 import { IoLocationSharp } from "react-icons/io5";
 import styles from "./home.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent, KeyboardEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { getHomeData } from "@/lib/api";
+import { getHomeData, getSearchData } from "@/lib/api";
 import Image from "next/image";
 
 // API 응답 타입 정의
@@ -35,10 +35,14 @@ interface HomePost {
 
 export default function Home() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  // 전체 게시물 원본 저장용
+  const [allPosts, setAllPosts] = useState<HomePost[]>([]);
   const [posts, setPosts] = useState<HomePost[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [me, setMe] = useState<string>("");
+  const [keyword, setKeyword] = useState<string>(""); // 검색어 상태
 
   const categories = [
     { id: "all", name: "전체" },
@@ -62,19 +66,18 @@ export default function Home() {
     setMe(stored);
   }, [router]);
 
+  // 초기 홈 데이터 로드
   useEffect(() => {
     const fetchHome = async () => {
       if (!me) {
         setIsLoading(false);
         return;
       }
-
       try {
         const json: HomeResponse = await getHomeData();
         if (json.success) {
+          setAllPosts(json.data.posts);
           setPosts(json.data.posts);
-        } else {
-          // 필요에 따라 사용자에게 오류 처리 UI 추가
         }
       } catch (err: any) {
         if (err.response?.status === 401 || err.response?.status === 403) {
@@ -83,7 +86,6 @@ export default function Home() {
           router.replace("/cert/login");
           return;
         }
-        // 필요에 따라 사용자에게 네트워크 오류 UI 추가
       } finally {
         setIsLoading(false);
       }
@@ -91,6 +93,34 @@ export default function Home() {
 
     fetchHome();
   }, [me, router]);
+
+  // 검색어 입력 핸들러
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+  };
+
+  // Enter 키 누르면 검색 or 리셋
+  const handleKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter") return;
+
+    // 검색어가 비어 있으면 전체 게시물로 복원
+    if (!keyword.trim()) {
+      setPosts(allPosts);
+      setSelectedCategory("all");
+      return;
+    }
+
+    // 키워드 검색 API 호출
+    try {
+      const json = await getSearchData(keyword);
+      if (json.success) {
+        setPosts(json.data);
+        setSelectedCategory("all"); // 검색 후 전체 카테고리로 초기화
+      }
+    } catch (err) {
+      console.error("검색 실패:", err);
+    }
+  };
 
   // 로딩 중 UI
   if (isLoading) {
@@ -127,10 +157,12 @@ export default function Home() {
           </h1>
           <div className="w-[780px] h-[68px] relative">
             <input
-              className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border text-black
-               border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF]"
+              className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border text-black border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF]"
               type="text"
               placeholder="지금 어떤 물건을 구매하고 있나요?"
+              value={keyword}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
             />
             <div className="absolute left-5 top-1/2 -translate-y-1/2 tetx-black">
               <IoSearchOutline size={24} color="#A2A3A7" />
@@ -154,11 +186,10 @@ export default function Home() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 rounded-full transition-colors ${
-                selectedCategory === cat.id
+              className={`px-4 py-2 rounded-full transition-colors ${selectedCategory === cat.id
                   ? "bg-[#8769FF] text-white"
                   : "bg-[#F3F3F5] text-[#A2A3A7] hover:bg-[#E5E5E5]"
-              }`}
+                }`}
             >
               {cat.name}
             </button>
@@ -176,7 +207,9 @@ export default function Home() {
               <div className={styles.imageContainer}>
                 {post.firstImageUrl ? (
                   <Image
-                    src={`/api/image-proxy?url=${post.firstImageUrl}`}
+                    src={`/api/image-proxy?url=${encodeURIComponent(
+                      post.firstImageUrl
+                    )}`}
                     alt={post.itemName}
                     width={280}
                     height={280}
@@ -194,7 +227,8 @@ export default function Home() {
                   />
                 ) : (
                   <div
-                    className={`${styles.image} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}
+                    className={`${styles.image
+                      } bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}
                   >
                     <div className="text-center">
                       <div className="text-gray-400 text-2xl mb-1">📷</div>
