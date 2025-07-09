@@ -39,10 +39,130 @@ export default function NewPage() {
     }
   }, []);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 강화된 이미지 압축 함수
+  const compressImage = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = document.createElement('img');
+      
+      img.onload = () => {
+        // 파일 크기에 따라 다른 압축 전략 적용
+        let maxWidth, maxHeight, quality;
+        
+        if (file.size > 10 * 1024 * 1024) { // 10MB 이상
+          maxWidth = 800;
+          maxHeight = 800;
+          quality = 0.4;
+        } else if (file.size > 5 * 1024 * 1024) { // 5MB 이상
+          maxWidth = 1200;
+          maxHeight = 1200;
+          quality = 0.5;
+        } else if (file.size > 2 * 1024 * 1024) { // 2MB 이상
+          maxWidth = 1600;
+          maxHeight = 1600;
+          quality = 0.6;
+                 } else {
+           // 2MB 이하는 가벼운 압축
+           maxWidth = 1920;
+           maxHeight = 1920;
+           quality = 0.8;
+         }
+        
+        let { width, height } = img;
+        
+        // 비율 유지하면서 크기 조정
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = Math.floor(width * ratio);
+          height = Math.floor(height * ratio);
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // 이미지 그리기
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // 압축된 이미지로 변환
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              const compressedFile = new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now(),
+              });
+              
+              // 압축 후에도 너무 크면 더 압축
+              if (compressedFile.size > 3 * 1024 * 1024) { // 3MB 이상이면 더 압축
+                canvas.toBlob(
+                  (secondBlob) => {
+                    if (secondBlob) {
+                      const finalFile = new File([secondBlob], file.name, {
+                        type: 'image/jpeg',
+                        lastModified: Date.now(),
+                      });
+                      resolve(finalFile);
+                    } else {
+                      resolve(compressedFile);
+                    }
+                  },
+                  'image/jpeg',
+                  0.3 // 더 강한 압축
+                );
+              } else {
+                resolve(compressedFile);
+              }
+            } else {
+              resolve(file); // 압축 실패시 원본 반환
+            }
+          },
+          'image/jpeg',
+          quality
+        );
+      };
+      
+      img.onerror = () => reject(new Error('이미지 로드 실패'));
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
+    
     const newFiles = Array.from(e.target.files).slice(0, 5 - images.length)
-    setImages((prev) => [...prev, ...newFiles])
+    const maxFileSize = 2 * 1024 * 1024; // 더 엄격하게 2MB로 제한
+    const processedFiles: File[] = []
+    
+    for (const file of newFiles) {
+      // 이미지 파일 타입 체크
+      if (!file.type.startsWith('image/')) {
+        alert(`"${file.name}"은 이미지 파일이 아닙니다.`)
+        continue
+      }
+      
+      try {
+        console.log(`원본 파일 크기: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+        
+        // 모든 파일을 압축 (작은 파일도)
+        const processedFile = await compressImage(file);
+        
+        console.log(`압축 후 파일 크기: ${(processedFile.size / 1024 / 1024).toFixed(2)}MB`);
+        
+        // 압축 후에도 크면 경고
+        if (processedFile.size > maxFileSize) {
+          alert(`파일 "${file.name}"이 너무 큽니다. 압축 후에도 2MB를 초과합니다.`)
+          continue
+        }
+        
+        processedFiles.push(processedFile)
+      } catch (error) {
+        console.error('이미지 처리 실패:', error)
+        alert(`파일 "${file.name}" 처리 중 오류가 발생했습니다.`)
+      }
+    }
+    
+    setImages((prev) => [...prev, ...processedFiles])
     e.target.value = ""
   }
 
@@ -88,6 +208,9 @@ export default function NewPage() {
       // 프록시를 통해 백엔드로 multipart 요청 (userId를 query parameter로)
       const res = await axios.post(`/api/post/create?userId=${userId}`, form, {
         withCredentials: true,
+        timeout: 120000, // 2분 timeout
+        maxContentLength: 50 * 1024 * 1024, // 50MB
+        maxBodyLength: 50 * 1024 * 1024, // 50MB
         headers: {
           // axios가 multipart boundary를 자동 설정하도록 Content-Type 헤더 생략
         }
@@ -113,9 +236,27 @@ export default function NewPage() {
       router.push('/detail/detail-page-producer')
     } catch (err: any) {
       let errorMessage = "등록 중 오류가 발생했습니다."
+      
       if (err.response) {
-        errorMessage += `\n서버 응답: ${JSON.stringify(err.response.data)}`;
+        const status = err.response.status;
+        const data = err.response.data;
+        
+        if (status === 413) {
+          errorMessage = "파일 크기가 너무 큽니다. 이미지 크기를 줄여서 다시 시도해주세요."
+        } else if (status === 400) {
+          errorMessage = "잘못된 요청입니다. 입력 정보를 확인해주세요."
+        } else if (status === 401) {
+          errorMessage = "로그인이 만료되었습니다. 다시 로그인해주세요."
+          router.push('/cert/login');
+        } else if (status === 500) {
+          errorMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
+        } else {
+          errorMessage += `\n서버 응답: ${JSON.stringify(data)}`;
+        }
+      } else if (err.message) {
+        errorMessage += `\n오류: ${err.message}`;
       }
+      
       alert(errorMessage)
     } finally {
       setIsLoading(false)
@@ -165,7 +306,7 @@ export default function NewPage() {
                 />
               </label>
               <p className="mt-1 text-xs text-gray-500">
-                최대 5개까지 선택 가능
+                최대 5개까지 선택 가능 (자동 압축됨)
               </p>
             </div>
           </div>
@@ -330,3 +471,4 @@ export default function NewPage() {
     </div>
   )
 }
+

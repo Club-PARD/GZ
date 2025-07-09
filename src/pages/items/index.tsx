@@ -1,27 +1,11 @@
 // pages/MyPostsPage.tsx
-import React, { useState, useEffect } from 'react';
-import Header from '@/components/home-header';
-import Footer from '@/components/Footer';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { getMyPosts } from '@/lib/api';
-
-interface ApiResponse {
-  status: number;
-  success: boolean;
-  message: string;
-  data: Post[];
-}
-
-interface Post {
-  post_id: number;
-  firstImageUrl: string;
-  itemName: string;
-  category: string;
-  price_per_hour: number;
-  price_per_day: number;
-}
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import Image from "next/image";
+import Header from "@/components/home-header";
+import Footer from "@/components/Footer";
+import { getMyPosts, ApiResponse, Post } from "@/lib/api";
 
 const MyPostsPage: React.FC = () => {
   const router = useRouter();
@@ -29,10 +13,14 @@ const MyPostsPage: React.FC = () => {
   const [hasPosts, setHasPosts] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [me, setMe] = useState<string>("");
+  const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 10;
 
   // 로그인 상태 확인
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("me") : null;
+    const stored =
+      typeof window !== "undefined" ? localStorage.getItem("me") : null;
     if (!stored) {
       router.replace("/cert/login");
       return;
@@ -48,12 +36,12 @@ const MyPostsPage: React.FC = () => {
       }
 
       try {
-        const json: ApiResponse = await getMyPosts();
+        const json: ApiResponse<Post[]> = await getMyPosts();
         if (json.success) {
           setPosts(json.data);
           setHasPosts(json.data.length > 0);
         } else {
-          console.error('API 오류:', json.message);
+          console.error("API 오류:", json.message);
           setPosts([]);
           setHasPosts(false);
         }
@@ -64,7 +52,7 @@ const MyPostsPage: React.FC = () => {
           router.replace("/cert/login");
           return;
         }
-        console.error('데이터 가져오기 실패:', err);
+        console.error("데이터 가져오기 실패:", err);
         setPosts([]);
         setHasPosts(false);
       } finally {
@@ -75,7 +63,57 @@ const MyPostsPage: React.FC = () => {
     fetchMyPosts();
   }, [me, router]);
 
-  // 로딩 중 UI
+  // 체크박스 관련 함수들
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allIds = new Set(posts.map((post) => post.post_id));
+      setSelectedItems(allIds);
+    } else {
+      setSelectedItems(new Set());
+    }
+  };
+
+  const handleSelectItem = (postId: number, checked: boolean) => {
+    const newSelected = new Set(selectedItems);
+    if (checked) {
+      newSelected.add(postId);
+    } else {
+      newSelected.delete(postId);
+    }
+    setSelectedItems(newSelected);
+  };
+
+  // 페이지네이션 계산
+  const totalPages = Math.ceil(posts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentPosts = posts.slice(startIndex, endIndex);
+
+  // getStatusText 함수 삭제하고 삭제 함수도 수정
+  const handleDeleteSelected = async () => {
+    if (selectedItems.size === 0) {
+      alert('삭제할 항목을 선택해주세요.');
+      return;
+    }
+
+    if (confirm(`${selectedItems.size}개의 항목을 삭제하시겠습니까?`)) {
+      try {
+        // 여기에 실제 삭제 API 호출 로직 추가
+        // await deletePostsApi(Array.from(selectedItems));
+        
+        // 임시로 로컬에서 삭제 (실제로는 API 호출 후 데이터 다시 가져오기)
+        const updatedPosts = posts.filter(post => !selectedItems.has(post.post_id));
+        setPosts(updatedPosts);
+        setSelectedItems(new Set());
+        
+        console.log('삭제할 항목들:', Array.from(selectedItems));
+      } catch (error) {
+        console.error('삭제 실패:', error);
+        alert('삭제 중 오류가 발생했습니다.');
+      }
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -93,7 +131,6 @@ const MyPostsPage: React.FC = () => {
           style={{
             color: "var(--Gray-10, #232323)",
             textAlign: "center",
-            fontFamily: `"Pretendard Variable", sans-serif`,
             fontSize: "32px",
             fontWeight: 600,
             lineHeight: "130%",
@@ -104,73 +141,255 @@ const MyPostsPage: React.FC = () => {
         </h1>
 
         {hasPosts ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {posts.map(post => (
-              <Link
-                key={post.post_id}
-                href="/detail/detail-page-producer"
-                className="block cursor-pointer hover:opacity-80 transition-opacity"
-              >
-                <div className="bg-white rounded-lg overflow-hidden">
-                  <div className="relative w-full h-[220px]">
-                    <Image
-                      src={post.firstImageUrl ? `/api/image-proxy?url=${post.firstImageUrl}` : '/images/camera.jpg'}
-                      alt={post.itemName}
-                      fill
-                      style={{ objectFit: 'cover' }}
-                      className="rounded-t-lg"
-                      unoptimized
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/images/camera.jpg';
-                      }}
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mt-8">
+            {/* 테이블 헤더 */}
+            <div className="bg-gray-50 border-b border-gray-200 px-6 py-3">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 text-[#6849FE] focus:ring-[#6849FE] border-gray-300 rounded mr-4"
+                  checked={
+                    selectedItems.size === posts.length && posts.length > 0
+                  }
+                  onChange={(e) => handleSelectAll(e.target.checked)}
+                />
+                <div className="flex-1 grid grid-cols-12 gap-4 text-sm font-medium text-gray-900">
+                  <div className="col-span-6">물건 정보</div>
+                  <div className="col-span-6 text-center">상태</div>
+                </div>
+              </div>
+            </div>
+
+            {/* 테이블 바디 */}
+            <div className="divide-y divide-gray-200">
+              {currentPosts.map((post) => (
+                <div
+                  key={post.post_id}
+                  className="px-6 py-4 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 text-[#6849FE] focus:ring-[#6849FE] border-gray-300 rounded mr-4"
+                      checked={selectedItems.has(post.post_id)}
+                      onChange={(e) =>
+                        handleSelectItem(post.post_id, e.target.checked)
+                      }
                     />
-                  </div>
-                  <div className="p-4">
-                    <h2 className="text-[18px] font-medium text-gray-900 mb-2">
-                      {post.itemName}
-                    </h2>
-                    <div className="space-y-1">
-                      <div className="flex items-baseline">
-                        <span className="text-[18px] font-semibold text-gray-900">
-                          {post.price_per_hour.toLocaleString()}원
-                        </span>
-                        <span className="text-[14px] text-gray-500 pl-1">/1시간</span>
+                    <div className="flex-1 grid grid-cols-12 gap-4 items-center">
+                      {/* 물건 정보 */}
+                      <div className="col-span-6">
+                        <div className="flex items-center space-x-4">
+                          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                            <Image
+                              src={
+                                post.firstImageUrl
+                                  ? `/api/image-proxy?url=${
+                                      post.firstImageUrl.startsWith("http")
+                                        ? post.firstImageUrl
+                                        : `https://gz-zigu.store/${post.firstImageUrl}`
+                                    }`
+                                  : "/images/camera.jpg"
+                              }
+                              alt={post.itemName}
+                              fill
+                              style={{ objectFit: "cover" }}
+                              className="rounded-lg"
+                              unoptimized
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = "/images/camera.jpg";
+                              }}
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Link
+                              href="/detail/detail-page-producer"
+                              className="text-sm font-medium text-gray-900 hover:text-[#6849FE] cursor-pointer flex items-center"
+                            >
+                              {post.itemName}
+                              <svg
+                                className="w-4 h-4 ml-1 text-gray-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M9 5l7 7-7 7"
+                                />
+                              </svg>
+                            </Link>
+                            <div className="mt-1 space-y-1">
+                              <div className="text-sm text-gray-900">
+                                <span className="font-medium">
+                                  {post.price_per_hour.toLocaleString()}원
+                                </span>
+                                <span className="text-gray-500 ml-1">
+                                  / 1시간
+                                </span>
+                              </div>
+                              <div className="text-sm text-gray-900">
+                                <span className="font-medium">
+                                  {post.price_per_day.toLocaleString()}원
+                                </span>
+                                <span className="text-gray-500 ml-1">
+                                  / 1일
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex items-baseline">
-                        <span className="text-[18px] font-semibold text-gray-900">
-                          {post.price_per_day.toLocaleString()}원
-                        </span>
-                        <span className="text-[14px] text-gray-500 pl-1">/1일</span>
-                      </div>
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className="inline-block text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
-                          {post.category}
+
+                      {/* 상태 */}
+                      <div className="col-span-6 text-center">
+                        <span className="inline-flex px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-[#6849FE]">
+                          대여 중
                         </span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </Link>
-            ))}
+              ))}
+            </div>
+
+            {/* 하단 버튼들 */}
+            <div className="border-t border-gray-200 px-6 py-4 bg-gray-50">
+              <div className="flex justify-between items-center">
+                <div className="flex space-x-2">
+                  <button className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    선택 차순
+                  </button>
+                  <button 
+                    onClick={handleDeleteSelected}
+                    className="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    선택 삭제
+                  </button>
+                </div>
+
+                {/* 페이지네이션 */}
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                    className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    const pageNum = i + 1;
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => setCurrentPage(pageNum)}
+                        className={`px-3 py-2 text-sm rounded-md ${
+                          currentPage === pageNum
+                            ? "bg-blue-600 text-white"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    onClick={() =>
+                      setCurrentPage(Math.min(totalPages, currentPage + 1))
+                    }
+                    disabled={currentPage === totalPages}
+                    className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 5l7 7-7 7M5 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-20">
-            <Link href="/detail/detail-page-producer">
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden mt-8">
+            <div className="flex flex-col items-center justify-center py-16">
               <Image
                 src="/images/emptyfolder.svg"
                 alt="등록된 물건이 없어요"
-                className="w-30 h-30 flex-shrink-0"
                 width={120}
                 height={120}
+                className="w-30 h-30 flex-shrink-0 mb-4"
               />
-            </Link>
-            <p className="text-gray-500 mb-6">등록한 물건이 없어요</p>
-            <Link href="/detail/new-page" passHref>
-              <button className="inline-flex items-center justify-center px-4 py-2 gap-2 bg-purple-600 text-white rounded-lg text-sm font-medium">
-                + 물건 등록하기
-              </button>
-            </Link>
+              <p className="text-gray-500 mb-6 text-lg">등록한 물건이 없어요</p>
+              <Link href="/detail/new-page" passHref>
+                <button className="inline-flex items-center justify-center px-6 py-3 gap-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition-colors">
+                  + 물건 등록하기
+                </button>
+              </Link>
+            </div>
           </div>
         )}
       </main>

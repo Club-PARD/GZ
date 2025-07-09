@@ -1,71 +1,121 @@
-// src/pages/api/post/my-posts.ts
-import { NextApiRequest, NextApiResponse } from 'next';
+// src/pages/api/user/mypost.ts
+import { NextApiRequest, NextApiResponse } from "next"
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' });
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ message: "Method not allowed" })
   }
 
+  const { url } = req.query
+
+  // 1) url 파라미터가 있으면 → 이미지 프록시
+  if (url && typeof url === "string") {
+    const base = process.env.NEXT_PUBLIC_API_URL || "https://gz-zigu.store/"
+    if (!url.startsWith(base)) {
+      return res.status(400).json({ message: "Invalid image URL" })
+    }
+
+    try {
+      const forwardHeaders: Record<string, string> = {
+        "User-Agent": "Mozilla/5.0 (compatible; ZiguApp/1.0)",
+        Accept: "image/*,*/*;q=0.8",
+        "Cache-Control": "max-age=3600",
+      }
+      if (req.headers.cookie) {
+        forwardHeaders["Cookie"] = req.headers.cookie
+      }
+      if (req.headers.authorization) {
+        forwardHeaders["Authorization"] = req.headers.authorization
+      }
+
+      const backendResponse = await fetch(url, {
+        method: "GET",
+        headers: forwardHeaders,
+      })
+
+      if (!backendResponse.ok) {
+        return res
+          .status(backendResponse.status)
+          .json({ message: `Failed to load image: ${backendResponse.statusText}` })
+      }
+
+      const contentType = backendResponse.headers.get("content-type")
+      if (contentType) {
+        res.setHeader("Content-Type", contentType)
+      }
+      res.setHeader("Cache-Control", "public, max-age=3600, s-maxage=3600")
+
+      const buffer = Buffer.from(await backendResponse.arrayBuffer())
+      res.setHeader("Content-Length", buffer.length)
+      return res.send(buffer)
+    } catch (err: any) {
+      console.error("Image proxy error:", err)
+      return res.status(500).json({
+        message: "Internal server error",
+        error: err.message ?? "Unknown error",
+      })
+    }
+  }
+
+  // 2) url 파라미터가 없으면 → 내 게시물 조회
   try {
     const forwardHeaders: Record<string, string> = {
-      'Content-Type': 'application/json',
-    };
+      "Content-Type": "application/json",
+    }
     if (req.headers.cookie) {
-      forwardHeaders['Cookie'] = req.headers.cookie;
+      forwardHeaders["Cookie"] = req.headers.cookie
     }
     if (req.headers.authorization) {
-      forwardHeaders['Authorization'] = req.headers.authorization;
+      forwardHeaders["Authorization"] = req.headers.authorization
     }
 
-    console.log('백엔드 API URL:', `${process.env.NEXT_PUBLIC_API_URL}/post/my-posts`);
-    console.log('전달되는 헤더:', forwardHeaders);
+    console.log("백엔드 API URL:", `${process.env.NEXT_PUBLIC_API_URL}/user/mypost`)
+    console.log("전달되는 헤더:", forwardHeaders)
 
     const backendResponse = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/post/my-posts`,
+      `${process.env.NEXT_PUBLIC_API_URL}/user/mypost`,
       {
-        method: 'GET',
+        method: "GET",
         headers: forwardHeaders,
       }
-    );
+    )
 
-    console.log('백엔드 응답 상태:', backendResponse.status);
-    console.log('백엔드 응답 ok:', backendResponse.ok);
+    console.log("백엔드 응답 상태:", backendResponse.status)
+    console.log("백엔드 응답 ok:", backendResponse.ok)
 
-    const data = await backendResponse.text();
-    console.log('백엔드 응답 데이터 길이:', data.length);
+    const text = await backendResponse.text()
+    console.log("백엔드 응답 데이터 길이:", text.length)
 
-    const setCookieHeader = backendResponse.headers.get('set-cookie');
-    if (setCookieHeader) {
-      res.setHeader('Set-Cookie', setCookieHeader);
+    const setCookie = backendResponse.headers.get("set-cookie")
+    if (setCookie) {
+      res.setHeader("Set-Cookie", setCookie)
     }
 
-    const contentType = backendResponse.headers.get('content-type');
-    if (contentType?.includes('application/json')) {
-      res.setHeader('Content-Type', 'application/json');
+    const contentType = backendResponse.headers.get("content-type") || ""
+    if (contentType.includes("application/json")) {
+      res.setHeader("Content-Type", "application/json")
       try {
-        const jsonData = JSON.parse(data);
-        
-        // 백엔드에서 status: 0으로 오는 경우 HTTP 상태 코드로 변환
+        const jsonData = JSON.parse(text)
         if (jsonData.status === 0) {
-          jsonData.status = backendResponse.status;
+          jsonData.status = backendResponse.status
         }
-        
-        res.status(backendResponse.status);
-        return res.json(jsonData);
+        res.status(backendResponse.status).json(jsonData)
       } catch {
         return res
           .status(500)
-          .json({ message: 'Invalid JSON response from backend' });
+          .json({ message: "Invalid JSON response from backend" })
       }
     } else {
-      res.status(backendResponse.status);
-      return res.send(data);
+      res.status(backendResponse.status).send(text)
     }
   } catch (err: any) {
-    console.error('내 물건 목록 요청 실패:', err);
+    console.error("내 물건 목록 요청 실패:", err)
     return res.status(500).json({
-      message: 'Internal server error',
-      error: err.message ?? 'Unknown error',
-    });
+      message: "Internal server error",
+      error: err.message ?? "Unknown error",
+    })
   }
-} 
+}

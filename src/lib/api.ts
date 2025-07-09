@@ -90,15 +90,12 @@ export const getMyPosts = async () => {
     headers,
   })
 
-  console.log('getMyPosts 응답 상태:', response.status)
-  console.log('getMyPosts 응답 ok:', response.ok)
-
   if (!response.ok) {
     if (response.status === 403 && typeof window !== 'undefined') {
       localStorage.removeItem('me')
+      localStorage.removeItem('authToken')
     }
     const errorText = await response.text().catch(() => '')
-    console.log('getMyPosts 에러 응답:', errorText)
     const error = new Error(`HTTP error! status: ${response.status}`)
     ;(error as any).response = { status: response.status, data: errorText }
     throw error
@@ -106,4 +103,20 @@ export const getMyPosts = async () => {
 
   const content = await response.text()
   return JSON.parse(content)
+}
+
+export interface ApiResponse<T = any> {
+  status: number
+  success: boolean
+  message: string
+  data: T
+}
+
+export interface Post {
+  post_id: number
+  firstImageUrl: string
+  itemName: string
+  category: string
+  price_per_hour: number
+  price_per_day: number
 }
