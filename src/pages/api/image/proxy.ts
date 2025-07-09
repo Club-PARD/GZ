@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // 안전한 URL 검증
-  if (!url.startsWith('https://gz-zigu.store/')) {
+  if (!url.startsWith(process.env.NEXT_PUBLIC_API_URL || 'https://gz-zigu.store/')) {
     return res.status(400).json({ message: 'Invalid image URL' });
   }
 

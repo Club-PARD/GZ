@@ -7,7 +7,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const backendResponse = await fetch('https://gz-zigu.store/auth/login', {
+    const { email, password } = req.body;
+    console.log('로그인 요청 받음:', { email, password: '***' });
+    
+    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req.body),
