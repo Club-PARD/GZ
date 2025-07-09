@@ -10,91 +10,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getHomeData } from "@/lib/api";
-
-// 여러 경로를 시도하는 이미지 컴포넌트
-function ImageWithFallback({
-  imagePath,
-  alt,
-  className,
-}: {
-  imagePath: string;
-  alt: string;
-  className: string;
-}) {
-  const [currentSrc, setCurrentSrc] = useState<string>("");
-  const [attemptIndex, setAttemptIndex] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [hasError, setHasError] = useState<boolean>(false);
-
-  // 시도할 경로들
-  const possiblePaths = [
-    `https://gz-zigu.store/${imagePath}`,
-    `https://gz-zigu.store/files/${imagePath}`,
-    `https://gz-zigu.store/uploads/${imagePath}`,
-    `https://gz-zigu.store/api/files/${imagePath}`,
-  ];
-
-  useEffect(() => {
-    if (attemptIndex < possiblePaths.length) {
-      setCurrentSrc(possiblePaths[attemptIndex]);
-      setIsLoading(true);
-      setHasError(false);
-    } else {
-      setHasError(true);
-      setIsLoading(false);
-    }
-  }, [attemptIndex, imagePath]);
-
-  const handleError = () => {
-    console.log(
-      `❌ 이미지 로드 실패 (${attemptIndex + 1}/${possiblePaths.length}):`,
-      possiblePaths[attemptIndex]
-    );
-    setAttemptIndex((prev) => prev + 1);
-  };
-
-  const handleLoad = () => {
-    console.log(`✅ 이미지 로드 성공:`, possiblePaths[attemptIndex]);
-    setIsLoading(false);
-    setHasError(false);
-  };
-
-  if (hasError || attemptIndex >= possiblePaths.length) {
-    return (
-      <div
-        className={`${className} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}
-      >
-        <div className="text-center">
-          <div className="text-gray-400 text-2xl mb-1">📷</div>
-          <span className="text-gray-500 text-xs">이미지 로드 실패</span>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      {isLoading && (
-        <div
-          className={`${className} bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300`}
-        >
-          <div className="text-center">
-            <div className="text-gray-400 text-2xl mb-1">⏳</div>
-            <span className="text-gray-500 text-xs">로딩 중...</span>
-          </div>
-        </div>
-      )}
-      <img
-        src={currentSrc}
-        alt={alt}
-        className={className}
-        style={{ display: isLoading ? "none" : "block" }}
-        onLoad={handleLoad}
-        onError={handleError}
-      />
-    </>
-  );
-}
+import Image from "next/image";
 
 // API 응답 타입 정의
 interface HomeResponse {
@@ -279,10 +195,20 @@ export default function Home() {
             >
               <div className={styles.imageContainer}>
                 {post.firstImageUrl ? (
-                  <ImageWithFallback
-                    imagePath={post.firstImageUrl}
+                  <Image
+                    src={`/api/image-proxy?url=${post.firstImageUrl}`}
                     alt={post.itemName}
+                    width={280}
+                    height={280}
                     className={styles.image}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    unoptimized
+                    onError={(e) => {
+                      console.log(`❌ 이미지 로드 실패: ${post.firstImageUrl}`);
+                      // 기본 이미지로 대체
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/images/camera.jpg';
+                    }}
                   />
                 ) : (
                   <div
