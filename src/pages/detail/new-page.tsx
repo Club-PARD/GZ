@@ -118,6 +118,21 @@ export default function NewPage() {
           images: images.map(file => ({ name: file.name, size: file.size }))
         }
       };
+      
+      // 서버 응답 상세 로그 추가
+      console.log("📊 서버 응답 전체:", JSON.stringify(res.data, null, 2));
+      console.log("📊 응답 헤더:", res.headers);
+      
+      // 이미지 URL이 응답에 포함되어 있는지 확인
+      if (res.data.data && res.data.data.imageUrls) {
+        console.log("📸 서버에서 받은 이미지 URL들:", res.data.data.imageUrls);
+        res.data.data.imageUrls.forEach((url: string, index: number) => {
+          console.log(`📸 이미지 ${index + 1}: ${url}`);
+        });
+      } else {
+        console.log("⚠️ 서버 응답에 imageUrls가 없습니다");
+      }
+      
       localStorage.setItem('registeredItem', JSON.stringify(itemDataForStorage))
 
       // 저장된 데이터 확인용 로그
