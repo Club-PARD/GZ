@@ -3,13 +3,14 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from 'axios'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { url } = req.query
-  if (typeof url !== 'string') {
-    return res.status(400).end('url 쿼리 필요')
+  const { url } = req.query;
+  
+  if (!url || typeof url !== 'string') {
+    return res.status(400).json({ error: 'URL is required' });
   }
 
-  // 간단한 도메인 체크만
-  if (!url.includes('gz-zigu.store')) {
+  const apiHost = process.env.NEXT_PUBLIC_API_URL?.replace('https://', '').replace('http://', '');
+  if (!url.includes(apiHost || 'gz-zigu.store')) {
     return res.status(403).end('허용되지 않은 도메인')
   }
 

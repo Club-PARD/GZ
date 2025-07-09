@@ -7,7 +7,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const backendResponse = await fetch('https://gz-zigu.store/auth/check-nickname', {
+    const { nickname } = req.body;
+    console.log('닉네임 중복확인 요청 받음:', { nickname });
+    
+    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/check-nickname`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(req.body),

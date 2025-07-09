@@ -37,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Query parameter 포함 URL 구성
     const queryString = req.url?.includes('?') ? req.url.split('?')[1] : '';
-    const backendUrl = `https://gz-zigu.store/post/create${queryString ? `?${queryString}` : ''}`;
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/post/create${queryString ? `?${queryString}` : ''}`;
 
     // 백엔드 API 호출
     const backendResponse = await fetch(backendUrl, {

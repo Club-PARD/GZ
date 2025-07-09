@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (userId) {
       params.append('userId', String(userId));
     }
-    const backendUrl = `https://gz-zigu.store/post/detail?${params.toString()}`;
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/post/detail?${params.toString()}`;
 
     const backendResponse = await fetch(backendUrl, {
       method: 'GET',
