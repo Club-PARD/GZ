@@ -30,7 +30,8 @@ interface ApiResponse<T> {
 // 상세페이지 데이터 타입 (Swagger 반영)
 interface PostDetail {
   user_id: number;
-  nickname: string;          // swagger에 추가된 필드
+  nickname: string; 
+  itemName: string;
   post_id: number;
   imageUrls: string[];
   price_per_hour: number;
@@ -196,7 +197,7 @@ export default function DetailPageConsumer() {
               {/* 제목 & 옵션 버튼 */}
               <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-[#232323]">
-                  {post.description}
+                  {post.itemName}
                 </h1>
                 <div className="relative">
                   <button onClick={toggleMenu} className="p-2 rounded-full hover:bg-gray-100">
