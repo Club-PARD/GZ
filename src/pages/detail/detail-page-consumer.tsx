@@ -260,6 +260,8 @@ export default function DetailPageConsumer() {
       <Application
         open={showApplication}
         onClose={() => setApplication(false)}
+        userId={Number(me)}           // 로그인된 소비자 ID
+        postId={post.post_id}         // 현재 보고 있는 게시물 ID
         itemName={post.description}
         pricePerDay={post.price_per_day}
         pricePerHour={post.price_per_hour}
