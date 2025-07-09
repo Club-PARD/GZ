@@ -7,9 +7,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    console.log('홈 데이터 요청 받음');
-    console.log('쿠키:', req.headers.cookie);
-    
     const forwardHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
     };
@@ -20,10 +17,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       forwardHeaders['Authorization'] = req.headers.authorization;
     }
 
-    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/post/home`, {
-      method: 'GET',
-      headers: forwardHeaders,
-    });
+    const backendResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/post/home`,
+      {
+        method: 'GET',
+        headers: forwardHeaders,
+      }
+    );
 
     const data = await backendResponse.text();
 
@@ -40,7 +40,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         return res.json(JSON.parse(data));
       } catch {
-        return res.status(500).json({ message: 'Invalid JSON response from backend' });
+        return res
+          .status(500)
+          .json({ message: 'Invalid JSON response from backend' });
       }
     } else {
       return res.send(data);

@@ -8,7 +8,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const { email, university, nickname, password } = req.body;
-    console.log('회원가입 요청 받음:', { email, university, nickname, password: '***' });
     
     const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signUp`, {
       method: 'POST',

@@ -16,6 +16,7 @@ export default function Home() {
       <DepositFeature />
       <Divider />
       <ProductsFeature />
+      <Divider />
       <Footer />
     </main>
   )
