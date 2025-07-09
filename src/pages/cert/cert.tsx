@@ -69,7 +69,7 @@ export default function Home() {
         setResendCount((c) => c + 1);
         setCooldown(30);
         setMsg({ text: "인증번호 발송 완료", type: "success" });
-        if (result.code) console.log("인증번호:", result.code);
+        // 인증번호 확인
       } else {
         setErrorDialog({
           isOpen: true,

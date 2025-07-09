@@ -105,18 +105,31 @@ export const getMyPosts = async () => {
   return JSON.parse(content)
 }
 
-export interface ApiResponse<T = any> {
-  status: number
-  success: boolean
-  message: string
-  data: T
-}
+// 게시물 삭제
+export const deletePosts = async (postIds: number[]) => {
+  const userId =
+    typeof window !== 'undefined' ? localStorage.getItem('me') : null
+  const authToken =
+    typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
 
-export interface Post {
-  post_id: number
-  firstImageUrl: string
-  itemName: string
-  category: string
-  price_per_hour: number
-  price_per_day: number
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  }
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`
+  }
+
+  const requests = postIds.map((postId) => {
+    const params = new URLSearchParams()
+    params.append('postId', String(postId))
+    if (userId) params.append('userId', userId)
+
+    const url = `/api/post/delete?${params.toString()}`
+
+    return api.delete(url, { headers, withCredentials: true })
+  })
+
+  const responses = await Promise.all(requests)
+
+  return responses[0].data
 }
