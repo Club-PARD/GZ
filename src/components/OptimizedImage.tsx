@@ -72,7 +72,6 @@ export default function OptimizedImage({
   }, [attemptIndex, possiblePaths]);
 
   const handleError = () => {
-    console.log(`❌ 이미지 로드 실패 (${attemptIndex + 1}/${possiblePaths.length}):`, possiblePaths[attemptIndex]);
     
     if (onError) {
       onError();
@@ -87,7 +86,6 @@ export default function OptimizedImage({
   };
 
   const handleLoad = () => {
-    console.log(`✅ 이미지 로드 성공:`, possiblePaths[attemptIndex]);
     setIsLoading(false);
     setHasError(false);
     

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import styles from "../../styles/products-feature.module.css"; 
+import Link from "next/link";
 
 const PRODUCTS = [
   { src: "/images/usb.jpg",        alt: "1TB USB",         title: "1TB USB 빌려드려요" },
@@ -14,17 +15,27 @@ export default function ProductsFeature() {
     <section
       className="
         h-[781px]
+        w-full
         px-[166px]
         py-32
-        bg-white
+        bg-[#232323]
         text-center
       "
     >
-      <h3 className="text-4xl font-bold mb-[60px] text-[#232323]"style={{ letterSpacing: '-2%' }}>
+      <div className="mb-[80px] w-full">
+      <span className="text-[#6849FE] text-[18px] font-semibold block mb-[10px]">물건등록하기</span>
+      <h3 className="text-4xl font-semibold mb-[24px] text-white" style={{ letterSpacing: '-1.08%' }}>
         현재 지구에서는
         <br />
         이런 물건들이 거래되고 있어요
       </h3>
+      <Link
+              href="/cert/cert"
+              className="bg-[#6849FE] text-white rounded-lg h-[55px] w-[193px] font-medium inline-flex items-center justify-center"
+            >
+              학교메일로 시작하기
+            </Link>
+      </div>
 
       <div className={styles.grid}>
         {PRODUCTS.map((p, i) => (

@@ -2,7 +2,7 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, 220px);
-    justify-content: start; 
+    justify-content: end; 
     gap: 15px;             
   }
   
@@ -16,7 +16,7 @@
   .captionBox {
     width: 200px;
     height: 48px;
-    background-color: #F3F3F5;
+    background-color: #4C4C4E;
     border-radius: 0.75rem;
     display: flex;
     align-items: center;
@@ -27,5 +27,5 @@
   .captionText {
     font-size: 0.875rem; 
     font-weight: 500;   
-    color: #1F2937;     
+    color: white;     
   }
