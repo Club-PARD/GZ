@@ -30,6 +30,7 @@ interface ApiResponse<T> {
 // 상세페이지 데이터 타입 (Swagger 반영)
 interface PostDetail {
   user_id: number;
+  nickname: string;          // swagger에 추가된 필드
   post_id: number;
   imageUrls: string[];
   price_per_hour: number;
@@ -41,7 +42,6 @@ interface PostDetail {
 export default function DetailPageConsumer() {
   const router = useRouter();
   const { postId } = router.query;
-  console.log("[LOG] router.query:", router.query);
 
   const [me, setMe] = useState<string>("");
   const [post, setPost] = useState<PostDetail | null>(null);
@@ -50,50 +50,32 @@ export default function DetailPageConsumer() {
   const [showApplication, setApplication] = useState(false);
   const [channelUrl, setChannelUrl] = useState<string>("");
 
-  // 기본 이미지 (fallback)
   const defaultImages = ["/images/camera.jpg"];
-
-  // 닉네임 API 준비 전까지 임시 하드코딩
-  const writerNickname = "닉네임 없음";
 
   // 1) 로그인된 사용자 ID 불러오기
   useEffect(() => {
     const stored = localStorage.getItem("me") || "";
-    console.log("[LOG] localStorage.me:", stored);
     setMe(stored);
   }, []);
 
   // 2) 상세 데이터 불러오기
   useEffect(() => {
-    console.log("[LOG] useEffect(fetchDetail) fired: isReady=", router.isReady, "postId=", postId);
     if (!router.isReady || !postId) return;
 
     (async function fetchDetail() {
       try {
-        console.log(`[LOG] → GET /api/post/detail?postId=${postId}`);
         const res = await axios.get<ApiResponse<PostDetail>>(
           "/api/post/detail",
           { params: { postId } }
         );
-        console.log("[LOG] ← status:", res.status, "data:", res.data);
-
         if (!res.data.success) {
-          console.warn("[WARN] API 응답 success=false:", res.data.message);
           setImages(defaultImages);
           return;
         }
-
         const data = res.data.data;
-        console.log("[LOG] mapped data:", data);
         setPost(data);
-
-        const imgs = data.imageUrls && data.imageUrls.length > 0
-          ? data.imageUrls
-          : defaultImages;
-        console.log("[LOG] setting images:", imgs);
-        setImages(imgs);
-      } catch (err: any) {
-        console.error("[ERROR] fetchDetail failed:", err.message, err);
+        setImages(data.imageUrls.length > 0 ? data.imageUrls : defaultImages);
+      } catch {
         setImages(defaultImages);
       }
     })();
@@ -101,44 +83,35 @@ export default function DetailPageConsumer() {
 
   // 3) 채팅 시작 로직
   const startChat = async () => {
-    console.log("[LOG] startChat() called, me=", me, "post?.user_id=", post?.user_id);
     if (!me) {
-      console.warn("[WARN] No logged-in user");
       alert("로그인된 사용자가 없습니다.");
       return;
     }
     try {
       const sb = initSendbird(process.env.NEXT_PUBLIC_SENDBIRD_APP_ID!);
-      console.log("[LOG] connecting to Sendbird with user:", me);
       await sb.connect(me);
       const ch = await sb.groupChannel.createChannel({
         invitedUserIds: [me, String(post?.user_id)].sort(),
         isDistinct: true,
       });
-      console.log("[LOG] channel created:", ch.url);
       setChannelUrl(ch.url);
-    } catch (err: any) {
-      console.error("[ERROR] startChat failed:", err.message, err);
+    } catch {
       alert("채팅 시작 중 오류가 발생했습니다.");
     }
   };
 
-  // 4) 메뉴 토글 로깅
+  // 4) 메뉴 토글
   const toggleMenu = () => {
-    console.log("[LOG] toggle menu, isMenuOpen was", isMenuOpen);
     setIsMenuOpen(!isMenuOpen);
   };
 
   if (!post) {
-    console.log("[LOG] post is null → showing loading");
     return (
       <div className="flex items-center justify-center h-screen">
         로딩 중...
       </div>
     );
   }
-
-  console.log("[LOG] rendering UI with post:", post, "images:", images);
 
   return (
     <div className="bg-white pt-[80px]">
@@ -157,7 +130,6 @@ export default function DetailPageConsumer() {
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 unoptimized
                 onError={(e) => {
-                  console.error(`[ERROR] image load failed at index ${idx}:`, src);
                   const img = e.currentTarget as HTMLImageElement;
                   img.src = defaultImages[0];
                 }}
@@ -217,7 +189,7 @@ export default function DetailPageConsumer() {
                   unoptimized
                 />
                 <span className="font-medium text-[#232323]">
-                  {writerNickname}
+                  {post.nickname}
                 </span>
               </div>
 
@@ -285,7 +257,14 @@ export default function DetailPageConsumer() {
         </section>
       </main>
 
-      <Application open={showApplication} onClose={() => setApplication(false)} />
+      <Application
+        open={showApplication}
+        onClose={() => setApplication(false)}
+        itemName={post.description}
+        pricePerDay={post.price_per_day}
+        pricePerHour={post.price_per_hour}
+      />
+
       <Footer />
     </div>
   );
