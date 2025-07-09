@@ -72,9 +72,6 @@ export default async function handler(
       forwardHeaders["Authorization"] = req.headers.authorization
     }
 
-    console.log("백엔드 API URL:", `${process.env.NEXT_PUBLIC_API_URL}/user/mypost`)
-    console.log("전달되는 헤더:", forwardHeaders)
-
     const backendResponse = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/user/mypost`,
       {
@@ -83,11 +80,7 @@ export default async function handler(
       }
     )
 
-    console.log("백엔드 응답 상태:", backendResponse.status)
-    console.log("백엔드 응답 ok:", backendResponse.ok)
-
     const text = await backendResponse.text()
-    console.log("백엔드 응답 데이터 길이:", text.length)
 
     const setCookie = backendResponse.headers.get("set-cookie")
     if (setCookie) {
