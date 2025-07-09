@@ -1,0 +1,163 @@
+// pages/MyPostsPage.tsx
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Header from '@/components/home-header';
+import Footer from '@/components/Footer';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+
+interface Post {
+  id: number;
+  imageUrl: string;
+  title: string;
+  hourlyPrice: number;
+  dailyPrice: number;
+  category: string;
+  state: string;
+}
+
+const MyPostsPage: React.FC = () => {
+  const router = useRouter();
+  const [posts, setPosts]         = useState<Post[]>([]);
+  const [hasPosts, setHasPosts]   = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    axios
+      .get('/user/mypost')  // 스웨거에 나오는 엔드포인트
+      .then(res => {
+        // res.data 구조: { status, success, message, data: Array<…> }
+        if (res.data.success) {
+          const mapped: Post[] = res.data.data.map((item: any) => {
+            // 첫 번째 이미지 키를 꺼내서, 실제 URL로 변환해야 한다면
+            const s3Key = item.post_fir_Image?.s3Key;
+            const imageUrl = s3Key
+              ? `https://your-bucket-domain/${s3Key}`   // 실제 S3 도메인에 맞춰 변경
+              : '/images/placeholder.png';
+
+            return {
+              id:            item.post_id,
+              imageUrl,
+              title:         item.itemName,
+              hourlyPrice:   item.price_per_hour,
+              dailyPrice:    item.price_per_day,
+              category:      item.category,
+              // 대여 가능 상태를 post_fir_Image.post.isBorrowable 에서 꺼낼 수도 있고
+              // borrowedList 여부로도 판단할 수 있습니다.
+              state:         item.post_fir_Image?.post?.isBorrowable ?? 'UNKNOWN',
+            };
+          });
+
+          setPosts(mapped);
+          setHasPosts(mapped.length > 0);
+        } else {
+          console.warn('내 물건 조회 실패:', res.data.message);
+          setHasPosts(false);
+        }
+      })
+      .catch(err => {
+        console.error('API 호출 에러:', err);
+        setHasPosts(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  return (
+    <div className="min-h-screen flex flex-col bg-white pt-[60px]">
+      <Header />
+
+      <main className="flex-grow container mx-auto px-4 py-8 pb-[67px]">
+        <h1
+          style={{
+            color: "var(--Gray-10, #232323)",
+            textAlign: "center",
+            fontFamily: `"Pretendard Variable", sans-serif`,
+            fontSize: "32px",
+            fontWeight: 600,
+            lineHeight: "130%",
+            letterSpacing: "-0.64px",
+          }}
+        >
+          내 물건
+        </h1>
+
+        {isLoading ? (
+          <p className="text-center text-gray-400">불러오는 중...</p>
+        ) : hasPosts ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            {posts.map(post => (
+              <Link
+                key={post.id}
+                href={`/detail/${post.id}`}  // 상세 페이지 경로도 동적으로 수정
+                className="block hover:opacity-80 transition-opacity"
+              >
+                <div className="bg-white rounded-lg overflow-hidden">
+                  <div className="relative w-full h-[220px]">
+                    <Image
+                      src={post.imageUrl}
+                      alt={post.title}
+                      fill
+                      style={{ objectFit: 'cover' }}
+                      className="rounded-t-lg"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h2 className="text-[18px] font-medium text-gray-900 mb-2">
+                      {post.title}
+                    </h2>
+                    <div className="space-y-1">
+                      <div className="flex items-baseline">
+                        <span className="text-[18px] font-semibold text-gray-900">
+                          {post.hourlyPrice.toLocaleString()}원
+                        </span>
+                        <span className="text-[14px] text-gray-500 pl-1">/1시간</span>
+                      </div>
+                      <div className="flex items-baseline">
+                        <span className="text-[18px] font-semibold text-gray-900">
+                          {post.dailyPrice.toLocaleString()}원
+                        </span>
+                        <span className="text-[14px] text-gray-500 pl-1">/1일</span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="inline-block text-xs bg-purple-100 text-purple-600 px-2 py-0.5 rounded">
+                          {post.state}
+                        </span>
+                        <span className="inline-block text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                          {post.category}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Link href="/detail/new-page">
+              <Image
+                src="/images/emptyfolder.svg"
+                alt="등록된 물건이 없어요"
+                width={120}
+                height={120}
+              />
+            </Link>
+            <p className="text-gray-500 mb-6">등록한 물건이 없어요</p>
+            <Link href="/detail/new-page" passHref>
+              <button className="inline-flex items-center justify-center px-4 py-2 gap-2 bg-purple-600 text-white rounded-lg text-sm font-medium">
+                + 물건 등록하기
+              </button>
+            </Link>
+          </div>
+        )}
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default MyPostsPage;
