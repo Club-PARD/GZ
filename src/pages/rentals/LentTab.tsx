@@ -13,13 +13,6 @@ interface LentTabProps {
   reloadTrigger: number;
 }
 
-// axios 인스턴스
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
-  headers: { "Content-Type": "application/json" },
-});
-
 const LentTab: React.FC<LentTabProps> = ({
   handleReturnConfirm,
   reloadTrigger,
@@ -28,24 +21,35 @@ const LentTab: React.FC<LentTabProps> = ({
   const [items, setItems] = useState<TransactionItem[]>([]);
 
   const fetchLentData = async () => {
+    console.log("[LentTab] fetchLentData 호출, reloadTrigger:", reloadTrigger);
     setLoading(true);
+    console.log("[LentTab] loading → true");
+
     try {
-      const storedUserId = localStorage.getItem("userId");
-      if (!storedUserId) {
+      const stored = localStorage.getItem("me");
+      console.log("[LentTab] localStorage 'me':", stored);
+      const userId = stored ? Number(stored) : null;
+      console.log("[LentTab] parsed userId:", userId);
+
+      if (!userId) {
+        console.warn("[LentTab] 유효한 userId가 없습니다. items를 빈 배열로 설정합니다.");
         setItems([]);
         return;
       }
-      const res = await api.get("/borrowed/lend", {
-        params: { userId: storedUserId },
+
+      console.log(`[LentTab] axios GET /api/borrowed/lend?userId=${userId}`);
+      const res = await axios.get("/api/borrowed/lend", {
+        params: { userId },
+        withCredentials: true,
       });
+      console.log("[LentTab] 응답 status:", res.status, "data:", res.data);
+
       if (res.data.success) {
         const mapped: TransactionItem[] = res.data.data.map((d: any) => ({
           id: d.borrowedId,
           title: d.itemName,
           category: d.category || "",
-          duration: `${d.peroid}${
-            d.unitOfPeroid === "DAY" ? "일" : "시간"
-          }`,
+          duration: `${d.peroid}${d.unitOfPeroid === "DAY" ? "일" : "시간"}`,
           price: d.totalPrice,
           status:
             d.borrowStatus === "BORROWED"
@@ -55,16 +59,18 @@ const LentTab: React.FC<LentTabProps> = ({
               : d.borrowStatus,
           imageUrl: d.firstImageUrl,
         }));
+        console.log("[LentTab] 매핑된 items:", mapped);
         setItems(mapped);
       } else {
-        console.error("빌려준 내역 조회 오류:", res.data.message);
+        console.error("[LentTab] 빌려준 내역 조회 오류:", res.data.message);
         setItems([]);
       }
-    } catch (error) {
-      console.error("빌려준 내역 데이터 로딩 실패:", error);
+    } catch (err) {
+      console.error("[LentTab] fetchLentData 예외 발생:", err);
       setItems([]);
     } finally {
       setLoading(false);
+      console.log("[LentTab] loading → false");
     }
   };
 
@@ -73,16 +79,22 @@ const LentTab: React.FC<LentTabProps> = ({
     fetchLentData();
   }, [reloadTrigger]);
 
-  // 페이지네이션
+  // 페이지네이션 로직
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
-    if (currentPage > totalPages) setCurrentPage(1);
-  }, [totalPages]);
+    if (currentPage > totalPages) {
+      console.log(
+        `[LentTab] currentPage(${currentPage}) > totalPages(${totalPages}) → reset to 1`
+      );
+      setCurrentPage(1);
+    }
+  }, [totalPages, currentPage]);
 
   const currentItems = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    console.log(`[LentTab] currentItems slice: start=${start}, end=${start + ITEMS_PER_PAGE}`);
     return items.slice(start, start + ITEMS_PER_PAGE);
   }, [items, currentPage]);
 
@@ -92,13 +104,6 @@ const LentTab: React.FC<LentTabProps> = ({
     currentBlockStart + BLOCK_SIZE - 1,
     totalPages
   );
-
-  const handlePrevBlock = () =>
-    setCurrentPage(Math.max(currentBlockStart - BLOCK_SIZE, 1));
-  const handleNextBlock = () =>
-    setCurrentPage(
-      Math.min(currentBlockStart + BLOCK_SIZE, totalPages - BLOCK_SIZE + 1)
-    );
 
   return (
     <>
@@ -113,9 +118,23 @@ const LentTab: React.FC<LentTabProps> = ({
         totalPages={totalPages}
         currentBlockStart={currentBlockStart}
         currentBlockEnd={currentBlockEnd}
-        handlePrevBlock={handlePrevBlock}
-        handleNextBlock={handleNextBlock}
-        setCurrentPage={setCurrentPage}
+        handlePrevBlock={() => {
+          console.log("[LentTab] 이전 블록 이동");
+          setCurrentPage(Math.max(currentBlockStart - BLOCK_SIZE, 1));
+        }}
+        handleNextBlock={() => {
+          console.log("[LentTab] 다음 블록 이동");
+          setCurrentPage(
+            Math.min(
+              currentBlockStart + BLOCK_SIZE,
+              totalPages - BLOCK_SIZE + 1
+            )
+          );
+        }}
+        setCurrentPage={(page) => {
+          console.log("[LentTab] 페이지 직접 이동:", page);
+          setCurrentPage(page);
+        }}
       />
     </>
   );
