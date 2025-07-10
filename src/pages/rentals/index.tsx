@@ -73,7 +73,7 @@ const RentalsPage: React.FC = () => {
           <h1
             className={`
               pb-[60px] pt-[60px] text-[#232323]
-              px-106 [font-family:'Pretendard Variable']
+              px-106
               text-[32px] leading-[130%] tracking-[-0.64px]
             `}
           >

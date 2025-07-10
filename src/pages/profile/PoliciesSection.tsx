@@ -40,7 +40,6 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({ expanded, agreed, tog
                 <>
               <div className="self-stretch
                 text-[var(--Gray-10,#232323)]
-                font-['Pretendard Variable']
                 text-sm
                 not-italic
                 font-medium
@@ -51,14 +50,13 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({ expanded, agreed, tog
                   
               <div className="self-stretch
             text-[var(--Gray-09,#4C4C4E)]
-            font-['Pretendard Variable']
             text-sm
             not-italic
             font-normal
             leading-[160%]
             tracking-[-0.28px]">
               <p>
-              이 약관은 팀 GZ(이하 ‘회사’)가 운영하는 인터넷 관련 서비스(이하 ‘서비스’)를 하나의
+              이 약관은 팀 GZ(이하 '회사')가 운영하는 인터넷 관련 서비스(이하 '서비스')를 하나의
               계정으로 가입하여 이용함에 있어 회사와 이용자의 권리, 의무 및 책임사항을 규정함을
               목적으로 합니다.
             </p>
@@ -429,7 +427,6 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({ expanded, agreed, tog
                   
               <div className="self-stretch
                 text-[var(--Gray-10,#232323)]
-                font-['Pretendard Variable']
                 text-sm
                 not-italic
                 font-medium
@@ -450,7 +447,6 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({ expanded, agreed, tog
 
               <div className="self-stretch
                 text-[var(--Gray-10,#232323)]
-                font-['Pretendard Variable']
                 text-sm
                 not-italic
                 font-medium
@@ -467,12 +463,12 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({ expanded, agreed, tog
             font-normal
             leading-[160%]
             tracking-[-0.28px]">
-              1. 회사는 약관의 규제에 관한 법률, 콘텐츠산업 진흥법, 전자문서 및 전자거래 기본법, 전자서명법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률, 전자상거래 등에서의 소비자보호에 관한 법률, 유사수신행위의 규제에 관한 법률 등 관련법을 위배하지 않는 범위에서 이 약관을 개정할 수 있습니다.
-              <br />
-              2. 회사가 약관을 개정할 경우에는 적용일자 및 개정사유를 명시하여 웹사이트 또는 앱 내에 최소 그 개정약관 적용일자 7일 이전부터 적용일자 전일까지 공지합니다. 다만, 이용자에게 불리하게 약관의 내용을 변경하는 경우에는 적용일자 30일 이전부터 공지합니다.
-              3. 제3항에 따라 공지된 적용일자 이후에 회원이 회사의 서비스를 계속 이용하는 경우에는 개정된 약관에 동의하는 것으로 봅니다. 개정된 약관에 동의하지 아니하는 회원은 언제든지 자유롭게 서비스 이용계약을 해지할 수 있습니다. 유료서비스를 이용하는 회원이 약관의 개정에 동의하지 아니하여 해지할 경우 회사가 정한 환불정책에 따릅니다.
-            4. 이 약관에서 정하지 아니한 사항과 이 약관의 해석에 관하여는 정부가 제정한 전자거래소비자보호지침 및 관계법령 또는 일반 상 관례에 따릅니다.
-              </div>
+                  1. 회사는 약관의 규제에 관한 법률, 콘텐츠산업 진흥법, 전자문서 및 전자거래 기본법, 전자서명법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률, 전자상거래 등에서의 소비자보호에 관한 법률, 유사수신행위의 규제에 관한 법률 등 관련법을 위배하지 않는 범위에서 이 약관을 개정할 수 있습니다.
+                  <br />
+                  2. 회사가 약관을 개정할 경우에는 적용일자 및 개정사유를 명시하여 웹사이트 또는 앱 내에 최소 그 개정약관 적용일자 7일 이전부터 적용일자 전일까지 공지합니다. 다만, 이용자에게 불리하게 약관의 내용을 변경하는 경우에는 적용일자 30일 이전부터 공지합니다.
+                  3. 제3항에 따라 공지된 적용일자 이후에 회원이 회사의 서비스를 계속 이용하는 경우에는 개정된 약관에 동의하는 것으로 봅니다. 개정된 약관에 동의하지 아니하는 회원은 언제든지 자유롭게 서비스 이용계약을 해지할 수 있습니다. 유료서비스를 이용하는 회원이 약관의 개정에 동의하지 아니하여 해지할 경우 회사가 정한 환불정책에 따릅니다.
+                4. 이 약관에서 정하지 아니한 사항과 이 약관의 해석에 관하여는 정부가 제정한 전자거래소비자보호지침 및 관계법령 또는 일반 상 관례에 따릅니다.
+                </div>
                   
                 </>
               ) : (
@@ -682,7 +678,7 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({ expanded, agreed, tog
               개인정보를 자동으로 수집하는 장치의 설치, 운영 및 그 거부에 관한 사항
             </h3>
             <p>
-              지구는 Google, Inc. (이하 “Google”이라 합니다)에서 제공하는 웹 로그 분석 도구인
+              지구는 Google, Inc. (이하 "Google"이라 합니다)에서 제공하는 웹 로그 분석 도구인
               Google Analytics를 이용하고 있습니다. 웹 로그 분석이란 웹 사이트 상에서 고객님의
               서비스 이용 형태에 대한 분석을 의미합니다. Google은 지구를 대신하여 정보를 처리하며
               고객님의 웹 사이트 사용을 분석합니다. 이 과정에서 개인정보 식별이 가능한 어떠한

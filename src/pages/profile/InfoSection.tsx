@@ -71,10 +71,10 @@ const InfoSection: React.FC<InfoSectionProps> = ({
           </svg>
         </div>
         <div className="ml-6">
-          <p className="text-[var(--Gray-10,#232323)] font-['Pretendard Variable'] text-[20px] font-medium leading-[130%] tracking-[-0.4px]">
+          <p className="text-[var(--Gray-10,#232323)] text-[20px] font-medium leading-[130%] tracking-[-0.4px]">
             {serverInfo ? serverInfo.nickname : '...'}
           </p>
-          <p className="text-[var(--Gray-06,#ADAEB2)] font-['Pretendard Variable'] text-[16px] font-medium leading-[130%] tracking-[-0.32px]">
+          <p className="text-[var(--Gray-06,#ADAEB2)] text-[16px] font-medium leading-[130%] tracking-[-0.32px]">
             {serverInfo ? `${serverInfo.schoolName} / ${serverInfo.studentMail}` : '...'}
           </p>
         </div>
@@ -82,7 +82,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
 
       {/* 프로필 수정 헤더 */}
       <div className="w-[890px] border-y border-[#D8D9DF] py-[20px] mb-6">
-        <h1 className="text-[var(--Gray-10,#232323)] font-['Pretendard Variable'] text-[24px] font-medium leading-[130%] tracking-[-0.48px]">
+        <h1 className="text-[var(--Gray-10,#232323)] text-[24px] font-medium leading-[130%] tracking-[-0.48px]">
           프로필 수정
         </h1>
       </div>
@@ -93,7 +93,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         <div className="grid grid-cols-3 items-center gap-3 pb-[20px]">
           <label
             htmlFor="nickname"
-            className="text-[var(--Gray-06,#ADAEB2)] font-['Pretendard Variable'] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
+            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
           >
             닉네임
           </label>
@@ -111,7 +111,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         <div className="grid grid-cols-3 items-center gap-4">
           <label
             htmlFor="current-pw"
-            className="text-[var(--Gray-06,#ADAEB2)] font-['Pretendard Variable'] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
+            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
           >
             현재 비밀번호
           </label>
@@ -129,7 +129,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         <div className="grid grid-cols-3 items-center gap-4">
           <label
             htmlFor="new-pw"
-            className="text-[var(--Gray-06,#ADAEB2)] font-['Pretendard Variable'] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
+            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
           >
             새 비밀번호
           </label>
@@ -147,7 +147,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         <div className="grid grid-cols-3 items-center gap-4">
           <label
             htmlFor="confirm-pw"
-            className="text-[var(--Gray-06,#ADAEB2)] font-['Pretendard Variable'] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
+            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
           >
             새 비밀번호 확인
           </label>
@@ -165,7 +165,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
       {/* 액션 버튼 */}
       <div className="flex w-full justify-center space-x-[20px] mt-8">
         <button
-          className="flex w-[160px] py-4 px-6 justify-center items-center gap-1.5 rounded-lg bg-[var(--Gray-08,#616264)] text-[var(--White,#FFF)] text-center font-['Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]"
+          className="flex w-[160px] py-4 px-6 justify-center items-center gap-1.5 rounded-lg bg-[var(--Gray-08,#616264)] text-[var(--White,#FFF)] text-center text-[16px] font-semibold leading-[130%] tracking-[-0.32px]"
         >
           취소
         </button>
