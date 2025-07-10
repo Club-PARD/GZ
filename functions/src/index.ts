@@ -2,12 +2,17 @@
 
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import { Request, Response } from "express";
 
 admin.initializeApp();
 
 // Firestore와 Messaging 서비스 사용 준비
 const db = admin.firestore();
 const messaging = admin.messaging();
+
+// Sendbird API 설정
+const SENDBIRD_APP_ID = "07CA004F-C047-45F1-ACF2-11B70C188311"; // 로그에서 확인된 앱 ID
+const SENDBIRD_API_TOKEN = functions.config().sendbird?.api_token || process.env.SENDBIRD_API_TOKEN;
 
 // 타입 정의
 interface WebhookSender {
@@ -36,13 +41,24 @@ interface WebhookPayload {
   members?: Array<{ user_id: string }>;
 }
 
+interface SendbirdChannelMember {
+  user_id: string;
+  nickname: string;
+  profile_url: string;
+}
+
+interface SendbirdChannelResponse {
+  channel_url: string;
+  name: string;
+  members: SendbirdChannelMember[];
+}
 
 
 /**
  * Sendbird 웹훅 요청을 처리하여 푸시 알림을 보냅니다.
- * HTTP 요청으로 트리거됩니다.
+ * 실제 채널 멤버들에게만 알림을 전송합니다.
  */
-export const sendbirdWebhook = functions.https.onRequest(async (request, response) => {
+export const sendbirdWebhook = functions.https.onRequest(async (request: Request, response: Response) => {
   const webhookPayload: WebhookPayload = request.body;
 
   if (webhookPayload.category !== "group_channel:message_send") {
@@ -52,7 +68,6 @@ export const sendbirdWebhook = functions.https.onRequest(async (request, respons
 
   const sender = webhookPayload.sender;
   const messageText = webhookPayload.payload?.message || "메시지 내용 없음";
-  const channelName = webhookPayload.channel?.name || "채널";
   const channelUrl = webhookPayload.channel?.channel_url;
 
   if (!sender || !channelUrl) {
@@ -72,21 +87,59 @@ export const sendbirdWebhook = functions.https.onRequest(async (request, respons
       .map(member => member.user_id)
       .filter(userId => userId !== sender.user_id);
   } else {
-    // 폴백: 전체 FCM 토큰 등록된 사용자들에게 알림 (채널 정보가 없는 경우)
-    console.log("채널 멤버 정보가 없어서 전체 알림을 보냅니다.");
-    recipients = []; // 이 경우 아래에서 전체 사용자 조회
-  }
-
-  // 수신자가 없는 경우 전체 등록된 사용자들 조회
-  if (recipients.length === 0) {
+    // Sendbird API로 실제 채널 멤버 가져오기
     try {
-      const allTokens = await db.collection("fcm_tokens").get();
-      recipients = allTokens.docs
-        .map(doc => doc.id)
-        .filter(userId => userId !== sender.user_id);
+      if (SENDBIRD_API_TOKEN) {
+        console.log("Sendbird API로 채널 멤버 조회 중...");
+        
+        const response = await fetch(
+          `https://api-${SENDBIRD_APP_ID}.sendbird.com/v3/group_channels/${channelUrl}`,
+          {
+            headers: {
+              'Api-Token': SENDBIRD_API_TOKEN,
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+        
+        if (response.ok) {
+          const channelData: SendbirdChannelResponse = await response.json();
+          if (channelData.members) {
+            recipients = channelData.members
+              .map(member => member.user_id)
+              .filter(userId => userId !== sender.user_id);
+            console.log(`API에서 가져온 채널 멤버들: ${recipients.join(', ')}`);
+          }
+        } else {
+          console.error("Sendbird API 호출 실패:", response.status);
+        }
+      }
+      
+      // API 실패 시 폴백: 채널 URL에서 사용자 ID 추출 시도
+      if (recipients.length === 0) {
+        console.log("채널 URL에서 사용자 ID 추출 시도");
+        
+        // 채널 URL 패턴: sendbird_group_channel_[userId1]_[userId2]_...
+        // 또는 distinct 채널의 경우 사용자 ID들이 포함될 수 있음
+        const urlParts = channelUrl.split('_');
+        const possibleUserIds = urlParts.filter(part => 
+          /^\d+$/.test(part) && part !== SENDBIRD_APP_ID.replace(/-/g, '')
+        );
+        
+        if (possibleUserIds.length > 0) {
+          recipients = possibleUserIds.filter(userId => userId !== sender.user_id);
+          console.log(`URL에서 추출한 사용자들: ${recipients.join(', ')}`);
+        }
+      }
+      
     } catch (error) {
-      console.error("전체 사용자 조회 실패:", error);
-      response.status(200).send("No recipients to notify.");
+      console.error("채널 멤버 조회 실패:", error);
+    }
+    
+    // 최종 폴백: 알림 없음
+    if (recipients.length === 0) {
+      console.log("채널 멤버를 찾을 수 없어서 알림을 보내지 않습니다.");
+      response.status(200).send("No channel members found.");
       return;
     }
   }
@@ -107,7 +160,7 @@ export const sendbirdWebhook = functions.https.onRequest(async (request, respons
       
       const message = {
         notification: {
-          title: `💬 ${channelName} - ${sender.nickname || sender.user_id}`,
+          title: `💬 ${sender.nickname || sender.user_id}`,
           body: messageText,
         },
         data: {
@@ -133,7 +186,7 @@ export const sendbirdWebhook = functions.https.onRequest(async (request, respons
 /**
  * FCM 토큰을 저장하는 함수
  */
-export const saveFcmToken = functions.https.onRequest(async (request, response) => {
+export const saveFcmToken = functions.https.onRequest(async (request: Request, response: Response) => {
   response.set('Access-Control-Allow-Origin', '*');
   response.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   response.set('Access-Control-Allow-Headers', 'Content-Type');
@@ -175,7 +228,7 @@ export const saveFcmToken = functions.https.onRequest(async (request, response) 
 /**
  * FCM 토큰을 조회하는 함수
  */
-export const getFcmToken = functions.https.onRequest(async (request, response) => {
+export const getFcmToken = functions.https.onRequest(async (request: Request, response: Response) => {
   response.set('Access-Control-Allow-Origin', '*');
   response.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   response.set('Access-Control-Allow-Headers', 'Content-Type');
@@ -221,7 +274,7 @@ export const getFcmToken = functions.https.onRequest(async (request, response) =
 /**
  * FCM 토큰을 삭제하는 함수
  */
-export const deleteFcmToken = functions.https.onRequest(async (request, response) => {
+export const deleteFcmToken = functions.https.onRequest(async (request: Request, response: Response) => {
   response.set('Access-Control-Allow-Origin', '*');
   response.set('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   response.set('Access-Control-Allow-Headers', 'Content-Type');
