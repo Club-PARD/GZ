@@ -1,5 +1,6 @@
 // src/pages/rentals/index.tsx
 import React, { useState } from "react";
+import axios from "axios";
 import Header from "@/components/home-header";
 import Footer from "@/components/Footer";
 import TabNav from "./TabNav";
@@ -8,25 +9,60 @@ import LentTab from "./LentTab";
 import RequestsTab from "./RequestsTab";
 import { Tab } from "./rentals";
 
+// axios 인스턴스
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL, // 예: "https://api.example.com"
+  withCredentials: true,                     // 쿠키 포함
+  headers: { "Content-Type": "application/json" },
+});
+
 const RentalsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>("borrow");
   const [currentPage, setCurrentPage] = useState(1);
+  // 탭 간 연동용 리로드 트리거
+  const [reloadTrigger, setReloadTrigger] = useState(0);
 
-  const handleReturnConfirm = (id: number) => {
-    // 반납 확인 로직 (현재는 더미)
-    console.log("반납 확인:", id);
+  const handleReturnConfirm = async (id: number) => {
+    try {
+      const res = await api.patch("/borrowed/return", null, {
+        params: { borrowedId: id },
+      });
+      if (!res.data.success) {
+        console.error("반납 요청 오류:", res.data.message);
+      } else {
+        // PATCH 성공 시 모든 탭을 다시 불러오기
+        setReloadTrigger((prev) => prev + 1);
+      }
+    } catch (err) {
+      console.error("반납 요청 실패:", err);
+    }
   };
 
   const renderActiveTab = () => {
     switch (activeTab) {
       case "borrow":
-        return <BorrowedTab handleReturnConfirm={handleReturnConfirm} />;
+        return (
+          <BorrowedTab
+            handleReturnConfirm={handleReturnConfirm}
+            reloadTrigger={reloadTrigger}
+          />
+        );
       case "lend":
-        return <LentTab handleReturnConfirm={handleReturnConfirm} />;
+        return (
+          <LentTab
+            handleReturnConfirm={handleReturnConfirm}
+            reloadTrigger={reloadTrigger}
+          />
+        );
       case "request":
         return <RequestsTab handleReturnConfirm={handleReturnConfirm} />;
       default:
-        return <BorrowedTab handleReturnConfirm={handleReturnConfirm} />;
+        return (
+          <BorrowedTab
+            handleReturnConfirm={handleReturnConfirm}
+            reloadTrigger={reloadTrigger}
+          />
+        );
     }
   };
 
@@ -47,7 +83,10 @@ const RentalsPage: React.FC = () => {
 
           <TabNav
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            setActiveTab={(tab) => {
+              setActiveTab(tab);
+              setCurrentPage(1);
+            }}
             setCurrentPage={setCurrentPage}
           />
 
