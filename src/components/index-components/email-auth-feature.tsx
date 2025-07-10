@@ -4,10 +4,10 @@ import styles from '@/styles/onboarding.module.css';
 
 export default function EmailAuthFeature() {
   return (
-    <section className="w-full h-[780px] bg-[#F3F3F5]">
-      <div className="w-full flex h-full">
+    <section className="w-full h-[780px] bg-white ">
+      <div className="w-full flex h-full flex-row-reverse ">
         {/* 왼쪽 일러스트 영역 */}
-        <div className="flex-1 flex items-start pt-[120px] pl-[166px]">
+        <div className="flex-1 flex items-start pt-[120px] pl-[166px] pr-[253px]">
           <Image
             src="/images/intro2.svg"
             alt="campus-illustration"
@@ -17,10 +17,14 @@ export default function EmailAuthFeature() {
         </div>
 
         {/* 오른쪽 텍스트 + 아이콘 영역 */}
-        <div className="flex-1 flex flex-col justify-between pt-[136px]  pb-[120px] pl-[120px]">
+        <div className="flex-1 flex flex-col justify-between pt-[136px]  pb-[120px] pr-[30]">
           {/* 헤드라인 & 서브텍스트 */}
-          <div className="flex flex-col gap-[120px]">
+          <div className="pl-[168px]">
+            <div className="flex flex-col gap-[129px]">
             <div>
+              <p className="text-[#6849FE] text-[18px] font-semibold leading-[130%] tracking-[-0.36px] pb-[8px]">
+                학교 메일 인증
+              </p>
               <h2 className="text-4xl font-bold  text-[#232323]" style={{ letterSpacing: '-2%' }}>
                 학교 메일을 인증하고<br />
                 안전하게 물건을 거래해요
@@ -30,35 +34,38 @@ export default function EmailAuthFeature() {
                 가까운 곳에서 물건을 거래할 수 있어요.
               </p>
             </div>
+            </div>
 
+          </div>
+          
             {/* 하단 아이콘 3개 */}
-            <div className={styles.iconContainer}>
+            <div className={styles.iconContainer} >
               <div>
                 <Image
-                  src="/images/intro2-1.svg"
+                  src="/images/peopleicon.svg"
                   alt="안전거래 아이콘"
-                  width={220}
-                  height={220}
+                  width={165}
+                  height={200}
                 />
               </div>
               <div>
                 <Image
-                  src="/images/intro2-2.svg"
+                  src="/images/id.svg"
                   alt="신분증 아이콘"
-                  width={220}
-                  height={220}
+                  width={200}
+                  height={200}
                 />
               </div>
               <div>
                 <Image
-                  src="/images/intro2-3.svg"
+                  src="/images/shild.svg"
                   alt="커뮤니티 아이콘"
-                  width={146}
-                  height={220}
+                  width={200}
+                  height={200}
                 />
               </div>
             </div>
-          </div>
+        
         </div>
       </div>
     </section>
