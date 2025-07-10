@@ -7,7 +7,12 @@ export interface PoliciesSectionProps {
   toggleAgree: (key: 'terms' | 'privacy') => void;
 }
 
-const PoliciesSection: React.FC<PoliciesSectionProps> = ({ expanded, agreed, toggleExpand, toggleAgree }) => (
+const PoliciesSection: React.FC<PoliciesSectionProps> = ({ 
+  expanded = { terms: false, privacy: false }, 
+  agreed = { terms: false, privacy: false }, 
+  toggleExpand = () => {}, 
+  toggleAgree = () => {} 
+}) => (
   
   <div>
     <h1 className="text-2xl font-semibold mb-6 border-b pb-4">약관 및 정책</h1>

@@ -1,5 +1,5 @@
 import React from "react";
-import { TransactionItem, RequestItem, Tab } from "./rentals.types";
+import { TransactionItem, RequestItem, Tab } from "../../lib/rentals.types";
 import axios from "axios";
 
 interface TransactionRowProps {

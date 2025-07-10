@@ -1,7 +1,7 @@
 // src/pages/rentals/RequestsTab.tsx
 import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
-import { RequestItem } from "./rentals.types";
+import { RequestItem } from "../../lib/rentals.types";
 import TransactionTable from "./TransactionTable";
 import Pagination from "./Pagination";
 
