@@ -12,6 +12,7 @@ export interface TransactionItem {
 
 // API 응답 타입들
 export interface ApplyItem {
+  applyId: number;
   applierNickname: string;
   firstImageUrl: string;
   period: number;
@@ -33,13 +34,8 @@ export interface ApplyResponse {
   data: ApplyData[];
 }
 
-// 대여요청 탭용 아이템 타입
-export interface RequestItem {
-  postId: number;
-  userId: number;
-  itemName: string;
-  applyList: ApplyItem[];
-}
+// 대여요청 탭용 아이템 타입 (ApplyData와 동일한 구조)
+export type RequestItem = ApplyData;
 
 import axios from 'axios';
 

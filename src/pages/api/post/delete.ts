@@ -1,6 +1,8 @@
 // pages/api/post/delete.ts
 
 import type { NextApiRequest, NextApiResponse } from 'next'
+import axios from 'axios';
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'DELETE') {
     res.setHeader('Allow', 'DELETE')
@@ -22,16 +24,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (userId) params.append('userId', userId)
 
   const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/post/delete?${params.toString()}`
-  const backendResponse = await fetch(backendUrl, {
-    method: 'DELETE',
-    headers: forwardHeaders,
-  })
-
-  const text = await backendResponse.text()
-  res.status(backendResponse.status)
-  if (backendResponse.headers.get('content-type')?.includes('application/json')) {
-    try { return res.json(JSON.parse(text)) }
-    catch   { return res.status(500).json({ message: 'Invalid JSON from backend' }) }
+  try {
+    const backendResponse = await axios.delete(backendUrl, {
+      headers: forwardHeaders,
+      validateStatus: () => true,
+    });
+    res.status(backendResponse.status);
+    if (backendResponse.headers['content-type']?.includes('application/json')) {
+      return res.json(backendResponse.data);
+    }
+    return res.send(backendResponse.data);
+  } catch (err: any) {
+    return res.status(500).json({ message: 'Internal server error', error: err.message });
   }
-  return res.send(text)
 }

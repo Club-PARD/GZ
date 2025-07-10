@@ -1,5 +1,6 @@
 import React from "react";
 import { TransactionItem, Tab, RequestItem } from "./rentals";
+import axios from "axios";
 
 interface TransactionRowProps {
   item: TransactionItem | RequestItem;
@@ -32,8 +33,18 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
   };
 
   // 더미 수락/거절 핸들러
-  const handleAccept = () => {
-    alert('신청을 수락했습니다. (더미)');
+  const handleAccept = async () => {
+    if (!isRequestItem || !requestItem) return;
+    const firstApply = requestItem.applyList[0];
+    const applyId = firstApply?.applyId;
+    if (!applyId) return;
+    try {
+      await axios.delete(`/api/apply/ok?applyId=${applyId}`);
+      alert('신청을 수락했습니다.');
+      if (typeof window !== 'undefined') window.location.reload();
+    } catch (e) {
+      alert('신청 수락에 실패했습니다.');
+    }
   };
 
   const handleReject = () => {
