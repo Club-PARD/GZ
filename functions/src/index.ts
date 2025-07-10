@@ -101,8 +101,47 @@ export const sendbirdWebhook = functions.https.onRequest(async (request: Request
       .filter(userId => userId !== sender.user_id);
     console.log(`✅ 채널 멤버 정보에서 추출: ${recipients.join(', ')}`);
   } 
-  // 3순위: 1:1 채팅 추출 (API 호출 대신 바로 시도)
-  else {
+  // 3순위: 센드버드 API 호출 (실제 토큰 사용)
+  else if (SENDBIRD_API_TOKEN) {
+    try {
+      console.log("🔍 센드버드 API로 채널 멤버 조회 중...");
+      console.log(`🔑 API 토큰: ${SENDBIRD_API_TOKEN.substring(0, 10)}...`);
+      
+      const apiResponse = await fetch(
+        `https://api-${SENDBIRD_APP_ID}.sendbird.com/v3/group_channels/${channelUrl}`,
+        {
+          headers: {
+            'Api-Token': SENDBIRD_API_TOKEN,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      console.log(`📡 API 응답 상태: ${apiResponse.status}`);
+      
+      if (apiResponse.ok) {
+        const channelData: SendbirdChannelResponse = await apiResponse.json();
+        console.log(`📋 채널 데이터:`, JSON.stringify(channelData, null, 2));
+        
+        if (channelData.members && channelData.members.length > 0) {
+          recipients = channelData.members
+            .map(member => member.user_id)
+            .filter(userId => userId !== sender.user_id);
+          console.log(`✅ API에서 가져온 채널 멤버들: ${recipients.join(', ')}`);
+        } else {
+          console.log("⚠️ API 응답에 멤버 정보가 없습니다.");
+        }
+      } else {
+        const errorText = await apiResponse.text();
+        console.error("❌ 센드버드 API 호출 실패:", apiResponse.status, errorText);
+      }
+    } catch (error) {
+      console.error("❌ 센드버드 API 호출 중 오류:", error);
+    }
+  }
+
+  // 4순위: 1:1 채팅 추출 (최종 폴백)
+  if (recipients.length === 0) {
     console.log("🔍 1:1 채팅 채널에서 사용자 추출 중...");
     console.log(`📝 채널 URL 분석: ${channelUrl}`);
     
@@ -116,7 +155,7 @@ export const sendbirdWebhook = functions.https.onRequest(async (request: Request
       console.log(`✅ 1:1 채팅에서 추출한 사용자: ${recipients.join(', ')}`);
     } else {
       console.log("❌ 채널 멤버를 찾을 수 없어서 알림을 보내지 않습니다.");
-      console.log("💡 웹훅에서 멤버 정보를 제공하지 않는 경우입니다.");
+      console.log("💡 모든 방법으로 멤버를 찾을 수 없습니다.");
       response.status(200).send("No channel members found.");
       return;
     }
