@@ -6,136 +6,70 @@ import Footer from "@/components/Footer";
 import TabNav from "./TabNav";
 import TransactionTable from "./TransactionTable";
 import Pagination from "./Pagination";
-import { TransactionItem, Tab } from "./rentals";
-
-// axios 인스턴스 통합
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL, // 예: "https://api.example.com"
-  withCredentials: true,                     // 쿠키 포함
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import {
+  TransactionItem,
+  Tab,
+  RequestItem,
+  fetchApplyHistory,
+} from "./rentals";
 
 const ITEMS_PER_PAGE = 5;
 const BLOCK_SIZE = 5;
 
 const RentalsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>("borrow");
-  const [borrowedItems, setBorrowedItems] = useState<TransactionItem[]>([]);
-  const [loanedItems, setLoanedItems]     = useState<TransactionItem[]>([]);
-  const [requestItems, setRequestItems]   = useState<TransactionItem[]>([]);
+  const [requestItemsState, setRequestItemsState] = useState<RequestItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // 반납 확인 핸들러
-  const handleReturnConfirm = (id: number) => {
-    api
-      .patch("/borrowed/return", null, { params: { borrowedId: id } })
-      .then((res) => {
-        if (!res.data.success) {
-          console.error("반납 요청 오류:", res.data.message);
-          return;
-        }
-        // 서버 성공 응답 받으면 로컬 상태 업데이트
-        setLoanedItems((prev) =>
-          prev.map((item) =>
-            item.id === id ? { ...item, status: "반납 완료" } : item
-          )
-        );
-        setBorrowedItems((prev) =>
-          prev.map((item) =>
-            item.id === id ? { ...item, status: "반납 완료" } : item
-          )
-        );
-      })
-      .catch((err) => console.error("반납 요청 실패:", err));
+  // API에서 대여요청 데이터 가져오기
+  const fetchRequestData = async () => {
+    if (activeTab === "request") {
+      setLoading(true);
+      try {
+        const response = await fetchApplyHistory();
+        setRequestItemsState(response.data);
+      } catch (error) {
+        console.error("대여요청 데이터 로딩 실패:", error);
+        // 에러 시 빈 배열로 설정
+        setRequestItemsState([]);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
-  // 탭 전환 시 해당 API 호출
+  // 탭 변경 시 데이터 로딩
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    if (!storedUserId) return;
-
-    if (activeTab === "borrow") {
-      // 내가 빌린 내역 조회
-      api
-        .get("/borrowed/borrow", { params: { userId: storedUserId } })
-        .then((res) => {
-          if (!res.data.success) {
-            console.error("빌린 내역 API 오류:", res.data.message);
-            return;
-          }
-          const mapped: TransactionItem[] = res.data.data.map((d: any) => ({
-            id: d.borrowedId,
-            title: d.itemName,
-            category: d.category || "",
-            duration: `${d.peroid}${
-              d.unitOfPeroid === "DAY" ? "일" : "시간"
-            }`,
-            price: d.totalPrice,
-            status:
-              d.borrowStatus === "BORROWED"
-                ? "거래 중"
-                : d.borrowStatus === "RETURNED"
-                ? "반납 완료"
-                : d.borrowStatus,
-            imageUrl: d.firstImageUrl,
-          }));
-          setBorrowedItems(mapped);
-        })
-        .catch((err) => console.error("빌린 내역 조회 실패:", err));
-    } else if (activeTab === "lend") {
-      // 내가 빌려준 내역 조회
-      api
-        .get("/borrowed/lend", { params: { userId: storedUserId } })
-        .then((res) => {
-          if (!res.data.success) {
-            console.error("빌려준 내역 API 오류:", res.data.message);
-            return;
-          }
-          const mapped: TransactionItem[] = res.data.data.map((d: any) => ({
-            id: d.borrowedId,
-            title: d.itemName,
-            category: d.category || "",
-            duration: `${d.peroid}${
-              d.unitOfPeroid === "DAY" ? "일" : "시간"
-            }`,
-            price: d.totalPrice,
-            status:
-              d.borrowStatus === "BORROWED"
-                ? "거래 중"
-                : d.borrowStatus === "RETURNED"
-                ? "반납 완료"
-                : d.borrowStatus,
-            imageUrl: d.firstImageUrl,
-          }));
-          setLoanedItems(mapped);
-        })
-        .catch((err) => console.error("빌려준 내역 조회 실패:", err));
-    }
-
-    // TODO: activeTab === "request" → /borrowed/request
+    fetchRequestData();
   }, [activeTab]);
 
-  // 현재 탭에 맞는 아이템 배열 선택
-  const items =
-    activeTab === "borrow"
-      ? borrowedItems
-      : activeTab === "lend"
-      ? loanedItems
-      : requestItems;
+  const handleReturnConfirm = (id: number) => {
+    // 반납 확인 로직 (현재는 더미)
+    console.log("반납 확인:", id);
+  };
+
+  const items: TransactionItem[] = []; // 빌린/빌려준 아이템은 현재 빈 배열
 
   // 페이지네이션 상태 및 계산
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(
+    activeTab === "request"
+      ? requestItemsState.length
+      : items.length / ITEMS_PER_PAGE
+  );
 
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(1);
   }, [totalPages]);
 
   const currentItems = useMemo(() => {
+    if (activeTab === "request") {
+      const start = (currentPage - 1) * ITEMS_PER_PAGE;
+      return requestItemsState.slice(start, start + ITEMS_PER_PAGE);
+    }
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return items.slice(start, start + ITEMS_PER_PAGE);
-  }, [items, currentPage]);
+  }, [items, requestItemsState, currentPage, activeTab]);
 
   const currentBlockStart =
     Math.floor((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
@@ -176,6 +110,7 @@ const RentalsPage: React.FC = () => {
             currentItems={currentItems}
             activeTab={activeTab}
             handleReturnConfirm={handleReturnConfirm}
+            loading={loading}
           />
 
           <Pagination

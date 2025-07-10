@@ -1,5 +1,6 @@
 // src/pages/api/user/mypost.ts
 import { NextApiRequest, NextApiResponse } from "next"
+import axios from 'axios';
 
 export default async function handler(
   req: NextApiRequest,
@@ -72,38 +73,20 @@ export default async function handler(
       forwardHeaders["Authorization"] = req.headers.authorization
     }
 
-    const backendResponse = await fetch(
+    const backendResponse = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/user/mypost`,
       {
-        method: "GET",
         headers: forwardHeaders,
+        validateStatus: () => true,
       }
     )
 
-    const text = await backendResponse.text()
-
-    const setCookie = backendResponse.headers.get("set-cookie")
+    const setCookie = backendResponse.headers["set-cookie"]
     if (setCookie) {
       res.setHeader("Set-Cookie", setCookie)
     }
 
-    const contentType = backendResponse.headers.get("content-type") || ""
-    if (contentType.includes("application/json")) {
-      res.setHeader("Content-Type", "application/json")
-      try {
-        const jsonData = JSON.parse(text)
-        if (jsonData.status === 0) {
-          jsonData.status = backendResponse.status
-        }
-        res.status(backendResponse.status).json(jsonData)
-      } catch {
-        return res
-          .status(500)
-          .json({ message: "Invalid JSON response from backend" })
-      }
-    } else {
-      res.status(backendResponse.status).send(text)
-    }
+    res.status(backendResponse.status).json(backendResponse.data)
   } catch (err: any) {
     console.error("내 물건 목록 요청 실패:", err)
     return res.status(500).json({

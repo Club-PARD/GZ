@@ -218,6 +218,19 @@ export default function NewPage() {
 
       // 등록 성공 시 detail-page-producer로 이동
       // 등록된 아이템 정보를 localStorage에 저장 (서버 응답 + 사용자 입력 데이터)
+      // 이미지를 Data URL로 변환하여 저장
+      const imageUrls = await Promise.all(
+        images.map(async (file) => {
+          return new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              resolve(e.target?.result as string);
+            };
+            reader.readAsDataURL(file);
+          });
+        })
+      );
+
       const itemDataForStorage = {
         ...res.data, // 서버 응답 (postId 포함)
         userInput: {
@@ -227,13 +240,14 @@ export default function NewPage() {
           price_per_day: parseInt(dayPrice) || 0,
           category: categoryEnum,
           images: images.map(file => ({ name: file.name, size: file.size }))
-        }
+        },
+        imageUrls: imageUrls // Data URL로 변환된 이미지들
       };
       
       localStorage.setItem('registeredItem', JSON.stringify(itemDataForStorage))
       
-      // detail-page-producer로 라우팅
-      router.push('/detail/detail-page-producer')
+              // detail-page-producer로 라우팅
+        router.push('/detail/detail-page-producer')
     } catch (err: any) {
       let errorMessage = "등록 중 오류가 발생했습니다."
       
