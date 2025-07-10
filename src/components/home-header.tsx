@@ -181,7 +181,7 @@ export default function HomeHeader() {
               <ul className="p-2 space-y-1">
                 <li>
                   <Link
-                    href="/settings"
+                    href="/profile"
                     className="
                       flex items-center 
                       w-[232px] py-[10px] px-[16px] gap-[12px] 
@@ -195,6 +195,7 @@ export default function HomeHeader() {
                       "
                     />
                     <span
+                      
                       className="
                       text-[#232323]         
                       text-[16px]            
@@ -202,6 +203,7 @@ export default function HomeHeader() {
                       leading-[130%]         
                       tracking-[-0.32px]     
                     "
+                    
                     >
                       환경설정
                     </span>
@@ -209,7 +211,7 @@ export default function HomeHeader() {
                 </li>
                 <li>
                   <Link
-                    href="/policy"
+                    href="/profile"
                     className="flex items-center 
                       w-[232px] py-[10px] px-[16px] gap-[12px] 
                      bg-white hover:bg-gray-100 rounded"
@@ -235,7 +237,7 @@ export default function HomeHeader() {
                 </li>
                 <li>
                   <Link
-                    href="/support"
+                    href="/profile"
                     className="flex items-center 
                       w-[232px] py-[10px] px-[16px] gap-[12px] 
                       bg-white hover:bg-gray-100 rounded"
@@ -261,7 +263,7 @@ export default function HomeHeader() {
                 </li>
                 <li>
                   <Link
-                    href="/manage-accounts"
+                    href="/profile"
                     className="
                       flex items-center 
                       w-[232px] py-[10px] px-[16px] gap-[12px] 
