@@ -68,10 +68,10 @@ export default function Register({ studentMail, schoolName }: Props) {
       } else {
         setMsg({ text: data.message || "회원가입에 실패했습니다.", type: "error" });
       }
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message || error.message || "회원가입에 실패했습니다.";
-      setMsg({ text: errorMessage, type: "error" });
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error('회원가입 중 오류:', err);
+      alert('회원가입 중 오류가 발생했습니다.');
     }
   };
 

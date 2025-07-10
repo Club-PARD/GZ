@@ -55,11 +55,10 @@ export const getHomeData = async () => {
   try {
     const response = await api.get('/api/post/home', { headers })
     return response.data
-  } catch (error: any) {
-    if (error.response?.status === 403 && typeof window !== 'undefined') {
-      localStorage.removeItem('me')
-    }
-    throw error
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error('API 호출 중 오류:', err);
+    throw err;
   }
 }
 
@@ -74,12 +73,10 @@ export const getMyPosts = async () => {
   try {
     const response = await api.get('/api/post/my-posts', { headers })
     return response.data
-  } catch (error: any) {
-    if (error.response?.status === 403 && typeof window !== 'undefined') {
-      localStorage.removeItem('me')
-      localStorage.removeItem('authToken')
-    }
-    throw error
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error('API 호출 중 오류:', err);
+    throw err;
   }
 }
 

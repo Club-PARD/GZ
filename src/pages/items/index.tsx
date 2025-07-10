@@ -6,6 +6,7 @@ import Image from "next/image";
 import Header from "@/components/home-header";
 import Footer from "@/components/Footer";
 import { getMyPosts, deletePosts } from "@/lib/api";
+import axios, { AxiosError } from "axios";
 
 // API 응답 래퍼 타입
 interface ApiResponse<T> {
@@ -63,14 +64,15 @@ const MyPostsPage: React.FC = () => {
           setPosts([]);
           setHasPosts(false);
         }
-      } catch (err: any) {
-        if (err.response?.status === 401 || err.response?.status === 403) {
+      } catch (err: unknown) {
+        const error = err as AxiosError;
+        if (error.response?.status === 401 || error.response?.status === 403) {
           localStorage.removeItem("me");
           localStorage.removeItem("savedCredentials");
           router.replace("/cert/login");
           return;
         }
-        console.error("데이터 가져오기 실패:", err);
+        console.error("데이터 가져오기 실패:", error);
         setPosts([]);
         setHasPosts(false);
       } finally {
@@ -142,25 +144,27 @@ const MyPostsPage: React.FC = () => {
         } else {
           alert(response.message || "삭제 중 오류가 발생했습니다.");
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const err = error as AxiosError;
         console.error("삭제 실패 상세:", {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message,
+          status: err.response?.status,
+          data: err.response?.data,
+          message: err.message,
         });
 
-        if (error.response?.status === 401 || error.response?.status === 403) {
+        if (err.response?.status === 401 || err.response?.status === 403) {
           localStorage.removeItem("me");
           localStorage.removeItem("authToken");
+          localStorage.removeItem("savedCredentials");
           router.replace("/cert/login");
           return;
         }
 
-        if (error.response?.status === 500) {
+        if (err.response?.status === 500) {
           alert("서버에서 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
         } else {
           alert(
-            error.response?.data?.message || "삭제 중 오류가 발생했습니다."
+            (err.response?.data as { message?: string })?.message || "삭제 중 오류가 발생했습니다."
           );
         }
       }

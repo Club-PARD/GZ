@@ -52,11 +52,12 @@ export default async function handler(
       const buffer = Buffer.from(await backendResponse.arrayBuffer())
       res.setHeader("Content-Length", buffer.length)
       return res.send(buffer)
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       console.error("Image proxy error:", err)
       return res.status(500).json({
         message: "Internal server error",
-        error: err.message ?? "Unknown error",
+        error: error.message ?? "Unknown error",
       })
     }
   }
@@ -87,11 +88,12 @@ export default async function handler(
     }
 
     res.status(backendResponse.status).json(backendResponse.data)
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err as Error;
     console.error("내 물건 목록 요청 실패:", err)
     return res.status(500).json({
       message: "Internal server error",
-      error: err.message ?? "Unknown error",
+      error: error.message ?? "Unknown error",
     })
   }
 }

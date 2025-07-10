@@ -123,9 +123,10 @@ export default function Login() {
 
       // 6) 홈으로 이동
       window.location.href = '/home';
-    } catch (error: any) {
-      const errorMessage = error.response?.data || error.message || '로그인 중 오류가 발생했습니다.';
-      setError(errorMessage);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error('로그인 중 오류:', err);
+      alert('로그인 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }

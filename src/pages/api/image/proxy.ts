@@ -55,10 +55,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const buffer = Buffer.from(await backendResponse.arrayBuffer());
     res.setHeader('Content-Length', buffer.length);
     return res.send(buffer);
-  } catch (err: any) {
-    return res.status(500).json({
-      message: 'Internal server error',
-      error: err.message ?? 'Unknown error',
-    });
+  } catch (err: unknown) {
+    const error = err as Error;
+    console.error('[프록시] 에러:', error.message)
+    res.status(500).end('이미지 요청 실패')
   }
 }

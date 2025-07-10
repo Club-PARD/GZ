@@ -87,10 +87,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
       return res.send(data);
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err as Error;
     return res.status(500).json({
       message: 'Internal server error',
-      error: err.message ?? 'Unknown error',
+      error: error.message ?? 'Unknown error',
     });
   }
 }

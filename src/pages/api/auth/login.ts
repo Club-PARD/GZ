@@ -8,10 +8,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { email, password } = req.body;    
     const backendResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, req.body, {
       headers: { 'Content-Type': 'application/json' },
-      validateStatus: () => true, // 모든 상태 코드를 성공으로 처리
+      validateStatus: (status: number) => true, // 모든 상태 코드를 성공으로 처리
     });
 
     res.status(backendResponse.status);
@@ -28,10 +27,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     return res.json(backendResponse.data);
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err as Error;
     return res.status(500).json({
       message: 'Internal server error',
-      error: err.message ?? 'Unknown error',
+      error: error.message ?? 'Unknown error',
     });
   }
 }
