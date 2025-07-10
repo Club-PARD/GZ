@@ -1,10 +1,17 @@
+// src/pages/rentals/index.tsx
 import React, { useState, useMemo, useEffect } from "react";
+import axios from "axios";
 import Header from "@/components/home-header";
 import Footer from "@/components/Footer";
 import TabNav from "./TabNav";
 import TransactionTable from "./TransactionTable";
 import Pagination from "./Pagination";
-import { TransactionItem, Tab, RequestItem, fetchApplyHistory } from "./rentals";
+import {
+  TransactionItem,
+  Tab,
+  RequestItem,
+  fetchApplyHistory,
+} from "./rentals";
 
 const ITEMS_PER_PAGE = 5;
 const BLOCK_SIZE = 5;
@@ -43,14 +50,17 @@ const RentalsPage: React.FC = () => {
 
   const items: TransactionItem[] = []; // 빌린/빌려준 아이템은 현재 빈 배열
 
+  // 페이지네이션 상태 및 계산
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(
-    activeTab === "request" ? requestItemsState.length : items.length / ITEMS_PER_PAGE
+    activeTab === "request"
+      ? requestItemsState.length
+      : items.length / ITEMS_PER_PAGE
   );
 
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(1);
-  }, [totalPages, currentPage]);
+  }, [totalPages]);
 
   const currentItems = useMemo(() => {
     if (activeTab === "request") {
@@ -61,12 +71,19 @@ const RentalsPage: React.FC = () => {
     return items.slice(start, start + ITEMS_PER_PAGE);
   }, [items, requestItemsState, currentPage, activeTab]);
 
-  const currentBlockStart = Math.floor((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
-  const currentBlockEnd = Math.min(currentBlockStart + BLOCK_SIZE - 1, totalPages);
+  const currentBlockStart =
+    Math.floor((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
+  const currentBlockEnd = Math.min(
+    currentBlockStart + BLOCK_SIZE - 1,
+    totalPages
+  );
 
-  const handlePrevBlock = () => setCurrentPage(Math.max(currentBlockStart - BLOCK_SIZE, 1));
+  const handlePrevBlock = () =>
+    setCurrentPage(Math.max(currentBlockStart - BLOCK_SIZE, 1));
   const handleNextBlock = () =>
-    setCurrentPage(Math.min(currentBlockStart + BLOCK_SIZE, totalPages - BLOCK_SIZE + 1));
+    setCurrentPage(
+      Math.min(currentBlockStart + BLOCK_SIZE, totalPages - BLOCK_SIZE + 1)
+    );
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -74,17 +91,20 @@ const RentalsPage: React.FC = () => {
       <main className="pb-[60px] flex-grow pt-16">
         <div className="max-w-[980px] mx-auto">
           <h1
-            className="pb-[60px] pt-[60px] text-[#232323]                    
-            px-106                       
-            [font-family:'Pretendard Variable']
-            text-[32px]                        
-            leading-[130%]                    
-            tracking-[-0.64px]"
+            className={`
+              pb-[60px] pt-[60px] text-[#232323]
+              px-106 [font-family:'Pretendard Variable']
+              text-[32px] leading-[130%] tracking-[-0.64px]
+            `}
           >
             거래 내역
           </h1>
 
-          <TabNav activeTab={activeTab} setActiveTab={setActiveTab} setCurrentPage={setCurrentPage} />
+          <TabNav
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            setCurrentPage={setCurrentPage}
+          />
 
           <TransactionTable
             currentItems={currentItems}
