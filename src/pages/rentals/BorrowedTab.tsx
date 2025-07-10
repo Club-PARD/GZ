@@ -1,7 +1,7 @@
 // src/pages/rentals/BorrowedTab.tsx
 import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
-import { TransactionItem, BorrowedData } from "./rentals";
+import { TransactionItem, BorrowedData } from "./rentals.types";
 import TransactionTable from "./TransactionTable";
 import Pagination from "./Pagination";
 

@@ -1,10 +1,10 @@
 import React from "react";
-import { TransactionItem, Tab, RequestItem } from "./rentals";
+import { TransactionItem } from "./rentals.types";
 import TransactionRow from "./TransactionRow";
 
 interface TransactionTableProps {
-  currentItems: (TransactionItem | RequestItem)[];
-  activeTab: Tab;
+  currentItems: (TransactionItem | any)[]; // RequestItem 타입 추후 정의 필요
+  activeTab: any; // Tab 타입 추후 정의 필요
   handleReturnConfirm: (id: number) => void;
   loading?: boolean;
 }
