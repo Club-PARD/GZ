@@ -14,7 +14,7 @@ export default function HeroSection() {
             캠퍼스 안에서 지금 구해요
           </h2>
           <p className="text-gray-700 text-base " style={{ letterSpacing: '-2%' }}>
-            '지구'는 대학생들이 캠퍼스 안에서 단기간 필요한 물건을
+            &apos;지구&apos;는 대학생들이 캠퍼스 안에서 단기간 필요한 물건을
             
             빠르게 빌리고 빌려주는 P2P 대여 플랫폼입니다.
           </p>
