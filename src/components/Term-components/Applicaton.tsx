@@ -99,8 +99,8 @@ export default function Application({
       console.log("Server response ▶", response.data);
       alert("대여 신청이 완료되었습니다.");
       onClose();
-    } catch (err: any) {
-      console.error("Submit error ▶", err.response ?? err);
+    } catch (err: unknown) {
+      console.error("Submit error ▶", err instanceof Error ? err.message : err);
       alert("오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
