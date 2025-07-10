@@ -1,6 +1,6 @@
 <div align="center">
 
-  <h1>ZIGU Back</h1>
+  <h1>ZIGU FE</h1>
   
 
   <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/ZIGU_Logo.svg" width="650">
