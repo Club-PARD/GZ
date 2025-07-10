@@ -1,14 +1,10 @@
 // pages/cert/register.tsx
-import { useState } from 'react'
-import { useRouter } from 'next/router'
 import Header from '@/components/cert-header';
 import Link from 'next/link';
 import { PiCheckCircleFill } from "react-icons/pi";
 
 
 export default function Success() {
-  const router = useRouter()
-
   return (
     <main>
       <Header />
