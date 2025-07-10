@@ -1,5 +1,5 @@
 import React from "react";
-import { TransactionItem, RequestItem, Tab } from "./rentals.types";
+import { TransactionItem, RequestItem, Tab } from "../../lib/rentals.types";
 import TransactionRow from "./TransactionRow";
 
 interface TransactionTableProps {
@@ -10,9 +10,9 @@ interface TransactionTableProps {
 }
 
 const TransactionTable: React.FC<TransactionTableProps> = ({
-  currentItems,
-  activeTab,
-  handleReturnConfirm,
+  currentItems = [],
+  activeTab = "borrow",
+  handleReturnConfirm = () => {},
   loading = false,
 }) => (
   <div className="overflow-x-auto border-b border-gray-200">

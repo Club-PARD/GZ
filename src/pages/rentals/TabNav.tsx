@@ -1,5 +1,5 @@
 import React from "react";
-import { Tab } from "./rentals.types";
+import { Tab } from "../../lib/rentals.types";
 
 interface TabNavProps {
   activeTab: Tab;
