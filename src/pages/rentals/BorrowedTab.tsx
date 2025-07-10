@@ -1,5 +1,6 @@
 // src/pages/rentals/BorrowedTab.tsx
 import React, { useState, useMemo, useEffect } from "react";
+import axios from "axios";
 import { TransactionItem } from "./rentals";
 import TransactionTable from "./TransactionTable";
 import Pagination from "./Pagination";
@@ -9,34 +10,70 @@ const BLOCK_SIZE = 5;
 
 interface BorrowedTabProps {
   handleReturnConfirm: (id: number) => void;
+  reloadTrigger: number;
 }
 
-const BorrowedTab: React.FC<BorrowedTabProps> = ({ handleReturnConfirm }) => {
-  const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState<TransactionItem[]>([]); // 빌린 아이템 상태
+// axios 인스턴스
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true,
+  headers: { "Content-Type": "application/json" },
+});
 
-  // API에서 빌린 아이템 데이터 가져오기
+const BorrowedTab: React.FC<BorrowedTabProps> = ({
+  handleReturnConfirm,
+  reloadTrigger,
+}) => {
+  const [loading, setLoading] = useState(false);
+  const [items, setItems] = useState<TransactionItem[]>([]);
+
   const fetchBorrowedData = async () => {
     setLoading(true);
     try {
-      // TODO: 실제 API 호출로 변경
-      // const response = await fetchBorrowedItems();
-      // setItems(response.data);
-      setItems([]); // 현재는 빈 배열
+      const storedUserId = localStorage.getItem("userId");
+      if (!storedUserId) {
+        setItems([]);
+        return;
+      }
+      const res = await api.get("/borrowed/borrow", {
+        params: { userId: storedUserId },
+      });
+      if (res.data.success) {
+        const mapped: TransactionItem[] = res.data.data.map((d: any) => ({
+          id: d.borrowedId,
+          title: d.itemName,
+          category: d.category || "",
+          duration: `${d.peroid}${
+            d.unitOfPeroid === "DAY" ? "일" : "시간"
+          }`,
+          price: d.totalPrice,
+          status:
+            d.borrowStatus === "BORROWED"
+              ? "거래 중"
+              : d.borrowStatus === "RETURNED"
+              ? "반납 완료"
+              : d.borrowStatus,
+          imageUrl: d.firstImageUrl,
+        }));
+        setItems(mapped);
+      } else {
+        console.error("빌린 내역 조회 오류:", res.data.message);
+        setItems([]);
+      }
     } catch (error) {
-      console.error("빌린 아이템 데이터 로딩 실패:", error);
+      console.error("빌린 내역 데이터 로딩 실패:", error);
       setItems([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // 컴포넌트 마운트 시 데이터 로딩
+  // reloadTrigger가 바뀔 때마다 (초기 마운트 포함) 데이터 로드
   useEffect(() => {
     fetchBorrowedData();
-  }, []);
+  }, [reloadTrigger]);
 
-  // 페이지네이션 상태 및 계산
+  // 페이지네이션
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
@@ -71,7 +108,6 @@ const BorrowedTab: React.FC<BorrowedTabProps> = ({ handleReturnConfirm }) => {
         handleReturnConfirm={handleReturnConfirm}
         loading={loading}
       />
-
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -85,4 +121,4 @@ const BorrowedTab: React.FC<BorrowedTabProps> = ({ handleReturnConfirm }) => {
   );
 };
 
-export default BorrowedTab; 
+export default BorrowedTab;
