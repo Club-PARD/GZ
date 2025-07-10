@@ -138,21 +138,7 @@
 <img src="https://img.shields.io/badge/Slack-4A154B?style=flat&logo=Slack&logoColor=white"/>
 
 
-## 🔧 ZIGU Backend API 구조
-
-| 이것이 바로 | 스웩ㄱ |
-|------|--------|
-| login | <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/API_login.png" width="600"/> |
-| user | <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/API_user.png" width="600"/> |
-| post | <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/API_post.png" width="600"/> |
-| apply | <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/API_apply.png" width="600"/> |
-| borrowed | <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/API_borrowed.png" width="600"/> |
-
-
-
-## 💾 Entity Relationship Diagram (ERD)
-  <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/ZIGU_ERD.png"/>
-
+## 🔧 ZIGU Frontend 파일 구조
 
   
 
