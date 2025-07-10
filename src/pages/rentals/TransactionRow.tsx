@@ -89,11 +89,12 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
         {activeTab === "borrow" ? (
           <button
             className={`flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg ${
-              displayData.status === "거래" ? "bg-[var(--Purple-04,#6849FE)]" : "bg-[var(--Gray-05,#C2C3C9)]"
+              displayData.status === "거래 중" ? "bg-[var(--Purple-04,#6849FE)]" : "bg-[var(--Gray-05,#C2C3C9)]"
             }`}
+            disabled
           >
             <span className="text-[var(--White,#FFF)] text-center [font-family:'Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
-              {displayData.status === "거래" ? "대여 중" : "반납 완료"}
+              {displayData.status === "거래 중" ? "대여 중" : "대여 완료"}
             </span>
           </button>
         ) : activeTab === "lend" ? (

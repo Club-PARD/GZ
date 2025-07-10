@@ -11,7 +11,6 @@ import { Tab } from "./rentals";
 
 // axios 인스턴스
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL, // 예: "https://api.example.com"
   withCredentials: true,                     // 쿠키 포함
   headers: { "Content-Type": "application/json" },
 });
@@ -24,7 +23,7 @@ const RentalsPage: React.FC = () => {
 
   const handleReturnConfirm = async (id: number) => {
     try {
-      const res = await api.patch("/borrowed/return", null, {
+      const res = await api.patch("/api/borrowed/return", null, {
         params: { borrowedId: id },
       });
       if (!res.data.success) {
