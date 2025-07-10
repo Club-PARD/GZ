@@ -199,7 +199,7 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
           onClose={() => setApplication(false)}
           userId={Number(me)}
           postId={post.post_id}
-          itemName={post.description}
+          itemName={post.itemName}
           pricePerDay={post.price_per_day || 0}
           pricePerHour={post.price_per_hour || 0}
         />
