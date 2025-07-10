@@ -7,7 +7,8 @@ import TabNav from "./TabNav";
 import BorrowedTab from "./BorrowedTab";
 import LentTab from "./LentTab";
 import RequestsTab from "./RequestsTab";
-import { Tab } from "./rentals";
+
+type Tab = "borrow" | "lend" | "request";
 
 // axios 인스턴스
 const api = axios.create({
