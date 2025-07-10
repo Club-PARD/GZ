@@ -108,8 +108,8 @@ export default function TermsModal({ open, onClose }: ModalProps) {
             <h4 className="font-semibold mt-[20px]">정보주체의 동의를 받지 않고 처리하는 개인정보 항목</h4>
             <ol className="list-decimal list-inside ml-4 space-y-2">
               <li>
-                회원 서비스 운영 • 법적 근거: 개인정보 보호법 제15조 제1항 제4호('계약
-                이행') • 수집·이용 항목: ID, 비밀번호
+                회원 서비스 운영 • 법적 근거: 개인정보 보호법 제15조 제1항 제4호(&apos;계약
+                이행&apos;) • 수집·이용 항목: ID, 비밀번호
               </li>
             </ol>
 
@@ -155,7 +155,7 @@ export default function TermsModal({ open, onClose }: ModalProps) {
             {/* 개인정보 제 3자 제공에 관한 사항 */}
             <h3 className="font-bold mt-[20px]">개인정보 제 3자 제공에 관한 사항</h3>
             <p>
-              본 서비스는 귀하의 개인정보를 "개인정보의 수집목적 및 이용목적"에서 고지한
+              본 서비스는 귀하의 개인정보를 &quot;개인정보의 수집목적 및 이용목적&quot;에서 고지한
               범위 내에서 사용하며, 동 범위를 초과하여 이용하거나 타인 또는 타 기업·기관에
               제공하지 않습니다. 그러나 보다 나은 서비스 제공을 위하여 귀하의 개인정보를
               업체 자지구 또는 제휴사에게 제공하거나, 업체 자지구 또는 제휴사와 공유할 수
@@ -243,7 +243,7 @@ export default function TermsModal({ open, onClose }: ModalProps) {
               support.google.com/analytics/answer/6004245?hl=ko 을 참고하시기 바랍니다.
             </p>
             <p>
-              [거부 방법] "계정관리"의 "회원탈퇴(동의철회)"를 클릭하거나 개인정보관리책임자에게
+              [거부 방법] &quot;계정관리&quot;의 &quot;회원탈퇴(동의철회)&quot;를 클릭하거나 개인정보관리책임자에게
               E-mail등으로 연락하시면 즉시 개인정보의 삭제 등 필요한 조치를 하겠습니다.
             </p>
 
@@ -293,7 +293,7 @@ export default function TermsModal({ open, onClose }: ModalProps) {
             <h3 className="font-bold mt-[20px]">동의항목 철회에 관한 사항</h3>
             <p>
               회원가입 등을 통해 개인정보의 수집, 이용, 제공에 대해 귀하께서 동의하신 내용을
-              귀하는 언제든지 철회하실 수 있습니다. 동의철회는 "계정관리"의 "회원탈퇴(동의철회)"
+              귀하는 언제든지 철회하실 수 있습니다. 동의철회는 &quot;계정관리&quot;의 &quot;회원탈퇴(동의철회)&quot;
               를 클릭하거나 개인정보관리책임자에게 E-mail등으로 연락하시면 즉시 개인정보의
               삭제 등 필요한 조치를 하겠습니다. 지구는 개인정보의 수집에 대한 회원탈퇴(동의철회)를
               개인정보 수집시와 동등한 방법 및 절차로 행사할 수 있도록 필요한 조치를
