@@ -13,13 +13,6 @@ interface BorrowedTabProps {
   reloadTrigger: number;
 }
 
-// axios 인스턴스
-const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
-  headers: { "Content-Type": "application/json" },
-});
-
 const BorrowedTab: React.FC<BorrowedTabProps> = ({
   handleReturnConfirm,
   reloadTrigger,
@@ -28,24 +21,33 @@ const BorrowedTab: React.FC<BorrowedTabProps> = ({
   const [items, setItems] = useState<TransactionItem[]>([]);
 
   const fetchBorrowedData = async () => {
+    console.log("[BorrowedTab] fetchBorrowedData 호출, reloadTrigger:", reloadTrigger);
     setLoading(true);
+
     try {
-      const storedUserId = localStorage.getItem("userId");
-      if (!storedUserId) {
+      const stored = localStorage.getItem("me");
+      console.log("[BorrowedTab] localStorage ‘me’ 값:", stored);
+      const userId = stored ? Number(stored) : null;
+
+      if (!userId) {
+        console.warn("[BorrowedTab] 유효한 userId가 없습니다. items를 빈 배열로 설정합니다.");
         setItems([]);
         return;
       }
-      const res = await api.get("/borrowed/borrow", {
-        params: { userId: storedUserId },
+
+      console.log(`[BorrowedTab] axios GET /api/borrowed/borrow?userId=${userId}`);
+      const res = await axios.get("/api/borrowed/borrow", {
+        params: { userId },
+        withCredentials: true,  // 쿠키 포함
       });
+      console.log("[BorrowedTab] 응답 status:", res.status, "data:", res.data);
+
       if (res.data.success) {
         const mapped: TransactionItem[] = res.data.data.map((d: any) => ({
           id: d.borrowedId,
           title: d.itemName,
           category: d.category || "",
-          duration: `${d.peroid}${
-            d.unitOfPeroid === "DAY" ? "일" : "시간"
-          }`,
+          duration: `${d.peroid}${d.unitOfPeroid === "DAY" ? "일" : "시간"}`,
           price: d.totalPrice,
           status:
             d.borrowStatus === "BORROWED"
@@ -55,16 +57,18 @@ const BorrowedTab: React.FC<BorrowedTabProps> = ({
               : d.borrowStatus,
           imageUrl: d.firstImageUrl,
         }));
+        console.log("[BorrowedTab] 매핑된 items:", mapped);
         setItems(mapped);
       } else {
-        console.error("빌린 내역 조회 오류:", res.data.message);
+        console.error("[BorrowedTab] 빌린 내역 조회 오류:", res.data.message);
         setItems([]);
       }
-    } catch (error) {
-      console.error("빌린 내역 데이터 로딩 실패:", error);
+    } catch (err) {
+      console.error("[BorrowedTab] fetchBorrowedData 예외 발생:", err);
       setItems([]);
     } finally {
       setLoading(false);
+      console.log("[BorrowedTab] loading → false");
     }
   };
 
@@ -78,11 +82,21 @@ const BorrowedTab: React.FC<BorrowedTabProps> = ({
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
   useEffect(() => {
-    if (currentPage > totalPages) setCurrentPage(1);
-  }, [totalPages]);
+    if (currentPage > totalPages) {
+      console.log(
+        `[BorrowedTab] currentPage(${currentPage}) > totalPages(${totalPages}) → 1로 reset`
+      );
+      setCurrentPage(1);
+    }
+  }, [totalPages, currentPage]);
 
   const currentItems = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    console.log(
+      `[BorrowedTab] currentItems slice: start=${start}, end=${
+        start + ITEMS_PER_PAGE
+      }`
+    );
     return items.slice(start, start + ITEMS_PER_PAGE);
   }, [items, currentPage]);
 
@@ -92,13 +106,6 @@ const BorrowedTab: React.FC<BorrowedTabProps> = ({
     currentBlockStart + BLOCK_SIZE - 1,
     totalPages
   );
-
-  const handlePrevBlock = () =>
-    setCurrentPage(Math.max(currentBlockStart - BLOCK_SIZE, 1));
-  const handleNextBlock = () =>
-    setCurrentPage(
-      Math.min(currentBlockStart + BLOCK_SIZE, totalPages - BLOCK_SIZE + 1)
-    );
 
   return (
     <>
@@ -113,9 +120,23 @@ const BorrowedTab: React.FC<BorrowedTabProps> = ({
         totalPages={totalPages}
         currentBlockStart={currentBlockStart}
         currentBlockEnd={currentBlockEnd}
-        handlePrevBlock={handlePrevBlock}
-        handleNextBlock={handleNextBlock}
-        setCurrentPage={setCurrentPage}
+        handlePrevBlock={() => {
+          console.log("[BorrowedTab] 이전 블록 이동");
+          setCurrentPage(Math.max(currentBlockStart - BLOCK_SIZE, 1));
+        }}
+        handleNextBlock={() => {
+          console.log("[BorrowedTab] 다음 블록 이동");
+          setCurrentPage(
+            Math.min(
+              currentBlockStart + BLOCK_SIZE,
+              totalPages - BLOCK_SIZE + 1
+            )
+          );
+        }}
+        setCurrentPage={(page) => {
+          console.log("[BorrowedTab] 페이지 직접 이동:", page);
+          setCurrentPage(page);
+        }}
       />
     </>
   );
