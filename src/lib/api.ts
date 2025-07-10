@@ -1,8 +1,10 @@
 // src/lib/api.ts
 import axios from 'axios'
 
-// Next.js 프록시 사용을 위한 빈 baseURL
-const API_BASE_URL = ''
+// Next.js 프록시 사용을 위한 baseURL 설정
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? window.location.origin  // 브라우저에서는 현재 도메인 사용
+  : process.env.NEXT_PUBLIC_API_URL || ''  // 서버사이드에서는 환경변수 사용
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
