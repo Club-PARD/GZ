@@ -222,6 +222,7 @@ export default function Home() {
           ))}
         </div>
       </div>
+      <div className="w-full h-[100px]"></div>
 
       <Footer />
 

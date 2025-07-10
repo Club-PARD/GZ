@@ -4,120 +4,62 @@ import Footer from "@/components/Footer";
 import TabNav from "./TabNav";
 import TransactionTable from "./TransactionTable";
 import Pagination from "./Pagination";
-import { TransactionItem, Tab } from "./rentals";
-
-const lentItems: TransactionItem[] = [  {
-    id: 1,
-    title: "1TB USB 빌려드려요",
-    category: "전자기기",
-    duration: "10시간",
-    price: 30000,
-    status: "반납",
-    imageUrl: "/images/usb.jpg",
-  },
-  {
-    id: 2,
-    title: "가방 빌려드려요",
-    category: "패션",
-    duration: "3일",
-    price: 50000,
-    status: "거래",
-    imageUrl: "/images/bag.jpg",
-  },
-  {
-    id: 3,
-    title: "망치 빌려드려요",
-    category: "도구",
-    duration: "1주일",
-    price: 20000,
-    status: "거래",
-    imageUrl: "/images/hammer.jpg",
-  }, ];
-const requestItems: TransactionItem[] = [ {
-    id: 1,
-    title: "1TB USB 빌려드려요",
-    category: "전자기기",
-    duration: "10시간",
-    price: 30000,
-    status: "반납",
-    imageUrl: "/images/usb.jpg",
-  },
-  {
-    id: 2,
-    title: "가방 빌려드려요",
-    category: "패션",
-    duration: "3일",
-    price: 50000,
-    status: "거래",
-    imageUrl: "/images/bag.jpg",
-  },
-  {
-    id: 3,
-    title: "망치 빌려드려요",
-    category: "도구",
-    duration: "1주일",
-    price: 20000,
-    status: "거래",
-    imageUrl: "/images/hammer.jpg",
-  }, ];
-const borrowedItems: TransactionItem[] = [ {
-    id: 1,
-    title: "1TB USB 빌려드려요",
-    category: "전자기기",
-    duration: "10시간",
-    price: 30000,
-    status: "반납",
-    imageUrl: "/images/usb.jpg",
-  },
-  {
-    id: 2,
-    title: "가방 빌려드려요",
-    category: "패션",
-    duration: "3일",
-    price: 50000,
-    status: "거래",
-    imageUrl: "/images/bag.jpg",
-  },
-  {
-    id: 3,
-    title: "망치 빌려드려요",
-    category: "도구",
-    duration: "1주일",
-    price: 20000,
-    status: "거래",
-    imageUrl: "/images/hammer.jpg",
-  }, ];
+import { TransactionItem, Tab, RequestItem, fetchApplyHistory } from "./rentals";
 
 const ITEMS_PER_PAGE = 5;
 const BLOCK_SIZE = 5;
 
 const RentalsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>("borrow");
-  const [loanedItemsState, setLoanedItemsState] = useState<TransactionItem[]>(lentItems);
-  const handleReturnConfirm = (id: number) => {
-    setLoanedItemsState((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, status: "반납 완료" } : item))
-    );
+  const [requestItemsState, setRequestItemsState] = useState<RequestItem[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // API에서 대여요청 데이터 가져오기
+  const fetchRequestData = async () => {
+    if (activeTab === "request") {
+      setLoading(true);
+      try {
+        const response = await fetchApplyHistory();
+        setRequestItemsState(response.data);
+      } catch (error) {
+        console.error("대여요청 데이터 로딩 실패:", error);
+        // 에러 시 빈 배열로 설정
+        setRequestItemsState([]);
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
-  const items =
-    activeTab === "borrow"
-      ? borrowedItems
-      : activeTab === "lend"
-      ? loanedItemsState
-      : requestItems;
+  // 탭 변경 시 데이터 로딩
+  useEffect(() => {
+    fetchRequestData();
+  }, [activeTab]);
+
+  const handleReturnConfirm = (id: number) => {
+    // 반납 확인 로직 (현재는 더미)
+    console.log("반납 확인:", id);
+  };
+
+  const items: TransactionItem[] = []; // 빌린/빌려준 아이템은 현재 빈 배열
 
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(
+    activeTab === "request" ? requestItemsState.length : items.length / ITEMS_PER_PAGE
+  );
 
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(1);
   }, [totalPages, currentPage]);
 
   const currentItems = useMemo(() => {
+    if (activeTab === "request") {
+      const start = (currentPage - 1) * ITEMS_PER_PAGE;
+      return requestItemsState.slice(start, start + ITEMS_PER_PAGE);
+    }
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return items.slice(start, start + ITEMS_PER_PAGE);
-  }, [items, currentPage]);
+  }, [items, requestItemsState, currentPage, activeTab]);
 
   const currentBlockStart = Math.floor((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
   const currentBlockEnd = Math.min(currentBlockStart + BLOCK_SIZE - 1, totalPages);
@@ -148,6 +90,7 @@ const RentalsPage: React.FC = () => {
             currentItems={currentItems}
             activeTab={activeTab}
             handleReturnConfirm={handleReturnConfirm}
+            loading={loading}
           />
 
           <Pagination
