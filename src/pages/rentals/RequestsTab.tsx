@@ -37,7 +37,7 @@ const RequestsTab: React.FC<RequestsTabProps> = ({ handleReturnConfirm }) => {
 
   // 페이지네이션 상태 및 계산
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(requestItemsState.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil((requestItemsState?.length || 0) / ITEMS_PER_PAGE);
 
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(1);
@@ -45,7 +45,7 @@ const RequestsTab: React.FC<RequestsTabProps> = ({ handleReturnConfirm }) => {
 
   const currentItems = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
-    return requestItemsState.slice(start, start + ITEMS_PER_PAGE);
+    return (requestItemsState || []).slice(start, start + ITEMS_PER_PAGE);
   }, [requestItemsState, currentPage]);
 
   const currentBlockStart =

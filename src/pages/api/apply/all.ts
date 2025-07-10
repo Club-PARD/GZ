@@ -7,18 +7,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    // 실제 백엔드 API 호출
-    const backendUrl = process.env.NEXT_PUBLIC_API_UR || 'http://localhost:8080';
-    const response = await axios.get(`${backendUrl}/api/apply/all`, {
-      headers: {
-        'Content-Type': 'application/json',
-        // 필요한 경우 인증 헤더 추가
-        // 'Authorization': `Bearer ${token}`,
-      },
+    // 헤더 설정 (Cookie, Authorization 등)
+    const forwardHeaders: Record<string, string> = {};
+    if (req.headers.cookie) {
+      forwardHeaders['Cookie'] = req.headers.cookie;
+    }
+    if (req.headers.authorization) {
+      forwardHeaders['Authorization'] = req.headers.authorization;
+    }
+
+    // 쿼리스트링 유지
+    const queryString = req.url?.includes('?') ? req.url.split('?')[1] : '';
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/apply/all${queryString ? `?${queryString}` : ''}`;
+
+    // 백엔드 API 호출
+    const backendResponse = await axios.get(backendUrl, {
+      headers: forwardHeaders,
       validateStatus: () => true,
     });
 
-    res.status(200).json(response.data);
+    // Set-Cookie 헤더 전달
+    const setCookieHeader = backendResponse.headers['set-cookie'];
+    if (setCookieHeader) {
+      res.setHeader('Set-Cookie', setCookieHeader);
+    }
+
+    // 상태 코드 및 응답 전달
+    res.status(backendResponse.status);
+    return res.json(backendResponse.data);
     
   } catch (error) {
     console.error('Error fetching apply history from backend:', error);
