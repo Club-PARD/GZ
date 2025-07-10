@@ -59,9 +59,13 @@ interface SendbirdChannelResponse {
  * 실제 채널 멤버들에게만 알림을 전송합니다.
  */
 export const sendbirdWebhook = functions.https.onRequest(async (request: Request, response: Response) => {
+  console.log("🚀 센드버드 웹훅 호출됨");
+  console.log("📦 전체 요청 데이터:", JSON.stringify(request.body, null, 2));
+  
   const webhookPayload: WebhookPayload = request.body;
 
   if (webhookPayload.category !== "group_channel:message_send") {
+    console.log(`❌ 메시지 이벤트가 아님: ${webhookPayload.category}`);
     response.status(200).send("Not a message event. Ignored.");
     return;
   }
@@ -70,7 +74,12 @@ export const sendbirdWebhook = functions.https.onRequest(async (request: Request
   const messageText = webhookPayload.payload?.message || "메시지 내용 없음";
   const channelUrl = webhookPayload.channel?.channel_url;
 
+  console.log(`👤 발신자: ${sender?.user_id} (${sender?.nickname})`);
+  console.log(`💬 메시지: ${messageText}`);
+  console.log(`📱 채널 URL: ${channelUrl}`);
+
   if (!sender || !channelUrl) {
+    console.log("❌ 발신자 또는 채널 정보 누락");
     response.status(200).send("Missing sender or channel info.");
     return;
   }
@@ -78,85 +87,66 @@ export const sendbirdWebhook = functions.https.onRequest(async (request: Request
   // 채널 참여자 정보 추출
   let recipients: string[] = [];
   
-  if (webhookPayload.members) {
+  // 1순위: 웹훅에서 직접 제공되는 멤버 정보
+  if (webhookPayload.members && webhookPayload.members.length > 0) {
     recipients = webhookPayload.members
       .map(member => member.user_id)
       .filter(userId => userId !== sender.user_id);
-  } else if (webhookPayload.channel.members) {
+    console.log(`✅ 웹훅 멤버 정보에서 추출: ${recipients.join(', ')}`);
+  } 
+  // 2순위: 채널 객체의 멤버 정보
+  else if (webhookPayload.channel.members && webhookPayload.channel.members.length > 0) {
     recipients = webhookPayload.channel.members
       .map(member => member.user_id)
       .filter(userId => userId !== sender.user_id);
-  } else {
-    // Sendbird API로 실제 채널 멤버 가져오기
-    try {
-      if (SENDBIRD_API_TOKEN) {
-        console.log("Sendbird API로 채널 멤버 조회 중...");
-        
-        const response = await fetch(
-          `https://api-${SENDBIRD_APP_ID}.sendbird.com/v3/group_channels/${channelUrl}`,
-          {
-            headers: {
-              'Api-Token': SENDBIRD_API_TOKEN,
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-        
-        if (response.ok) {
-          const channelData: SendbirdChannelResponse = await response.json();
-          if (channelData.members) {
-            recipients = channelData.members
-              .map(member => member.user_id)
-              .filter(userId => userId !== sender.user_id);
-            console.log(`API에서 가져온 채널 멤버들: ${recipients.join(', ')}`);
-          }
-        } else {
-          console.error("Sendbird API 호출 실패:", response.status);
-        }
-      }
-      
-      // API 실패 시 폴백: 채널 URL에서 사용자 ID 추출 시도
-      if (recipients.length === 0) {
-        console.log("채널 URL에서 사용자 ID 추출 시도");
-        
-        // 채널 URL 패턴: sendbird_group_channel_[userId1]_[userId2]_...
-        // 또는 distinct 채널의 경우 사용자 ID들이 포함될 수 있음
-        const urlParts = channelUrl.split('_');
-        const possibleUserIds = urlParts.filter(part => 
-          /^\d+$/.test(part) && part !== SENDBIRD_APP_ID.replace(/-/g, '')
-        );
-        
-        if (possibleUserIds.length > 0) {
-          recipients = possibleUserIds.filter(userId => userId !== sender.user_id);
-          console.log(`URL에서 추출한 사용자들: ${recipients.join(', ')}`);
-        }
-      }
-      
-    } catch (error) {
-      console.error("채널 멤버 조회 실패:", error);
-    }
+    console.log(`✅ 채널 멤버 정보에서 추출: ${recipients.join(', ')}`);
+  } 
+  // 3순위: 1:1 채팅 추출 (API 호출 대신 바로 시도)
+  else {
+    console.log("🔍 1:1 채팅 채널에서 사용자 추출 중...");
+    console.log(`📝 채널 URL 분석: ${channelUrl}`);
     
-    // 최종 폴백: 알림 없음
-    if (recipients.length === 0) {
-      console.log("채널 멤버를 찾을 수 없어서 알림을 보내지 않습니다.");
+    // 1:1 채팅의 경우 채널 URL에서 간단히 추출 가능
+    const userIdPattern = /(\d{6,})/g;
+    const foundIds = channelUrl.match(userIdPattern) || [];
+    
+    recipients = foundIds.filter(id => id !== sender.user_id);
+    
+    if (recipients.length > 0) {
+      console.log(`✅ 1:1 채팅에서 추출한 사용자: ${recipients.join(', ')}`);
+    } else {
+      console.log("❌ 채널 멤버를 찾을 수 없어서 알림을 보내지 않습니다.");
+      console.log("💡 웹훅에서 멤버 정보를 제공하지 않는 경우입니다.");
       response.status(200).send("No channel members found.");
       return;
     }
   }
 
-  if (recipients.length === 0) {
-    response.status(200).send("No recipients to notify.");
-    return;
-  }
+  console.log(`📋 총 ${recipients.length}명에게 알림 전송 예정: ${recipients.join(', ')}`);
 
   // 각 수신자에게 알림 보내기
+  let successCount = 0;
+  let failCount = 0;
+  
   const notificationPromises = recipients.map(async (recipientUserId: string) => {
     try {
+      console.log(`🔍 ${recipientUserId} 사용자의 FCM 토큰 조회 중...`);
+      
       const tokenDoc = await db.collection("fcm_tokens").doc(recipientUserId).get();
-      if (!tokenDoc.exists) return;
+      if (!tokenDoc.exists) {
+        console.log(`❌ ${recipientUserId}: FCM 토큰 문서가 존재하지 않습니다.`);
+        failCount++;
+        return;
+      }
       
       const fcmToken = tokenDoc.data()?.token;
-      if (!fcmToken) return;
+      if (!fcmToken) {
+        console.log(`❌ ${recipientUserId}: FCM 토큰이 비어있습니다.`);
+        failCount++;
+        return;
+      }
+      
+      console.log(`✅ ${recipientUserId}: FCM 토큰 확인됨 (${fcmToken.substring(0, 20)}...)`);
       
       const message = {
         notification: {
@@ -171,16 +161,21 @@ export const sendbirdWebhook = functions.https.onRequest(async (request: Request
         token: fcmToken,
       };
       
+      console.log(`📱 ${recipientUserId}에게 알림 전송 시도 중...`);
       await messaging.send(message);
-      console.log(`알림 전송 성공: ${recipientUserId}`);
+      console.log(`✅ 알림 전송 성공: ${recipientUserId}`);
+      successCount++;
       
     } catch (error) {
-      console.error(`알림 전송 실패 (${recipientUserId}):`, error);
+      console.error(`❌ 알림 전송 실패 (${recipientUserId}):`, error);
+      failCount++;
     }
   });
 
   await Promise.all(notificationPromises);
-  response.status(200).send("Notifications sent successfully.");
+  
+  console.log(`📊 알림 전송 결과: 성공 ${successCount}건, 실패 ${failCount}건`);
+  response.status(200).send(`Notifications sent successfully. Success: ${successCount}, Failed: ${failCount}`);
 });
 
 /**
