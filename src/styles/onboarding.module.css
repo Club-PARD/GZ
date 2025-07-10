@@ -1,8 +1,8 @@
 .iconContainer {
   
   display: flex;
-  gap: 40px;
-  width: 100%;
+  gap: 48px;
+  width: 113%;
   justify-content: flex-end;
   
 }
