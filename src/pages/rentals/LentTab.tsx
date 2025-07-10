@@ -13,7 +13,28 @@ interface LentTabProps {
 
 const LentTab: React.FC<LentTabProps> = ({ handleReturnConfirm }) => {
   const [loading, setLoading] = useState(false);
-  const items: TransactionItem[] = []; // 빌려준 아이템은 현재 빈 배열
+  const [items, setItems] = useState<TransactionItem[]>([]); // 빌려준 아이템 상태
+
+  // API에서 빌려준 아이템 데이터 가져오기
+  const fetchLentData = async () => {
+    setLoading(true);
+    try {
+      // TODO: 실제 API 호출로 변경
+      // const response = await fetchLentItems();
+      // setItems(response.data);
+      setItems([]); // 현재는 빈 배열
+    } catch (error) {
+      console.error("빌려준 아이템 데이터 로딩 실패:", error);
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 컴포넌트 마운트 시 데이터 로딩
+  useEffect(() => {
+    fetchLentData();
+  }, []);
 
   // 페이지네이션 상태 및 계산
   const [currentPage, setCurrentPage] = useState(1);
