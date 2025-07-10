@@ -109,3 +109,23 @@ export const deletePosts = async (postIds: number[]) => {
 
   return responses[0].data
 }
+// src/lib/api.ts
+export async function getSearchData(keyword: string) {
+  const res = await fetch(`/api/post/search?keyword=${encodeURIComponent(keyword)}`, {
+    credentials: 'include',
+  });
+  if (!res.ok) throw new Error(`Search failed: ${res.status}`);
+  return res.json() as Promise<{
+    status: number;
+    success: boolean;
+    message: string;
+    data: Array<{
+      post_id: number;
+      firstImageUrl?: string | null;
+      itemName: string;
+      category: string;
+      price_per_hour: number;
+      price_per_day: number;
+    }>;
+  }>;
+}
