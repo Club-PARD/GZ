@@ -248,32 +248,10 @@ export default function NewPage() {
       
               // detail-page-producer로 라우팅
         router.push('/detail/detail-page-producer')
-    } catch (err: any) {
-      let errorMessage = "등록 중 오류가 발생했습니다."
-      
-      if (err.response) {
-        const status = err.response.status;
-        const data = err.response.data;
-        
-        if (status === 413) {
-          errorMessage = "파일 크기가 너무 큽니다. 이미지 크기를 줄여서 다시 시도해주세요."
-        } else if (status === 400) {
-          errorMessage = "잘못된 요청입니다. 입력 정보를 확인해주세요."
-        } else if (status === 401) {
-          errorMessage = "로그인이 만료되었습니다. 다시 로그인해주세요."
-          router.push('/cert/login');
-        } else if (status === 500) {
-          errorMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."
-        } else {
-          errorMessage += `\n서버 응답: ${JSON.stringify(data)}`;
-        }
-      } else if (err.message) {
-        errorMessage += `\n오류: ${err.message}`;
-      }
-      
-      alert(errorMessage)
-    } finally {
-      setIsLoading(false)
+    } catch (err: unknown) {
+      const error = err as Error;
+      console.error('대여 신청 중 오류:', error);
+      alert('대여 신청 중 오류가 발생했습니다.');
     }
   }
 

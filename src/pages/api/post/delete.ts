@@ -34,7 +34,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.json(backendResponse.data);
     }
     return res.send(backendResponse.data);
-  } catch (err: any) {
-    return res.status(500).json({ message: 'Internal server error', error: err.message });
+  } catch (err: unknown) {
+    const error = err as Error;
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message ?? 'Unknown error',
+    });
   }
 }

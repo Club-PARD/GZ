@@ -1,7 +1,7 @@
 // src/pages/rentals/LentTab.tsx
 import React, { useState, useMemo, useEffect } from "react";
 import axios from "axios";
-import { TransactionItem } from "./rentals";
+import { TransactionItem, BorrowedData } from "../../lib/rentals.types";
 import TransactionTable from "./TransactionTable";
 import Pagination from "./Pagination";
 
@@ -45,7 +45,7 @@ const LentTab: React.FC<LentTabProps> = ({
       console.log("[LentTab] 응답 status:", res.status, "data:", res.data);
 
       if (res.data.success) {
-        const mapped: TransactionItem[] = res.data.data.map((d: any) => ({
+        const mapped: TransactionItem[] = res.data.data.map((d: BorrowedData) => ({
           id: d.borrowedId,
           title: d.itemName,
           category: d.category || "",

@@ -7,7 +7,8 @@ import TabNav from "./TabNav";
 import BorrowedTab from "./BorrowedTab";
 import LentTab from "./LentTab";
 import RequestsTab from "./RequestsTab";
-import { Tab } from "./rentals";
+
+type Tab = "borrow" | "lend" | "request";
 
 // axios 인스턴스
 const api = axios.create({
@@ -17,7 +18,6 @@ const api = axios.create({
 
 const RentalsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>("borrow");
-  const [currentPage, setCurrentPage] = useState(1);
   // 탭 간 연동용 리로드 트리거
   const [reloadTrigger, setReloadTrigger] = useState(0);
 
@@ -73,7 +73,7 @@ const RentalsPage: React.FC = () => {
           <h1
             className={`
               pb-[60px] pt-[60px] text-[#232323]
-              px-106 [font-family:'Pretendard Variable']
+              px-106
               text-[32px] leading-[130%] tracking-[-0.64px]
             `}
           >
@@ -84,9 +84,8 @@ const RentalsPage: React.FC = () => {
             activeTab={activeTab}
             setActiveTab={(tab) => {
               setActiveTab(tab);
-              setCurrentPage(1);
             }}
-            setCurrentPage={setCurrentPage}
+            setCurrentPage={() => {}}
           />
 
           {renderActiveTab()}

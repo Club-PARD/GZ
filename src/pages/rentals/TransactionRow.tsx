@@ -1,5 +1,5 @@
 import React from "react";
-import { TransactionItem, Tab, RequestItem } from "./rentals";
+import { TransactionItem, RequestItem, Tab } from "../../lib/rentals.types";
 import axios from "axios";
 
 interface TransactionRowProps {
@@ -42,7 +42,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
       await axios.delete(`/api/apply/ok?applyId=${applyId}`);
       alert('신청을 수락했습니다.');
       if (typeof window !== 'undefined') window.location.reload();
-    } catch (e) {
+    } catch {
       alert('신청 수락에 실패했습니다.');
     }
   };
@@ -56,7 +56,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
       await axios.delete(`/api/apply/no?applyId=${applyId}`);
       alert('신청을 거절했습니다.');
       if (typeof window !== 'undefined') window.location.reload();
-    } catch (e) {
+    } catch {
       alert('신청 거절에 실패했습니다.');
     }
   };
@@ -93,7 +93,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
             }`}
             disabled
           >
-            <span className="text-[var(--White,#FFF)] text-center [font-family:'Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
+            <span className="text-[var(--White,#FFF)] text-center text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
               {displayData.status === "거래 중" ? "대여 중" : "대여 완료"}
             </span>
           </button>
@@ -105,7 +105,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
               displayData.status === "반납 완료" ? "bg-[var(--Gray-05,#C2C3C9)]" : "bg-[var(--Purple-04,#6849FE)]"
             }`}
           >
-            <span className="text-[var(--White,#FFF)] text-center [font-family:'Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
+            <span className="text-[var(--White,#FFF)] text-center text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
               {displayData.status === "반납 완료" ? "반납 완료" : "반납 확인"}
             </span>
           </button>
@@ -115,7 +115,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
               onClick={handleReject}
               className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Gray-05,#C2C3C9)]"
             >
-              <div className="text-[var(--White,#FFF)] text-center [font-family:'Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
+              <div className="text-[var(--White,#FFF)] text-center text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
                 신청거절
               </div>
             </button>
@@ -123,7 +123,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
               onClick={handleAccept}
               className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Purple-04,#6849FE)]"
             >
-              <div className="text-[var(--White,#FFF)] text-center [font-family:'Pretendard Variable'] text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
+              <div className="text-[var(--White,#FFF)] text-center text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
                 신청수락
               </div>
             </button>

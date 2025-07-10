@@ -36,17 +36,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       validateStatus: () => true,
     });
 
+    // 타임아웃 정리
+    clearTimeout(timeoutId);
+
     // 상태 코드 · Content-Type 그대로 전달
     res.status(backendRes.status);
     const contentType = backendRes.headers['content-type'] || '';
     res.setHeader('Content-Type', contentType);
 
     return res.json(backendRes.data);
-  } catch (err: any) {
-    console.error('[/api/user/quit] error:', err);
-    if (err.name === 'AbortError') {
-      return res.status(504).json({ message: 'Upstream timeout' });
-    }
-    return res.status(500).json({ message: err.message || 'Internal server error' });
+  } catch (err: unknown) {
+    const error = err as Error;
+    console.error('회원 탈퇴 중 오류:', error);
+    return res.status(500).json({
+      success: false,
+      message: '회원 탈퇴 중 오류가 발생했습니다.',
+      error: error.message
+    });
   }
 }

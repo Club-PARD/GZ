@@ -79,13 +79,9 @@ export default function Home() {
           setAllPosts(json.data.posts);
           setPosts(json.data.posts);
         }
-      } catch (err: any) {
-        if (err.response?.status === 401 || err.response?.status === 403) {
-          localStorage.removeItem("me");
-          localStorage.removeItem("savedCredentials");
-          router.replace("/cert/login");
-          return;
-        }
+      } catch (err: unknown) {
+        const error = err as Error;
+        console.error('홈 데이터 로드 중 오류:', error);
       } finally {
         setIsLoading(false);
       }

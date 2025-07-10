@@ -1,6 +1,7 @@
 // src/pages/rentals/RequestsTab.tsx
 import React, { useState, useMemo, useEffect } from "react";
-import { RequestItem, fetchApplyHistory } from "./rentals";
+import axios from "axios";
+import { RequestItem } from "../../lib/rentals.types";
 import TransactionTable from "./TransactionTable";
 import Pagination from "./Pagination";
 
@@ -19,8 +20,8 @@ const RequestsTab: React.FC<RequestsTabProps> = ({ handleReturnConfirm }) => {
   const fetchRequestData = async () => {
     setLoading(true);
     try {
-      const response = await fetchApplyHistory();
-      setRequestItemsState(response.data);
+      const response = await axios.get("/api/apply/all", { withCredentials: true });
+      setRequestItemsState(response.data.data);
     } catch (error) {
       console.error("대여요청 데이터 로딩 실패:", error);
       // 에러 시 빈 배열로 설정

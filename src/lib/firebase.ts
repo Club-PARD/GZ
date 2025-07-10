@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getMessaging, getToken, onMessage, isSupported } from 'firebase/messaging';
+import { getMessaging, getToken, onMessage, isSupported, Messaging } from 'firebase/messaging';
 
 // 사용자가 제공한 index.tsx 파일을 참고하여 Firebase 설정을 직접 입력합니다.
 const FIREBASE_CONFIG = {
@@ -18,7 +18,7 @@ const VAPID_KEY = "BCv6ceYaxfbQgl2643B-1-omt-s-FJ8u03ssD1OSMf17krwcAm1wliSsWBtuJ
 const app = getApps().length ? getApp() : initializeApp(FIREBASE_CONFIG);
 
 // Messaging 초기화를 조건부로 처리
-let messaging: any = undefined;
+let messaging: Messaging | undefined = undefined;
 if (typeof window !== 'undefined') {
   // FCM 지원 여부를 먼저 확인
   isSupported().then((supported) => {
@@ -137,11 +137,12 @@ export const requestFcmToken = async (
         } else {
           console.log('FCM 토큰을 얻을 수 없습니다. 브라우저 설정을 확인해주세요.');
         }
-             } catch (tokenError: any) {
-         console.error('FCM 토큰 요청 중 오류 발생:', tokenError);
+             } catch (tokenError: unknown) {
+         const error = tokenError as Error;
+         console.error('FCM 토큰 요청 중 오류 발생:', error);
          
          // AbortError 특별 처리
-         if (tokenError.name === 'AbortError') {
+         if (error.name === 'AbortError') {
            console.error('웹 푸시 데몬 연결 실패. 다음을 확인해주세요:');
            console.error('1. 브라우저가 FCM을 지원하는지 확인');
            console.error('2. 브라우저 알림이 차단되지 않았는지 확인');

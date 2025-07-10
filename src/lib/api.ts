@@ -1,8 +1,10 @@
 // src/lib/api.ts
 import axios from 'axios'
 
-// Next.js 프록시 사용을 위한 빈 baseURL
-const API_BASE_URL = ''
+// Next.js 프록시 사용을 위한 baseURL 설정
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? window.location.origin  // 브라우저에서는 현재 도메인 사용
+  : process.env.NEXT_PUBLIC_API_URL || ''  // 서버사이드에서는 환경변수 사용
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -55,11 +57,10 @@ export const getHomeData = async () => {
   try {
     const response = await api.get('/api/post/home', { headers })
     return response.data
-  } catch (error: any) {
-    if (error.response?.status === 403 && typeof window !== 'undefined') {
-      localStorage.removeItem('me')
-    }
-    throw error
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error('API 호출 중 오류:', err);
+    throw err;
   }
 }
 
@@ -74,12 +75,10 @@ export const getMyPosts = async () => {
   try {
     const response = await api.get('/api/post/my-posts', { headers })
     return response.data
-  } catch (error: any) {
-    if (error.response?.status === 403 && typeof window !== 'undefined') {
-      localStorage.removeItem('me')
-      localStorage.removeItem('authToken')
-    }
-    throw error
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error('API 호출 중 오류:', err);
+    throw err;
   }
 }
 
