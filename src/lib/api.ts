@@ -47,62 +47,40 @@ export const login = async (email: string, password: string) => {
 // 홈 데이터 가져오기
 export const getHomeData = async () => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  }
+  const headers: Record<string, string> = {}
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  const response = await fetch('/api/post/home', {
-    method: 'GET',
-    credentials: 'include',
-    headers,
-  })
-
-  if (!response.ok) {
-    if (response.status === 403 && typeof window !== 'undefined') {
+  try {
+    const response = await api.get('/api/post/home', { headers })
+    return response.data
+  } catch (error: any) {
+    if (error.response?.status === 403 && typeof window !== 'undefined') {
       localStorage.removeItem('me')
     }
-    const errorText = await response.text().catch(() => '')
-    const error = new Error(`HTTP error! status: ${response.status}`)
-    ;(error as any).response = { status: response.status, data: errorText }
     throw error
   }
-
-  const content = await response.text()
-  return JSON.parse(content)
 }
 
 // 내 물건 목록 가져오기
 export const getMyPosts = async () => {
   const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  }
+  const headers: Record<string, string> = {}
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  const response = await fetch('/api/post/my-posts', {
-    method: 'GET',
-    credentials: 'include',
-    headers,
-  })
-
-  if (!response.ok) {
-    if (response.status === 403 && typeof window !== 'undefined') {
+  try {
+    const response = await api.get('/api/post/my-posts', { headers })
+    return response.data
+  } catch (error: any) {
+    if (error.response?.status === 403 && typeof window !== 'undefined') {
       localStorage.removeItem('me')
       localStorage.removeItem('authToken')
     }
-    const errorText = await response.text().catch(() => '')
-    const error = new Error(`HTTP error! status: ${response.status}`)
-    ;(error as any).response = { status: response.status, data: errorText }
     throw error
   }
-
-  const content = await response.text()
-  return JSON.parse(content)
 }
 
 // 게시물 삭제
@@ -112,9 +90,7 @@ export const deletePosts = async (postIds: number[]) => {
   const authToken =
     typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
 
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  }
+  const headers: Record<string, string> = {}
   if (authToken) {
     headers['Authorization'] = `Bearer ${authToken}`
   }

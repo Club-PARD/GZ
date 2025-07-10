@@ -1,5 +1,6 @@
 // pages/api/user/quit.ts
 import type { NextApiRequest, NextApiResponse } from 'next';
+import axios from 'axios';
 
 export const config = {
   api: {
@@ -29,25 +30,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       forwardHeaders['Authorization'] = req.headers.authorization;
     }
 
-    const backendRes = await fetch(backendUrl, {
-      method: 'DELETE',
+    const backendRes = await axios.delete(backendUrl, {
       headers: forwardHeaders,
-      signal: controller.signal,
+      timeout: 60000,
+      validateStatus: () => true,
     });
-    clearTimeout(timeoutId);
 
     // 상태 코드 · Content-Type 그대로 전달
     res.status(backendRes.status);
-    const contentType = backendRes.headers.get('content-type') || '';
+    const contentType = backendRes.headers['content-type'] || '';
     res.setHeader('Content-Type', contentType);
 
-    if (contentType.includes('application/json')) {
-      const json = await backendRes.json();
-      return res.json(json);
-    } else {
-      const text = await backendRes.text();
-      return res.send(text);
-    }
+    return res.json(backendRes.data);
   } catch (err: any) {
     console.error('[/api/user/quit] error:', err);
     if (err.name === 'AbortError') {

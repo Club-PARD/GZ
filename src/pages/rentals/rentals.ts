@@ -41,22 +41,16 @@ export interface RequestItem {
   applyList: ApplyItem[];
 }
 
+import axios from 'axios';
+
 // API 호출 함수
 export const fetchApplyHistory = async (): Promise<ApplyResponse> => {
   try {
-    const response = await fetch('/api/apply/all', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
+    const response = await axios.get('/api/apply/all', {
+      withCredentials: true,
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch apply history');
-    }
-
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error('Error fetching apply history:', error);
     throw error;

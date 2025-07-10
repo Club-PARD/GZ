@@ -8,6 +8,7 @@ import { getSendbird } from '@/lib/sendbird';
 import { requestFcmToken } from '@/lib/firebase';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { FaSquareCheck } from 'react-icons/fa6';
+import axios from 'axios';
 
 export default function Login() {
   const router = useRouter();
@@ -54,25 +55,15 @@ export default function Login() {
 
     try {
       // 1) 백엔드 로그인 요청
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          studentMail: email.trim(),
-          password,
-        }),
+      const res = await axios.post('/api/auth/login', {
+        studentMail: email.trim(),
+        password,
+      }, {
+        withCredentials: true,
       });
 
-      if (!res.ok) {
-        const text = await res.text().catch(() => '');
-        setError(text || `서버 에러 ${res.status}`);
-        setIsLoading(false);
-        return;
-      }
-
       // 2) 로그인 성공 처리
-      const json = await res.json();
+      const json = res.data;
       const userId = String(json.data.userId);
       const nickname = json.data.nickname;
       localStorage.setItem('me', userId);
@@ -132,8 +123,9 @@ export default function Login() {
 
       // 6) 홈으로 이동
       window.location.href = '/home';
-    } catch {
-      setError('로그인 중 오류가 발생했습니다.');
+    } catch (error: any) {
+      const errorMessage = error.response?.data || error.message || '로그인 중 오류가 발생했습니다.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

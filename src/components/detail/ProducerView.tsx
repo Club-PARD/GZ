@@ -10,9 +10,9 @@ interface Post {
   nickname: string;
   itemName: string;
   post_id: number;
-  imageUrls: string[];
-  price_per_hour: number;
-  price_per_day: number;
+  imageUrls?: string[];
+  price_per_hour?: number;
+  price_per_day?: number;
   description: string;
   category: string;
 }
@@ -32,7 +32,14 @@ export const ProducerView = ({ post }: { post: Post }) => {
 
     const images =
     post.imageUrls && post.imageUrls.length > 0
-      ? post.imageUrls.map((url) => `/api/image-proxy?url=${url}`)
+      ? post.imageUrls.map((url) => {
+          // Data URL인 경우 프록시를 거치지 않고 직접 사용
+          if (url.startsWith('data:')) {
+            return url;
+          }
+          // 일반 URL인 경우 프록시 사용
+          return `/api/image-proxy?url=${url}`;
+        })
       : defaultImages;
 
     const nickname = post.nickname || "알 수 없음";
@@ -88,7 +95,7 @@ export const ProducerView = ({ post }: { post: Post }) => {
                 1시간
               </p>
               <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-20 text-right">
-                {post.price_per_hour}원
+                {(post.price_per_hour || 0).toLocaleString()}원
               </p>
             </div>
             <div className="flex gap-4">
@@ -96,7 +103,7 @@ export const ProducerView = ({ post }: { post: Post }) => {
                 1일
               </p>
               <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-20 text-right">
-                {post.price_per_day}원
+                {(post.price_per_day || 0).toLocaleString()}원
               </p>
             </div>
   

@@ -20,9 +20,9 @@ interface Post {
   nickname: string;
   itemName: string;
   post_id: number;
-  imageUrls: string[];
-  price_per_hour: number;
-  price_per_day: number;
+  imageUrls?: string[];
+  price_per_hour?: number;
+  price_per_day?: number;
   description: string;
   category: string;
 }
@@ -34,7 +34,7 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
     const [channelUrl, setChannelUrl] = useState<string>("");
     
     const defaultImages = ["/images/camera.jpg"];
-    const images = post.imageUrls.length > 0 ? post.imageUrls : defaultImages;
+    const images = post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls : defaultImages;
     
     const startChat = async () => {
       if (!me) {
@@ -91,11 +91,11 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
                   <div className="grid grid-cols-[max-content_auto] gap-x-4 gap-y-1">
                     <p className="text-lg font-semibold text-[#ADAEB2]">1시간</p>
                     <p className="text-lg font-semibold text-[#232323]">
-                      {post.price_per_hour.toLocaleString()}원
+                      {(post.price_per_hour || 0).toLocaleString()}원
                     </p>
                     <p className="text-lg font-semibold text-[#ADAEB2]">1일</p>
                     <p className="text-lg font-semibold text-[#232323]">
-                      {post.price_per_day.toLocaleString()}원
+                      {(post.price_per_day || 0).toLocaleString()}원
                     </p>
                   </div>
                   <div className="mt-4 p-4 h-40 rounded-lg text-sm text-gray-700">
@@ -168,11 +168,11 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
                 <div className="grid grid-cols-[max-content_auto] gap-x-4 gap-y-2">
                   <p className="text-lg font-semibold text-[#ADAEB2]">1시간</p>
                   <p className="text-lg font-semibold text-[#232323]">
-                    {post.price_per_hour.toLocaleString()}원
+                    {(post.price_per_hour || 0).toLocaleString()}원
                   </p>
                   <p className="text-lg font-semibold text-[#ADAEB2]">1일</p>
                   <p className="text-lg font-semibold text-[#232323]">
-                    {post.price_per_day.toLocaleString()}원
+                    {(post.price_per_day || 0).toLocaleString()}원
                   </p>
                 </div>
   
@@ -200,8 +200,8 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
           userId={Number(me)}
           postId={post.post_id}
           itemName={post.description}
-          pricePerDay={post.price_per_day}
-          pricePerHour={post.price_per_hour}
+          pricePerDay={post.price_per_day || 0}
+          pricePerHour={post.price_per_hour || 0}
         />
   
         <Footer />

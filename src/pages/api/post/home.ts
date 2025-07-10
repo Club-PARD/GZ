@@ -1,5 +1,6 @@
 // src/pages/api/post/home.ts
 import { NextApiRequest, NextApiResponse } from 'next';
+import axios from 'axios';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -17,36 +18,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       forwardHeaders['Authorization'] = req.headers.authorization;
     }
 
-    const backendResponse = await fetch(
+    const backendResponse = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/post/home`,
       {
-        method: 'GET',
         headers: forwardHeaders,
+        validateStatus: () => true,
       }
     );
 
-    const data = await backendResponse.text();
-
-    const setCookieHeader = backendResponse.headers.get('set-cookie');
+    const setCookieHeader = backendResponse.headers['set-cookie'];
     if (setCookieHeader) {
       res.setHeader('Set-Cookie', setCookieHeader);
     }
 
     res.status(backendResponse.status);
-
-    const contentType = backendResponse.headers.get('content-type');
-    if (contentType?.includes('application/json')) {
-      res.setHeader('Content-Type', 'application/json');
-      try {
-        return res.json(JSON.parse(data));
-      } catch {
-        return res
-          .status(500)
-          .json({ message: 'Invalid JSON response from backend' });
-      }
-    } else {
-      return res.send(data);
-    }
+    return res.json(backendResponse.data);
   } catch (err: any) {
     return res.status(500).json({
       message: 'Internal server error',

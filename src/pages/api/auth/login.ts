@@ -1,5 +1,6 @@
 // src/pages/api/auth/login.ts
 import { NextApiRequest, NextApiResponse } from 'next';
+import axios from 'axios';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -8,32 +9,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const { email, password } = req.body;    
-    const backendResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-      method: 'POST',
+    const backendResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, req.body, {
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(req.body),
+      validateStatus: () => true, // 모든 상태 코드를 성공으로 처리
     });
 
-    const data = await backendResponse.text();
     res.status(backendResponse.status);
 
-    const contentType = backendResponse.headers.get('content-type');
-    if (contentType?.includes('application/json')) {
-      res.setHeader('Content-Type', 'application/json');
-
-      // 쿠키 헤더 전달 (개발 환경에 맞춰 속성 수정)
-      const setCookie = backendResponse.headers.get('set-cookie');
-      if (setCookie) {
-        const modified = setCookie
-          .replace(/; Secure/g, '')
-          .replace(/; SameSite=None/g, '; SameSite=Lax');
-        res.setHeader('Set-Cookie', modified);
-      }
-
-      return res.json(JSON.parse(data));
-    } else {
-      return res.send(data);
+    // 쿠키 헤더 전달 (개발 환경에 맞춰 속성 수정)
+    const setCookie = backendResponse.headers['set-cookie'];
+    if (setCookie) {
+      const modified = Array.isArray(setCookie) 
+        ? setCookie.map((cookie: string) => 
+            cookie.replace(/; Secure/g, '').replace(/; SameSite=None/g, '; SameSite=Lax')
+          )
+        : (setCookie as string).replace(/; Secure/g, '').replace(/; SameSite=None/g, '; SameSite=Lax');
+      res.setHeader('Set-Cookie', modified);
     }
+
+    return res.json(backendResponse.data);
   } catch (err: any) {
     return res.status(500).json({
       message: 'Internal server error',

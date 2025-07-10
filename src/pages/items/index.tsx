@@ -260,7 +260,7 @@ const MyPostsPage: React.FC = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <Link
-                              href={`/detail/detail-page-producer?postId=${post.post_id}`}
+                              href={`/detail/${post.post_id}`}
                               className="text-sm font-medium text-gray-900 hover:text-[#6849FE] cursor-pointer flex items-center"
                             >
                               {post.itemName}

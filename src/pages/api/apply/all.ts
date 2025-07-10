@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import axios from 'axios';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -8,21 +9,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     // 실제 백엔드 API 호출
     const backendUrl = process.env.NEXT_PUBLIC_API_UR || 'http://localhost:8080';
-    const response = await fetch(`${backendUrl}/api/apply/all`, {
-      method: 'GET',
+    const response = await axios.get(`${backendUrl}/api/apply/all`, {
       headers: {
         'Content-Type': 'application/json',
         // 필요한 경우 인증 헤더 추가
         // 'Authorization': `Bearer ${token}`,
       },
+      validateStatus: () => true,
     });
 
-    if (!response.ok) {
-      throw new Error(`Backend API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    res.status(200).json(data);
+    res.status(200).json(response.data);
     
   } catch (error) {
     console.error('Error fetching apply history from backend:', error);
