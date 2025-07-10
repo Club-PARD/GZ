@@ -8,8 +8,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const { email, university, nickname, password } = req.body;
-    
     const backendResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signUp`, req.body, {
       headers: { 'Content-Type': 'application/json' },
       validateStatus: () => true,

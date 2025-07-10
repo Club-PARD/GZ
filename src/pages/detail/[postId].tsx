@@ -88,7 +88,7 @@ export default function DetailPage() {
           } else {
             setError(res.data.message || "게시물을 찾을 수 없습니다.");
           }
-        } catch(e) {
+        } catch {
           setError("게시물 정보를 불러오는 중 오류가 발생했습니다.");
         } finally {
             setLoading(false);

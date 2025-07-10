@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const AccountSection: React.FC = () => {
   const router = useRouter();
@@ -80,12 +81,12 @@ const AccountSection: React.FC = () => {
 
       {/* 버튼 그룹 */}
       <div className="flex gap-4">
-        <a
+        <Link
           href="/home"
           className="px-6 py-2 bg-gray-600 text-white rounded-lg inline-block text-center"
         >
           홈으로 이동
-        </a>
+        </Link>
         <button
           onClick={handleQuit}
           disabled={!agreeQuit || isDeleting}

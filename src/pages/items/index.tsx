@@ -6,7 +6,7 @@ import Image from "next/image";
 import Header from "@/components/home-header";
 import Footer from "@/components/Footer";
 import { getMyPosts, deletePosts } from "@/lib/api";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 
 // API 응답 래퍼 타입
 interface ApiResponse<T> {
@@ -123,7 +123,7 @@ const MyPostsPage: React.FC = () => {
       try {
         // 실제 삭제 API 호출
         const postIdsArray = Array.from(selectedItems);
-        const response: ApiResponse<any> = await deletePosts(postIdsArray);
+        const response: ApiResponse<{ deletedCount: number }> = await deletePosts(postIdsArray);
 
         if (response.success) {
           // 성공시 삭제된 항목들을 목록에서 제거

@@ -42,7 +42,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
       await axios.delete(`/api/apply/ok?applyId=${applyId}`);
       alert('신청을 수락했습니다.');
       if (typeof window !== 'undefined') window.location.reload();
-    } catch (e) {
+    } catch {
       alert('신청 수락에 실패했습니다.');
     }
   };
@@ -56,7 +56,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
       await axios.delete(`/api/apply/no?applyId=${applyId}`);
       alert('신청을 거절했습니다.');
       if (typeof window !== 'undefined') window.location.reload();
-    } catch (e) {
+    } catch {
       alert('신청 거절에 실패했습니다.');
     }
   };

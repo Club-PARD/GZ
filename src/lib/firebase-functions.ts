@@ -1,6 +1,4 @@
 // src/lib/firebase-functions.ts
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import { getApp } from 'firebase/app';
 
 // 반환 타입
 export interface FuncResult {
@@ -9,9 +7,6 @@ export interface FuncResult {
   // sendCode 에만 포함됩니다.
   code?: string;
 }
-
-// Firebase Functions 인스턴스
-const functions = getFunctions(getApp(), 'us-central1');
 
 // 실제 배포된 Functions 엔드포인트
 const FUNCTIONS_BASE_URL = "https://us-central1-chat-d845e.cloudfunctions.net";
