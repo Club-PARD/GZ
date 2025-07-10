@@ -36,8 +36,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.setHeader('Content-Type', backendRes.headers['content-type'] || 'image/jpeg')
     res.setHeader('Cache-Control', 'public, max-age=3600')
     backendRes.data.pipe(res)
-  } catch (err: any) {
-    console.error('[프록시] 에러:', err.message)
+  } catch (err: unknown) {
+    const error = err as Error;
+    console.error('[프록시] 에러:', error.message)
     res.status(500).end('이미지 요청 실패')
   }
 }

@@ -28,8 +28,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.json(JSON.parse(text));
     }
     return res.send(text);
-  } catch (err: any) {
-    console.error('Search proxy error:', err);
-    return res.status(500).json({ message: 'Internal server error', error: err.message });
+  } catch (err: unknown) {
+    const error = err as Error;
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message ?? 'Unknown error',
+    });
   }
 }

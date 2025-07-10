@@ -37,6 +37,24 @@ export interface ApplyResponse {
 // 대여요청 탭용 아이템 타입 (ApplyData와 동일한 구조)
 export type RequestItem = ApplyData;
 
+// 대여/빌림 데이터 타입
+export interface BorrowedData {
+  borrowedId: number;
+  itemName: string;
+  category?: string;
+  peroid: number;
+  unitOfPeroid: "DAY" | "HOUR";
+  totalPrice: number;
+  borrowStatus: "BORROWED" | "RETURNED" | string;
+  firstImageUrl: string;
+}
+
+export interface BorrowedResponse {
+  success: boolean;
+  message: string;
+  data: BorrowedData[];
+}
+
 import axios from 'axios';
 
 // API 호출 함수
