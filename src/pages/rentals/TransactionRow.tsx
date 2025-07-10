@@ -47,8 +47,18 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
     }
   };
 
-  const handleReject = () => {
-    alert('신청을 거절했습니다. (더미)');
+  const handleReject = async () => {
+    if (!isRequestItem || !requestItem) return;
+    const firstApply = requestItem.applyList[0];
+    const applyId = firstApply?.applyId;
+    if (!applyId) return;
+    try {
+      await axios.delete(`/api/apply/no?applyId=${applyId}`);
+      alert('신청을 거절했습니다.');
+      if (typeof window !== 'undefined') window.location.reload();
+    } catch (e) {
+      alert('신청 거절에 실패했습니다.');
+    }
   };
 
   return (
