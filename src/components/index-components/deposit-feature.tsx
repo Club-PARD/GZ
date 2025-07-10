@@ -33,7 +33,7 @@ export default function DepositFeature() {
           </p>
 
           {/* 텍스트 바로 밑에 하단 이미지 */}
-          <div className="pt-[49px] flex justify-center">
+          <div className="pt-[45px] flex justify-center pr-[190px]">
             <Image
               src="/images/intro3-1.svg"
               alt="staircase illustration 2"
