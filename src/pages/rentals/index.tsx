@@ -17,7 +17,6 @@ const api = axios.create({
 
 const RentalsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>("borrow");
-  const [currentPage, setCurrentPage] = useState(1);
   // 탭 간 연동용 리로드 트리거
   const [reloadTrigger, setReloadTrigger] = useState(0);
 
@@ -84,9 +83,8 @@ const RentalsPage: React.FC = () => {
             activeTab={activeTab}
             setActiveTab={(tab) => {
               setActiveTab(tab);
-              setCurrentPage(1);
             }}
-            setCurrentPage={setCurrentPage}
+            setCurrentPage={() => {}}
           />
 
           {renderActiveTab()}

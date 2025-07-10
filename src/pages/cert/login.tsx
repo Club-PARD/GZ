@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import Header from '@/components/cert-header';
 import { getSendbird } from '@/lib/sendbird';
 import { requestFcmToken } from '@/lib/firebase';
@@ -11,7 +10,6 @@ import { FaSquareCheck } from 'react-icons/fa6';
 import axios from 'axios';
 
 export default function Login() {
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);

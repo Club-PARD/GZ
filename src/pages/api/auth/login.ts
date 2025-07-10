@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const backendResponse = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, req.body, {
       headers: { 'Content-Type': 'application/json' },
-      validateStatus: (status: number) => true, // 모든 상태 코드를 성공으로 처리
+      validateStatus: () => true, // 모든 상태 코드를 성공으로 처리
     });
 
     res.status(backendResponse.status);

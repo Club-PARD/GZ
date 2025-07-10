@@ -40,6 +40,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       validateStatus: () => true,
     });
 
+    // 타임아웃 정리
+    clearTimeout(timeoutId);
+
     // 상태 코드와 Content-Type 그대로 전달
     res.status(backendRes.status);
     const contentType = backendRes.headers['content-type'] || '';

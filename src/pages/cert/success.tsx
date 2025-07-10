@@ -8,21 +8,6 @@ import { PiCheckCircleFill } from "react-icons/pi";
 
 export default function Success() {
   const router = useRouter()
-  const [studentMail, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-
-    if (!studentMail.trim() || !password) {
-      return setError('아이디와 비밀번호를 모두 입력해 주세요.')
-    }
-
-    // 로그인 API 호출 생략 → 바로 홈으로 이동
-    router.push('/')
-  }
 
   return (
     <main>
@@ -44,8 +29,7 @@ export default function Success() {
           </div>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
+        <div
           className="w-[580px] h-[484px] bg-[#FFFFFF] rounded-2xl"
         >
           <div className="flex justify-center">
@@ -66,7 +50,7 @@ export default function Success() {
               </button>
             </Link>
           </div>
-        </form>
+        </div>
       </div>
     </main>
   )

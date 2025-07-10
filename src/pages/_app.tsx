@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useEffect } from 'react';
 import { onForegroundMessage } from '@/lib/firebase';
-import { getSendbird, initSendbird } from '@/lib/sendbird';
+import { initSendbird } from '@/lib/sendbird';
 
 // .env.local 파일에서 Sendbird App ID를 가져옵니다.
 const SENDBIRD_APP_ID = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID;
