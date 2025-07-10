@@ -17,4 +17,20 @@ export interface TransactionItem {
   price: number;
   status: string;
   imageUrl: string;
-} 
+}
+
+export interface Apply {
+  applyId: number;
+  applierNickname: string;
+  firstImageUrl: string;
+  period: number;
+  unitOfPeriod: "DAY" | "HOUR";
+  totalPrice: number;
+}
+
+export interface RequestItem {
+  itemName: string;
+  applyList: Apply[];
+}
+
+export type Tab = "borrow" | "lend" | "request"; 
