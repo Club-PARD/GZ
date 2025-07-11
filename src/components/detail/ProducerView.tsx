@@ -216,26 +216,29 @@ export const ProducerView = ({ post }: { post: Post }) => {
             <div className="border-b border-gray-200" />
   
             <div className="flex gap-4">
-              <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-12">
-                1시간
-              </p>
-              <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-20 text-right">
-                {(post.price_per_hour || 0).toLocaleString()}원
-              </p>
-            </div>
-            <div className="flex gap-4">
-              <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-12">
-                1일
-              </p>
-              <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-20 text-right">
-                {(post.price_per_day || 0).toLocaleString()}원
-              </p>
-            </div>
+  <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-12">
+    1시간
+  </p>
+  <p className="mt-1 text-lg font-semibold text-black w-20 text-right whitespace-nowrap">
+    {(post.price_per_hour || 0).toLocaleString()}원
+  </p>
+</div>
+<div className="flex gap-4">
+  <p className="mt-1 text-lg font-semibold text-[#ADAEB2] w-12">
+    1일
+  </p>
+  <p className="mt-1 text-lg font-semibold text-black w-20 text-right whitespace-nowrap">
+    {(post.price_per_day || 0).toLocaleString()}원
+  </p>
+</div>
+
   
             <div className="border-b border-gray-200 pt-[36px]" />
   
-            <div className="p-4 h-40 bg-[#F9F9FA] rounded-lg text-sm text-gray-700 overflow-auto">
-              {post.description || "설명이 없습니다."}
+            <div className="p-4 h-48 bg-[#F9F9FA] rounded-lg text-sm text-gray-700 overflow-hidden">
+              <div className="h-full overflow-hidden break-all whitespace-pre-wrap">
+                {post.description || "설명이 없습니다."}
+              </div>
             </div>
           </section>
         </main>

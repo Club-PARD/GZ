@@ -10,8 +10,6 @@ import {
   FiMoreVertical,
   PiSirenBold,
   GoArrowRight,
-  MdEdit,
-  AiFillDelete,
 } from "@/components/icons";
 import styles from "../../styles/detail.module.css";
 
@@ -113,11 +111,11 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
               <div className="p-4 rounded-lg">
                 <div className="grid grid-cols-[max-content_auto] gap-x-4 gap-y-1">
                   <p className="text-lg font-semibold text-[#ADAEB2]">1시간</p>
-                  <p className="text-lg font-semibold text-[#232323]">
+                  <p className="text-lg font-semibold text-[#232323] whitespace-nowrap">
                     {(post.price_per_hour || 0).toLocaleString()}원
                   </p>
                   <p className="text-lg font-semibold text-[#ADAEB2]">1일</p>
-                  <p className="text-lg font-semibold text-[#232323]">
+                  <p className="text-lg font-semibold text-[#232323] whitespace-nowrap">
                     {(post.price_per_day || 0).toLocaleString()}원
                   </p>
                 </div>
@@ -198,11 +196,11 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
               {/* 가격 정보 */}
               <div className="grid grid-cols-[max-content_auto] gap-x-4 gap-y-2">
                 <p className="text-lg font-semibold text-[#ADAEB2]">1시간</p>
-                <p className="text-lg font-semibold text-[#232323]">
+                <p className="text-lg font-semibold text-[#232323] whitespace-nowrap">
                   {(post.price_per_hour || 0).toLocaleString()}원
                 </p>
                 <p className="text-lg font-semibold text-[#ADAEB2]">1일</p>
-                <p className="text-lg font-semibold text-[#232323]">
+                <p className="text-lg font-semibold text-[#232323] whitespace-nowrap">
                   {(post.price_per_day || 0).toLocaleString()}원
                 </p>
               </div>
