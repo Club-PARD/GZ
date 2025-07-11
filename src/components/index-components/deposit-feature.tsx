@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function DepositFeature() {
   return (
-    <section className="w-full h-[780px] px-[166px]">
+    <section className="w-full h-[780px] px-[166px]  bg-[var(--Gray-03,#F3F3F5)]">
       <div className="flex">
         
 
@@ -33,7 +33,7 @@ export default function DepositFeature() {
           </p>
 
           {/* 텍스트 바로 밑에 하단 이미지 */}
-          <div className="pt-[45px] flex justify-center pr-[190px]">
+          <div className="pt-[49px] flex justify-center pr-[190px]">
             <Image
               src="/images/intro3-1.svg"
               alt="staircase illustration 2"

@@ -30,7 +30,8 @@ async function callFunctionRaw(functionName: string, data: unknown) {
 // 1) 학교 이름 인증
 export async function univCheck(univName: string): Promise<FuncResult> {
   const { response, json } = await callFunctionRaw("univCheck", { univName });
-  if (response.ok) {
+  // response.ok가 아닌 실제 응답 데이터의 success 필드를 확인
+  if (response.ok && json.success) {
     return { success: true };
   }
   return {
