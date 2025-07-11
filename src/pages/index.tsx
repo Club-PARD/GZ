@@ -9,8 +9,13 @@ import Divider from '@/components/index-components/divider';
 
 export default function Home() {
   return (
+    
     <main className="space-y-0 bg-white">
-      <Header />
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white h-16">
+        <Header />
+      </div>
+
+      
       <HeroSection />
       <EmailAuthFeature />
       <DepositFeature />
