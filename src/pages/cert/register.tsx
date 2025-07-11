@@ -63,7 +63,7 @@ export default function Register({ studentMail, schoolName }: Props) {
       if (data.success === true) {
         setMsg({ text: "회원가입이 완료되었습니다.", type: "success" });
         setTimeout(() => {
-          router.push("/cert/success");
+          router.replace("/cert/success");
         }, 1000);
       } else {
         setMsg({ text: data.message || "회원가입에 실패했습니다.", type: "error" });

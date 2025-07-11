@@ -12,7 +12,7 @@ export default function ChannelsPage() {
 
   useEffect(() => {
     if (!me) {
-      router.push('/');
+      //router.push('/home');
     } else {
       initSendbird(process.env.NEXT_PUBLIC_SENDBIRD_APP_ID!).connect(me);
     }
