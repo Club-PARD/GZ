@@ -46,7 +46,9 @@ const LentTab: React.FC<LentTabProps> = ({
 
       if (res.data.success) {
         const mapped: TransactionItem[] = res.data.data.map((d: BorrowedData) => ({
-          id: d.postId || d.borrowedId, // postId가 있으면 사용, 없으면 borrowedId 사용
+          id: d.borrowedId, // 무조건 borrowedId만 사용
+          borrowedId: d.borrowedId,
+          postId: d.postId, // 상세페이지 이동용
           title: d.itemName,
           category: d.category || "",
           duration: `${d.peroid}${d.unitOfPeroid === "DAY" ? "일" : "시간"}`,
