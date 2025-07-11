@@ -25,17 +25,11 @@ const messaging = firebase.messaging();
 // 백그라운드 메시지 핸들러
 // 앱이 백그라운드에 있거나 닫혔을 때 FCM 메시지를 받으면 호출됩니다.
 messaging.onBackgroundMessage(function(payload) {
-  console.log(
-    '[firebase-messaging-sw.js] Received background message ',
-    payload,
-  );
-
   // Sendbird는 data 페이로드로 메시지를 보냅니다.
   // 이 데이터를 파싱하여 알림을 구성해야 합니다.
   const sendbirdPayload = payload.data && payload.data.sendbird ? JSON.parse(payload.data.sendbird) : null;
 
   if (!sendbirdPayload) {
-    console.error("[firebase-messaging-sw.js] Sendbird payload가 없습니다.");
     return;
   }
   

@@ -156,7 +156,12 @@ export const requestFcmToken = async (
       console.log('알림 권한이 기본값으로 설정되어 있습니다.');
     }
   } catch (error) {
-    console.error('FCM 초기화 중 오류 발생:', error);
+    console.error('❌ FCM 초기화 중 오류 발생:', error);
+    console.error('❌ 오류 상세:', {
+      name: (error as Error)?.name,
+      message: (error as Error)?.message,
+      stack: (error as Error)?.stack
+    });
   }
 };
 
@@ -197,5 +202,7 @@ export const onForegroundMessage = () => {
     });
   }
 };
+
+
 
 export { app, messaging }; 
