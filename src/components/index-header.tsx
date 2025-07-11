@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Header() {
   return (
-    <header className="border-b border-gray-100 bg-white flex items-center justify-between h-[80px] pl-[166px] pr-[272px]">
+    <header className="border-b border-gray-100 bg-white flex items-center justify-between h-[80px] pl-[166px] pr-[272px] pt-[24px] pb-[24px]">
       {/* 1) 왼쪽: 로고 */}
       <Image
         src="/images/Logo_purple.svg"
