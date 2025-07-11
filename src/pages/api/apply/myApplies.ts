@@ -83,15 +83,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('✅ [myApplies] sending text to client');
       return res.send(bodyText);
     }
-  } catch (err: any) {
-    if (err.name === 'AbortError') {
+  } catch (err: unknown) {
+    if (err instanceof Error && err.name === 'AbortError') {
       console.error('❌ [myApplies] fetch aborted:', err);
       return res.status(504).json({ message: 'Backend request timed out' });
     }
     console.error('❌ [myApplies] internal error:', err);
     return res.status(500).json({
       message: 'Internal server error',
-      error: err.message || 'Unknown error',
+      error: err instanceof Error ? err.message : 'Unknown error',
     });
   }
 }
