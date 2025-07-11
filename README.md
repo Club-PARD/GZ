@@ -90,7 +90,7 @@
       <p style="color:#555;">디자인</p>
     </td>
     <td align="center">
-      <img src="" width="120" style="border-radius:15px; margin-bottom:10px;" alt="서경미">
+      <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/contributor/ZIGU_team_Gangmi.jpeg" width="120" style="border-radius:15px; margin-bottom:10px;" alt="서경미">
       <h3 style="font-size:1.3rem;">서경미</h3>
       <p style="color:#555;">SERVER(백엔드)</p>
     </td>
