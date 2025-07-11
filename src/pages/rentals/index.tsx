@@ -7,18 +7,17 @@ import TabNav from "./TabNav";
 import BorrowedTab from "./BorrowedTab";
 import LentTab from "./LentTab";
 import RequestsTab from "./RequestsTab";
+import ApplyTab from "./ApplyTab";
 
-type Tab = "borrow" | "lend" | "request";
+type Tab = "borrow" | "lend" | "request" | "apply";
 
-// axios 인스턴스
 const api = axios.create({
-  withCredentials: true,                     // 쿠키 포함
+  withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });
 
 const RentalsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>("borrow");
-  // 탭 간 연동용 리로드 트리거
   const [reloadTrigger, setReloadTrigger] = useState(0);
 
   const handleReturnConfirm = async (id: number) => {
@@ -29,7 +28,6 @@ const RentalsPage: React.FC = () => {
       if (!res.data.success) {
         console.error("반납 요청 오류:", res.data.message);
       } else {
-        // PATCH 성공 시 모든 탭을 다시 불러오기
         setReloadTrigger((prev) => prev + 1);
       }
     } catch (err) {
@@ -55,6 +53,8 @@ const RentalsPage: React.FC = () => {
         );
       case "request":
         return <RequestsTab handleReturnConfirm={handleReturnConfirm} />;
+      case "apply":
+        return <ApplyTab />;
       default:
         return (
           <BorrowedTab
@@ -73,8 +73,7 @@ const RentalsPage: React.FC = () => {
           <h1
             className={`
               pb-[60px] pt-[60px] text-[#232323]
-              px-106
-              text-[32px] leading-[130%] tracking-[-0.64px]
+              px-106 text-[32px] leading-[130%] tracking-[-0.64px]
             `}
           >
             거래 내역
@@ -82,9 +81,7 @@ const RentalsPage: React.FC = () => {
 
           <TabNav
             activeTab={activeTab}
-            setActiveTab={(tab) => {
-              setActiveTab(tab);
-            }}
+            setActiveTab={setActiveTab}
             setCurrentPage={() => {}}
           />
 
