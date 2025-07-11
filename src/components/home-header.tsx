@@ -77,7 +77,8 @@ export default function HomeHeader() {
   return (
     <div className="fixed top-0 left-0 right-0 h-[70px] pl-[166px] pr-[272px] bg-white z-50">
       <header className="w-full flex justify-between items-center px-8 py-4 ">
-        <Link href={'/home'}>
+        <Link className="cursor-pointer hover:opacity-80 transition-opacity"
+         href={'/home'}> 
           <Image 
             src="/images/blogo.svg" 
             alt="로고" 
