@@ -1,5 +1,5 @@
 // pages/MyPostsPage.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
@@ -55,7 +55,7 @@ const MyPostsPage: React.FC = () => {
   }, [router]);
 
   // 내 물건 받아오기
-  const fetchMyPosts = async () => {
+  const fetchMyPosts = useCallback(async () => {
     if (!me) {
       setIsLoading(false);
       return;
@@ -84,11 +84,11 @@ const MyPostsPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [me, router]);
 
   useEffect(() => {
     fetchMyPosts();
-  }, [me, router.asPath]);
+  }, [fetchMyPosts]);
 
   // 체크박스
   const handleSelectAll = (checked: boolean) => {

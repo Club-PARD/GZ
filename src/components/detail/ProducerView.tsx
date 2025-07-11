@@ -82,6 +82,7 @@ export const ProducerView = ({ post }: { post: Post }) => {
                 alert(data.message || "삭제 중 오류가 발생했습니다.");
             }
         } catch (error) {
+            console.error("삭제 중 오류:", error);
             alert("삭제 중 오류가 발생했습니다.");
         }
         setIsMenuOpen(false);
@@ -120,6 +121,7 @@ export const ProducerView = ({ post }: { post: Post }) => {
                 alert(data.message || "수정 중 오류가 발생했습니다.");
             }
         } catch (error) {
+            console.error("수정 중 오류:", error);
             alert("수정 중 오류가 발생했습니다.");
         }
     };

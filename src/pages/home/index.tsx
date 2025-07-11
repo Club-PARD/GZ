@@ -120,10 +120,13 @@ export default function Home() {
       const json = await getSearchData(keyword);
       if (json.success) {
         // 검색 결과에 isBorrowable 필드가 없는 경우 기본값 설정
-        const postsWithBorrowable = json.data.map((post: any) => ({
-          ...post,
-          isBorrowable: post.isBorrowable || "POSSIBLE" as const
-        }));
+        const postsWithBorrowable: HomePost[] = json.data.map((post: unknown) => {
+          const homePost = post as HomePost;
+          return {
+            ...homePost,
+            isBorrowable: homePost.isBorrowable || "POSSIBLE"
+          };
+        });
         setPosts(postsWithBorrowable);
         setSelectedCategory("all"); // 검색 후 전체 카테고리로 초기화
       }
