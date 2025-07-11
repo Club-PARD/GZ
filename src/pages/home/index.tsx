@@ -27,6 +27,7 @@ interface HomeResponse {
 
 interface HomePost {
   post_id: number;
+  isBorrowable: "POSSIBLE" | "IMPOSSIBLE";
   firstImageUrl?: string | null;
   itemName: string;
   category: string;
@@ -118,7 +119,12 @@ export default function Home() {
     try {
       const json = await getSearchData(keyword);
       if (json.success) {
-        setPosts(json.data);
+        // 검색 결과에 isBorrowable 필드가 없는 경우 기본값 설정
+        const postsWithBorrowable = json.data.map((post: any) => ({
+          ...post,
+          isBorrowable: post.isBorrowable || "POSSIBLE" as const
+        }));
+        setPosts(postsWithBorrowable);
         setSelectedCategory("all"); // 검색 후 전체 카테고리로 초기화
       }
     } catch (err) {
@@ -254,6 +260,9 @@ export default function Home() {
                 <span className={styles.categoryTag}>
                   {categories.find((c) => c.id === post.category)?.name ||
                     post.category}
+                </span>
+                <span className="inline-block mt-2 px-1 py-0.5 bg-[#F0EDFF] text-[#6849FE] text-xs rounded w-fit whitespace-nowrap">
+                  {post.isBorrowable === "POSSIBLE" ? "대여가능" : "대여불가"}
                 </span>
               </div>
             </Link>
