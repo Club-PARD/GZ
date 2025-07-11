@@ -85,34 +85,33 @@
       <p style="color:#555;">PM</p>
     </td>
     <td align="center">
-      <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/contributor/ZIGU_team_sumin.jpeg" width="120" style="border-radius:15px; margin-bottom:10px;" alt="이수민">
+      <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/contributor/ZIGU_team_sumin.png" width="120" style="border-radius:15px; margin-bottom:10px;" alt="이수민">
       <h3 style="font-size:1.3rem;">이수민</h3>
-      <p style="color:#555;">디자인</p>
+      <p style="color:#555;">Designer</p>
     </td>
     <td align="center">
       <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/contributor/ZIGU_team_Gangmi.jpeg" width="120" style="border-radius:15px; margin-bottom:10px;" alt="서경미">
       <h3 style="font-size:1.3rem;">서경미</h3>
-      <p style="color:#555;">SERVER(백엔드)</p>
+      <p style="color:#555;">Server(백엔드)</p>
     </td>
     </tr>
     <td align="center">
       <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/contributor/ZIGU_team_geonwoo.jpeg" width="120" style="border-radius:15px; margin-bottom:10px;" alt="이건우">
       <h3 style="font-size:1.3rem;">이건우</h3>
-      <p style="color:#555;">WEB(프론트엔드)</p>
+      <p style="color:#555;">Web(프론트엔드)</p>
     </td>
     <td align="center">
       <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/contributor/ZIGU_team_hyeongmin.jpeg" width="120" style="border-radius:15px; margin-bottom:10px;" alt="조형민">
       <h3 style="font-size:1.3rem;">조형민</h3>
-      <p style="color:#555;">WEB(프론트엔드)</p>
+      <p style="color:#555;">Web(프론트엔드)</p>
     </td>
     <td align="center">
       <img src="https://github.com/Club-PARD/ZIGU_BE/blob/main/images_for_md/contributor/ZIGU_team_taeyoon.jpeg" width="120" style="border-radius:15px; margin-bottom:10px;" alt="이태윤">
       <h3 style="font-size:1.3rem;">이태윤</h3>
-      <p style="color:#555;">WEB(프론트엔드)</p>
+      <p style="color:#555;">Web(프론트엔드)</p>
     </td>
   </tr>
 </table>
-
 
 ### Frontend 기술 스택
 
