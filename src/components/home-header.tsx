@@ -10,6 +10,7 @@ import { LuLogOut } from "react-icons/lu";
 import { MdPolicy } from "react-icons/md";
 import { BsHeadset } from "react-icons/bs";
 import { MdManageAccounts } from "react-icons/md";
+import { BsPlusLg } from "react-icons/bs";
 import axios from "axios";
 import { useRef } from "react";
 
@@ -113,9 +114,9 @@ export default function HomeHeader() {
           </Link>
           <Link
             href="/detail/new-page"
-            className="border border-[#6849FE] bg-white text-[#6849FE] rounded-[8px] hover:border-black flex items-center gap-3 transition-colors w-[123px] h-[32px] justify-center hover:bg-white shadow-none"
+            className="border border-[#6849FE] bg-white text-[#6849FE] rounded-[8px] hover:border-black flex items-center gap-[4px] transition-colors w-[123px] h-[34px] justify-center hover:bg-white shadow-none"
           >
-            <span className="text-[14px] font-normal">+</span>
+            <BsPlusLg className="w-[16px] h-[16px]"/>
             <span className="text-[14px] font-normal">물건 등록하기</span>
           </Link>
 

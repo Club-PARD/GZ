@@ -17,6 +17,7 @@ import { MdEdit } from "react-icons/md";
 import { AiFillDelete } from "react-icons/ai";
 import { CgMathPlus } from "react-icons/cg";
 import { CgMathMinus } from "react-icons/cg";
+import { BsPlusLg } from "react-icons/bs";
 
 
 
@@ -24,5 +25,5 @@ export {
     FaLocationDot, IoSearchOutline, BiSolidImage, AiFillWarning,
     BsArrowRightCircleFill, BsArrowLeftCircleFill,
     AiFillSetting, MdPolicy, BsHeadset, MdManageAccounts,
-    PiCheckCircleFill, CgClose, FiMoreVertical, PiSirenBold, GoArrowRight, MdEdit, AiFillDelete, CgMathPlus, CgMathMinus
+    PiCheckCircleFill, CgClose, FiMoreVertical, PiSirenBold, GoArrowRight, MdEdit, AiFillDelete, CgMathPlus, CgMathMinus, BsPlusLg
 };
