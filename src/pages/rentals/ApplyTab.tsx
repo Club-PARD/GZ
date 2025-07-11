@@ -47,8 +47,8 @@ const ApplyTab: React.FC = () => {
 
   const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
   useEffect(() => {
-    if (currentPage > totalPages) setCurrentPage(1);
-  }, [totalPages]);
+    if (currentPage > totalPages && totalPages > 0) setCurrentPage(1);
+  }, [totalPages, currentPage]);
 
   const currentItems = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;

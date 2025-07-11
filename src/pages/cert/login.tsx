@@ -182,7 +182,7 @@ export default function Login() {
           {/* 로그인 버튼 */}
           <button
             type="submit"
-            className="w-[420px] h-[53px] p-[16px] bg-[#6849FE] text-white rounded-lg mt-[96px]"
+            className="w-[420px] h-[53px] p-[16px] bg-[#6849FE] text-white rounded-lg mt-[60px] transition hover:opacity-90"
             disabled={!email.trim() || !password || isLoading}
           >
             {isLoading ? '로그인 중...' : '로그인'}

@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { getHomeData, getSearchData } from "@/lib/api";
 import Image from "next/image";
+import { usePreventBackNavigation } from "@/lib/hooks/usePreventBackNavigation";
 
 // API 응답 타입 정의
 interface HomeResponse {
@@ -36,6 +37,11 @@ interface HomePost {
 export default function Home() {
   const router = useRouter();
 
+  // 뒤로 가기 방지 - replace 메서드만 사용
+  usePreventBackNavigation({
+    enabled: true
+  });
+
   // 전체 게시물 원본 저장용
   const [allPosts, setAllPosts] = useState<HomePost[]>([]);
   const [posts, setPosts] = useState<HomePost[]>([]);
@@ -43,6 +49,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [me, setMe] = useState<string>("");
   const [keyword, setKeyword] = useState<string>(""); // 검색어 상태
+  const [schoolName, setSchoolName] = useState<string>(""); // 학교명 상태
 
   const categories = [
     { id: "all", name: "전체" },
@@ -78,6 +85,7 @@ export default function Home() {
         if (json.success) {
           setAllPosts(json.data.posts);
           setPosts(json.data.posts);
+          setSchoolName(json.data.schoolName);
         }
       } catch (err: unknown) {
         const error = err as Error;
@@ -133,7 +141,7 @@ export default function Home() {
   );
 
   return (
-    <main className="min-h-screen w-full flex flex-col relative bg-white pt-16">
+    <main className="min-h-screen w-full flex flex-col relative bg-white pt-[70px]">
       <Header />
 
       {/* 히어로 섹션 */}
@@ -149,11 +157,11 @@ export default function Home() {
       >
         <div className="flex flex-col items-center gap-8">
           <h1 className="text-[36px] font-bold text-white text-center">
-            필요할때마다 사지말고, 지구에서 잠깐 빌려요
+            필요할 때마다 사지말고, 지구에서 잠깐 빌려요!
           </h1>
-          <div className="w-[780px] h-[68px] relative">
+          <div className="w-[780px] h-[68px] mb-6 relative">
             <input
-              className="w-full h-full bg-[#F3F3F5] pl-14 pr-6 text-lg rounded-full border text-black border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF]"
+              className="w-full h-full bg-white pl-14 pr-6 text-lg rounded-full border text-black border-gray-300 focus:outline-none focus:border-[#8769FF] focus:ring-1 focus:ring-[#8769FF]"
               type="text"
               placeholder="지금 어떤 물건을 구매하고 있나요?"
               value={keyword}
@@ -168,11 +176,11 @@ export default function Home() {
       </div>
 
       {/* 목록 헤더 */}
-      <div className="flex flex-col items-center gap-8 pt-[20px]">
-        <div className="flex items-center gap-2 mt-[50px] pl-[210px] self-start">
+      <div className="flex flex-col items-center gap-7 pt-[20px]">
+        <div className="flex items-center gap-2 mt-[60px] pl-[210px] self-start">
           <IoLocationSharp size={24} color="black" />
           <div className="text-[22px] font-bold text-black">
-            한동대학교 학생들이 주고받은 물건들
+            {schoolName} 학생들이 주고받은 물건들
           </div>
         </div>
 
@@ -183,7 +191,7 @@ export default function Home() {
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-4 py-2 rounded-full transition-colors ${selectedCategory === cat.id
-                  ? "bg-[#8769FF] text-white"
+                  ? "bg-[#6849FE] text-white"
                   : "bg-[#F3F3F5] text-[#A2A3A7] hover:bg-[#E5E5E5]"
                 }`}
             >
@@ -235,11 +243,11 @@ export default function Home() {
               </div>
               <h3 className={styles.itemTitle}>{post.itemName}</h3>
               <div className={styles.priceContainer}>
-                <span className={styles.price}>{post.price_per_hour}원</span>
+                <span className={styles.price}>{post.price_per_hour.toLocaleString()}원</span>
                 <span className="text-[#A2A3A7]">/1시간</span>
               </div>
               <div className={styles.priceContainer}>
-                <span className={styles.price}>{post.price_per_day}원</span>
+                <span className={styles.price}>{post.price_per_day.toLocaleString()}원</span>
                 <span className="text-[#A2A3A7]">/1일</span>
               </div>
               <div className="flex flex-row gap-2">
@@ -258,7 +266,7 @@ export default function Home() {
 
       <Link
         href="/detail/new-page"
-        className="fixed bottom-8 right-8 bg-[#8769FF] text-white px-6 py-4 rounded-lg flex items-center gap-2 hover:bg-[#7559EF] transition-colors shadow-lg"
+        className="fixed bottom-13 right-18 bg-[#6849FE] text-white pt-4 pr-6 pb-4 pl-4 rounded-lg flex items-center gap-2 hover:bg-[#7559EF] transition-colors shadow-lg w-[162px] h-[55px] z-40"
       >
         <span className="text-2xl">+</span>
         <span className="text-[18px] font-bold">물건 등록하기</span>

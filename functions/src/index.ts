@@ -445,33 +445,34 @@ class EmailService {
         <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background-color: #f8f9fa; border-radius: 8px; padding: 30px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #7559FF; margin-bottom: 10px;">🎉 대여 승인 완료!</h1>
+              <h1 style="color: #7559FF; margin-bottom: 10px;"> 대여 승인 완료!</h1>
               <p style="color: #666; font-size: 18px; margin: 0;">안녕하세요, ${applicantNickname}님</p>
             </div>
             
             <div style="background-color: #ffffff; border-radius: 8px; padding: 25px; margin-bottom: 25px; border-left: 4px solid #7559FF;">
-              <h2 style="color: #333; margin-top: 0; margin-bottom: 15px;">📦 승인된 대여 아이템</h2>
+              <h2 style="color: #333; margin-top: 0; margin-bottom: 15px;"> 승인된 대여 물품</h2>
               <p style="color: #666; font-size: 16px; margin-bottom: 10px;">
-                <strong style="color: #333;">아이템명:</strong> ${itemTitle}
+                <strong style="color: #333;">물품명:</strong> ${itemTitle}
               </p>
               <p style="color: #666; font-size: 16px; margin-bottom: 0;">
-                <strong style="color: #333;">대여자:</strong> ${lenderNickname}님
+                <strong style="color: #333;">대여자:</strong> ${applicantNickname}님
               </p>
             </div>
 
             <div style="background-color: #e8f5e8; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
-              <h3 style="color: #2d5016; margin-top: 0; margin-bottom: 15px;">✅ 다음 단계</h3>
+              <h3 style="color: #2d5016; margin-top: 0; margin-bottom: 15px;">다음 단계</h3>
               <ul style="color: #2d5016; margin: 0; padding-left: 20px;">
-                <li style="margin-bottom: 8px;">ZiGU 앱에서 대여자와 채팅을 통해 수령 방법을 조율하세요</li>
+                <li style="margin-bottom: 8px;">ZIGU 앱에서 대여자와 채팅을 통해 수령 방법을 조율하세요</li>
                 <li style="margin-bottom: 8px;">약속한 시간과 장소에서 아이템을 수령하세요</li>
-                <li style="margin-bottom: 0;">사용 후 안전하게 반납해주세요</li>
+                <li style="margin-bottom: 8px;">사용시 주의사항을 확인해주세요</li>
+                <li style="margin-bottom: 0;">사용 후 깨끗하게 반납해주세요</li>
               </ul>
             </div>
 
             <div style="text-align: center; margin-bottom: 25px;">
-              <a href="#" style="background-color: #7559FF; color: white; text-decoration: none; 
+              <a href="https://gz-zeta.vercel.app" style="background-color: #7559FF; color: white; text-decoration: none; 
                          padding: 15px 30px; border-radius: 8px; font-weight: bold; display: inline-block;">
-                ZiGU 앱에서 확인하기
+                ZiGU에서 확인하기
               </a>
             </div>
 
@@ -479,7 +480,7 @@ class EmailService {
             
             <div style="text-align: center;">
               <p style="color: #999; font-size: 14px; margin-bottom: 5px;">
-                안전한 대여 거래를 위해 항상 ZiGU 앱 내에서 소통해주세요.
+                안전한 대여 거래를 위해 항상 ZiGU 웹 내에서 소통해주세요.
               </p>
               <p style="color: #aaa; font-size: 12px; margin: 0;">
                 ZiGU 대학생 중고 렌탈 플랫폼
