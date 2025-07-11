@@ -31,21 +31,41 @@ export default function ProductsFeature() {
       </h3>
       <Link
               href="/cert/cert"
-              className="bg-[#6849FE] text-white rounded-lg h-[55px] w-[193px] font-medium inline-flex items-center justify-center"
+              className="inline-flex          
+    justify-center       
+    items-center         
+    gap-1.5               
+    px-5                   
+    py-3                   
+    rounded-[8px]         
+    bg-[var(--Purple-04,#6849FE)]
+    text-white text-[16px] font-normal leading-[130%] tracking-[-0.32px] 
+    hover:bg-[#5933E4]"
             >
-              학교메일로 시작하기
+            지금 빌리러 가기
             </Link>
       </div>
 
       <div className={styles.grid}>
         {PRODUCTS.map((p, i) => (
-          <div key={i} className="flex flex-col items-center">
+          <div key={i} className="flex flex-col items-center ">
             <div className={styles.wrapper}>
               <Image
                 src={p.src}
                 alt={p.alt}
                 fill
-                className="object-cover"
+                className="object-cover w-[200px]             /* width: 200px */
+    h-12                  /* height: 48px (12 * 4px) */
+    flex-shrink-0         /* flex-shrink: 0 */
+    rounded-lg            /* border-radius: 8px */
+    bg-[var(--Gray-09,#4C4C4E)]  /* background: var(--Gray-09, #4C4C4E) */
+    text-[var(--White,#FFF)]   /* color: var(--White, #FFF) */
+    text-center                /* text-align: center */
+    text-[18px]                /* font-size: 18px */
+    font-medium                /* font-weight: 500 */
+    leading-[130%]             /* line-height: 130% */
+    tracking-[-0.36px]         /* letter-spacing: -0.36px */"
+                
               />
             </div>
 
