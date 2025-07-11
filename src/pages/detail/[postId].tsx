@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import LoadingBalls from "@/components/loading-components/loding-ball";
 import { ProducerView } from "@/components/detail/ProducerView";
 import { ConsumerView } from "@/components/detail/ConsumerView";
+import { usePreventBackNavigation } from '@/lib/hooks/usePreventBackNavigation';
 
 // API 응답 래퍼 타입
 interface ApiResponse<T> {
@@ -36,6 +37,14 @@ export default function DetailPage() {
     const [post, setPost] = useState<Post | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // 뒤로가기 방지: detail-page-producer일 때만 new-page로 못가게 막음
+    if (postId === 'detail-page-producer') {
+      usePreventBackNavigation({
+        enabled: true,
+        blockPaths: ['/detail/new-page']
+      });
+    }
 
     useEffect(() => {
         const storedMe = localStorage.getItem("me") || "";
