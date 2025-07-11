@@ -1,5 +1,5 @@
 // src/pages/rentals/BorrowedTab.tsx
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import axios from "axios";
 import { TransactionItem, BorrowedData } from "../../lib/rentals.types";
 import TransactionTable from "./TransactionTable";
@@ -20,7 +20,7 @@ const BorrowedTab: React.FC<BorrowedTabProps> = ({
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<TransactionItem[]>([]);
 
-  const fetchBorrowedData = async () => {
+  const fetchBorrowedData = useCallback(async () => {
     console.log("[BorrowedTab] fetchBorrowedData 호출, reloadTrigger:", reloadTrigger);
     setLoading(true);
 
@@ -70,12 +70,12 @@ const BorrowedTab: React.FC<BorrowedTabProps> = ({
       setLoading(false);
       console.log("[BorrowedTab] loading → false");
     }
-  };
+  }, [reloadTrigger]);
 
   // reloadTrigger가 바뀔 때마다 (초기 마운트 포함) 데이터 로드
   useEffect(() => {
     fetchBorrowedData();
-  }, [reloadTrigger]);
+  }, [fetchBorrowedData]);
 
   // 페이지네이션
   const [currentPage, setCurrentPage] = useState(1);

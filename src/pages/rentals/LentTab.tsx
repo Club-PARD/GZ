@@ -1,5 +1,5 @@
 // src/pages/rentals/LentTab.tsx
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import axios from "axios";
 import { TransactionItem, BorrowedData } from "../../lib/rentals.types";
 import TransactionTable from "./TransactionTable";
@@ -20,7 +20,7 @@ const LentTab: React.FC<LentTabProps> = ({
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<TransactionItem[]>([]);
 
-  const fetchLentData = async () => {
+  const fetchLentData = useCallback(async () => {
     console.log("[LentTab] fetchLentData 호출, reloadTrigger:", reloadTrigger);
     setLoading(true);
     console.log("[LentTab] loading → true");
@@ -72,12 +72,12 @@ const LentTab: React.FC<LentTabProps> = ({
       setLoading(false);
       console.log("[LentTab] loading → false");
     }
-  };
+  }, [reloadTrigger]);
 
   // reloadTrigger가 바뀔 때마다 (초기 마운트 포함) 데이터 로드
   useEffect(() => {
     fetchLentData();
-  }, [reloadTrigger]);
+  }, [fetchLentData]);
 
   // 페이지네이션 로직
   const [currentPage, setCurrentPage] = useState(1);
