@@ -15,13 +15,13 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
 }) => (
   
   <div>
-    <h1 className="text-2xl font-semibold mb-6 border-b pb-4">약관 및 정책</h1>
+    <h1 className="text-2xl font-semibold mb-6 border-b pb-4 dark:text-black">약관 및 정책</h1>
     <div className="space-y-6">
       {(['terms', 'privacy'] as const).map(key => (
         <div key={key} className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
           {/* 헤더: 제목 + 체크박스 */}
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-medium">
+            <h2 className="text-lg font-medium dark:text-black">
               {key === 'terms' ? '서비스 이용약관' : '개인정보 수집·이용'}
             </h2>
             

@@ -6,10 +6,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { AiFillSetting } from "react-icons/ai";
+import { LuLogOut } from "react-icons/lu";
 import { MdPolicy } from "react-icons/md";
 import { BsHeadset } from "react-icons/bs";
 import { MdManageAccounts } from "react-icons/md";
 import axios from 'axios';
+import { useRef } from 'react';
+
 interface UserInfo {
   nickname: string;
   schoolName: string;
@@ -21,6 +24,15 @@ export default function HomeHeader() {
   const queryMe = router.query.me as string | undefined;
   const [me, setMe] = useState<string | undefined>(undefined);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeTimeout = useRef<number>(300);
+   const handleLogout = () => {
+    localStorage.removeItem('me');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('savedCredentials');
+    router.replace('/');
+  };
+
   // 1) me 가져오기
   useEffect(() => {
     if (queryMe) {
@@ -60,6 +72,8 @@ export default function HomeHeader() {
     }
   }, [queryMe]);
 
+
+  
   return (
     <div className="fixed top-0 left-0 right-0 z-50 pl-[260px] pr-[272px] bg-white h-16">
       <header className="w-full flex justify-between items-center px-8 py-4 ">
@@ -96,7 +110,21 @@ export default function HomeHeader() {
             내물건
           </Link>
           {/*---------------------------- 수정부분----태윤---------------------- */}
-          <div className="relative inline-block group">
+          <div
+          className="relative inline-block"
+          onMouseEnter={() => {
+            // 마우스 들어오면 닫기 타이머 취소하고 바로 열기
+            window.clearTimeout(closeTimeout.current);
+            setMenuOpen(true)}}
+          onMouseLeave={() => {
+            closeTimeout.current = window.setTimeout(() => {
+          setMenuOpen(false);
+        }, 300);
+            
+            }}
+
+          
+        >
             <Link
               href={me ? `/profile?me=${encodeURIComponent(me)}` : "/profile"}
               className="cursor-pointer"
@@ -110,19 +138,18 @@ export default function HomeHeader() {
             </Link>
 
             {/* 호버 시 나타날 작은 드롭다운 */}
-            <div
-              className="
-            
-              absolute top-full right-0 mt-2
-              w-[268px] h-[308px] bg-[#fff]
-              shadow-[0px_4px_12px_0px_rgba(0,0,0,0.1)]
-              z-50
-              transition-opacity duration-200
-              delay-[1000ms] group-hover:delay-0
-              opacity-0 pointer-events-none
-              group-hover:opacity-100 group-hover:pointer-events-auto
-            "
-            >
+             <div
+   className={`
+     absolute top-full right-0 mt-2
+    w-[268px] h-[368px] bg-[#fff]
+     shadow-[0px_4px_12px_0px_rgba(0,0,0,0.1)]
+     z-50
+     transition-opacity duration-200
+     ${menuOpen
+       ? 'opacity-100 pointer-events-auto'
+       : 'opacity-0 pointer-events-none'}
+   `}
+ >
               {/* 상단 프로필 요약 */}
               <div className="flex items-center p-4 ">
                 <Image
@@ -282,15 +309,49 @@ export default function HomeHeader() {
                       text-[16px]            
                       font-normal             
                       leading-[130%]         
-                      tracking-[-0.32px]     
+                      tracking-[-0.32px]
+                          
                     "
                     >
                       계정관리
                     </span>
+                    
                   </Link>
                 </li>
+                <li>
+                  
+                   <button
+  onClick={handleLogout}
+  className="
+    flex items-center 
+    w-[232px] py-[10px] px-[16px] gap-[12px]
+    bg-white hover:bg-gray-100 rounded
+  "
+>
+  <LuLogOut
+    className="
+      w-[28px] h-[28px] shrink-0
+      text-[#C2C3C9]
+    "
+  />
+  <span
+    className="
+      text-[#232323]
+      text-[16px]
+      font-normal
+      leading-[130%]
+      tracking-[-0.32px]
+    "
+  >
+    로그아웃
+  </span>
+</button>
+
+                </li>
+                
               </ul>
             </div>
+          
           </div>
         </div>
       </header>
