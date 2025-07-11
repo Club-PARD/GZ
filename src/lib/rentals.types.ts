@@ -1,5 +1,6 @@
 export interface BorrowedData {
   borrowedId: number;
+  postId?: number; // 게시물 ID 추가
   itemName: string;
   category?: string;
   peroid: number;
@@ -21,6 +22,7 @@ export interface TransactionItem {
 
 export interface Apply {
   applyId: number;
+  postId?: number; // 게시물 ID 추가
   applierId: number;
   applierNickname: string;
   firstImageUrl: string;
@@ -30,6 +32,7 @@ export interface Apply {
 }
 
 export interface RequestItem {
+  postId?: number; // 게시물 ID 추가
   itemName: string;
   applyList: Apply[];
 }
