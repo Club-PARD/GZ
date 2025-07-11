@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link'
 export default function Footer() {
   return (
     <div className="w-full bg-[#F3F3F5] py-20 h-[280px]">
