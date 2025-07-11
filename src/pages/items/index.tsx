@@ -247,7 +247,7 @@ const MyPostsPage: React.FC = () => {
                                   ? `/api/image-proxy?url=${
                                       post.firstImageUrl.startsWith("http")
                                         ? post.firstImageUrl
-                                        : `${process.env.NEXT_PUBLIC_API_URL}${post.firstImageUrl}`
+                                        : `${process.env.NEXT_PUBLIC_API_URL || ""}${post.firstImageUrl.startsWith("/") ? "" : "/"}${post.firstImageUrl}`
                                     }`
                                   : "/images/camera.jpg"
                               }
@@ -282,6 +282,9 @@ const MyPostsPage: React.FC = () => {
                                 />
                               </svg>
                             </Link>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {post.category}
+                            </div>
                             <div className="mt-1 space-y-1">
                               <div className="text-sm text-gray-900">
                                 <span className="font-medium">
