@@ -79,12 +79,12 @@ export default function Register({ studentMail, schoolName }: Props) {
     <main>
       <Header />
 
-      <div className="min-h-screen bg-[#F3F3F5] flex flex-col items-center pt-16">
+      <div className="min-h-screen bg-[#F3F3F5] flex flex-col items-center pt-[60px] pb-[70px]">
         {/* 제목 */}
-        <h1 className="text-3xl font-bold mb-6 text-black">회원가입</h1>
+        <h1 className="text-3xl font-bold mb-[28px] text-black">회원가입</h1>
 
         {/* 진행 단계 */}
-        <div className="flex justify-center space-x-[20px] mb-8">
+        <div className="flex justify-center space-x-[20px] mb-[20px]">
           <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
             <span className="w-[24px] h-[24px] bg-[#ADAEB2] text-[#F3F3F5] rounded-lg flex items-center justify-center font-bold">
               1
@@ -108,11 +108,11 @@ export default function Register({ studentMail, schoolName }: Props) {
         {/* Form Card */}
         <form
           onSubmit={handleSubmit}
-          className="w-[580px] h-auto bg-[#FFFFFF] px-[60px] rounded-2xl mb-[70px] py-[32px]"
+          className="w-[580px] h-[650px] bg-[#FFFFFF] px-[60px] rounded-2xl mb-[70px] pt-[52px] pb-[48px]"
         >
           {/* 아이디(이메일) */}
           <div>
-            <label className="block pl-[4px] mb-[8px] text-[#232323] mt-[0px]">아이디</label>
+            <label className="block pl-[4px] mb-[8px] text-[#232323]">아이디</label>
             <input
               type="email"
               value={studentMail}
@@ -209,11 +209,11 @@ export default function Register({ studentMail, schoolName }: Props) {
           )}
 
           {/* 다음 버튼 */}
-          <div className="flex justify-center mt-[28px]">
+          <div className="flex justify-center mt-[32px]">
             <button
               type="submit"
               disabled={!nickname || password.length < 8 || !agreeTerms || !agreePrivacy}
-              className={`justify items-center w-[180px] h-[53px] px-[24px] py-[16px] text-white rounded-lg ${
+              className={`justify items-center w-[180px] h-[53px] px-[24px] py-[16px] text-white rounded-lg transition hover:opacity-90 ${
                 nickname && password.length >= 8 && agreeTerms && agreePrivacy
                   ? "bg-[#6849FE]"
                   : "bg-[#C2C3C9]"

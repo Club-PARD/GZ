@@ -33,14 +33,14 @@ export default function Success() {
               className="w-[100px] h-[100px] text-[#6849FE] mt-[80px]" />
           </div>
           <h1 className="text-[32px] text-center font-bold mt-[20px] text-[#232323]">회원가입이 완료되었습니다!</h1>
-          <p className="text-sm text-center text-[#616264] mt-[12px]">회원님의 회원가입을 진심으로 축하드립니다.</p>
-          <p className="text-sm text-center text-[#616264]">로그인 후 지구 서비스를 더 자세히 살펴볼 수 있습니다.</p>
+          <p className="text-[16px] text-center text-[#616264] mt-[12px] font-normal leading-normal tracking-[-0.32px]">회원님의 회원가입을 진심으로 축하드립니다.</p>
+          <p className="text-[16px] text-center text-[#616264] font-normal leading-normal tracking-[-0.32px]">로그인 후 지구 서비스를 더 자세히 살펴볼 수 있습니다.</p>
           <div className="flex justify-center">
 
             <Link href="/cert/login" replace>
               <button
                 type="submit"
-                className="w-[180px] h-[53px] px-[24px] py-[16px] bg-[#6849FE] text-white rounded-lg mt-[60px]"
+                className="w-[180px] h-[53px] px-[24px] py-[16px] bg-[#6849FE] text-white rounded-lg mt-[60px] transition hover:opacity-90"
               >
                 로그인하러 가기
               </button>

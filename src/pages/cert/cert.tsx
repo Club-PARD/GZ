@@ -115,11 +115,11 @@ export default function Home() {
         message={errorDialog.message}
         onClose={closeErrorDialog}
       />
-      <div className="min-h-screen bg-[#F3F3F5] flex flex-col items-center p-[60px]">
+      <div className="min-h-screen bg-[#F3F3F5] flex flex-col items-center p-[68px]">
         <h1 className="text-[32px] text-center font-bold mb-[28px] text-[#232323]">
           회원가입
         </h1>
-        <div className="flex justify-center space-x-[20px] mb-8">
+        <div className="flex justify-center space-x-[20px] mb-[20px]">
           <div className="w-[180px] h-[56px] flex items-center bg-white rounded-lg px-[20px] py-[16px] space-x-2">
             <span className="w-[24px] h-[24px] bg-[#232323] text-white rounded-lg flex items-center justify-center font-bold">
               1
@@ -139,7 +139,7 @@ export default function Home() {
             <span className="font-bold text-[#ADAEB2]">회원가입 완료</span>
           </div>
         </div>
-        <div className="w-[580px] h-[550px] bg-[#FFFFFF] px-[60px] py-[81px] rounded-2xl space-y-8">
+        <div className="w-[580px] h-[515px] bg-[#FFFFFF] px-[60px] pt-[52px] pb-[60px] rounded-2xl space-y-8 mb-[193px]">
           <div>
             <label className="block mb-[8px] text-[#232323]">학교</label>
             <div className="flex items-center space-x-[8px]">
@@ -151,7 +151,7 @@ export default function Home() {
                 disabled={isSchoolVerified}
               />
               <button
-                className={`w-[133px] h-[53px] text-white rounded-lg ${
+                className={`w-[133px] h-[53px] text-white rounded-lg transition hover:opacity-90 ${
                   schoolName.trim() ? "bg-[#4C4C4E]" : "bg-[#C2C3C9]"
                 }`}
                 onClick={handleSchoolVerify}
@@ -172,7 +172,7 @@ export default function Home() {
                 disabled={isCodeSent}
               />
               <button
-                className={`w-[133px] h-[53px] text-white rounded-lg ${
+                className={`w-[133px] h-[53px] text-white rounded-lg transition hover:opacity-90 ${
                   studentMail.trim() && isSchoolVerified && cooldown === 0
                     ? 'bg-[#4C4C4E]'
                     : 'bg-[#C2C3C9]'
@@ -211,7 +211,7 @@ export default function Home() {
             <button
               onClick={handleNext}
               disabled={!studentMail || !code}
-              className={`w-[180px] h-[53px] text-white rounded-lg font-medium px-[24px] py-[16px] ${
+              className={`w-[180px] h-[53px] text-white rounded-lg font-medium px-[24px] py-[16px] transition hover:opacity-90 ${
                 studentMail.trim() && code.trim() ? "bg-[#6849FE]" : "bg-[#C2C3C9]"
               }`}
             >
