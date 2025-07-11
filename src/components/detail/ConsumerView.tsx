@@ -20,6 +20,7 @@ interface Post {
   nickname: string;
   itemName: string;
   post_id: number;
+  isBorrowable: "POSSIBLE" | "IMPOSSIBLE";
   imageUrls?: string[];
   price_per_hour?: number;
   price_per_day?: number;
@@ -31,10 +32,21 @@ interface Post {
 export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [showApplication, setApplication] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
     const [channelUrl, setChannelUrl] = useState<string>("");
     
     const defaultImages = ["/images/camera.jpg"];
     const images = post.imageUrls && post.imageUrls.length > 0 ? post.imageUrls : defaultImages;
+    
+    const categories = [
+      { id: "ELECTRONICS", name: "전자기기" },
+      { id: "HEALTH", name: "건강" },
+      { id: "INTEREST", name: "취미/여가" },
+      { id: "BEAUTYFASION", name: "뷰티/패션" },
+      { id: "ACADEMIC", name: "도서/학업" },
+      { id: "ESSENTIALS", name: "생활용품" },
+      { id: "ETC", name: "기타" },
+    ];
     
     const startChat = async () => {
       if (!me) {
@@ -56,6 +68,16 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
   
     const toggleMenu = () => {
       setIsMenuOpen(!isMenuOpen);
+    };
+
+    const handleReport = () => {
+      setShowReportModal(true);
+      setIsMenuOpen(false);
+    };
+
+    const submitReport = () => {
+      alert("신고가 접수되었습니다. 검토 후 조치하겠습니다.");
+      setShowReportModal(false);
     };
 
     return (
@@ -106,7 +128,7 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
             )}
           </section>
   
-          <section className="w-[430px] h-[500px] space-y-4 p-4  right-[100px] bottom-70 top-[113px] bg-white rounded-lg shadow fixed">
+          <section className="w-[560px] h-[500px] space-y-4 border border-gray-300 rounded-lg p-4 fixed right-40 bottom-16 top-[113px]">
             {channelUrl ? (
               <div className="relative h-[500px] w-[560px] right-[80px] ">
                 <ChatWindow me={me} selectedChannelUrl={channelUrl} />
@@ -143,18 +165,21 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
                       <FiMoreVertical size={20} />
                     </button>
                     {isMenuOpen && (
-                      <ul className="absolute right-0 mt-2 bg-white shadow rounded-lg">
+                      <ul className="absolute right-0 mt-2 bg-white shadow rounded-lg z-10">
                         {me === String(post.user_id) ? (
                           <>
-                            <li className="px-4 py-2 hover:bg-gray-100 flex items-center">
+                            <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
                               <MdEdit className="mr-2" /> 수정하기
                             </li>
-                            <li className="px-4 py-2 hover:bg-gray-100 flex items-center">
+                            <li className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer">
                               <AiFillDelete className="mr-2" /> 삭제하기
                             </li>
                           </>
                         ) : (
-                          <li className="px-4 py-2 hover:bg-gray-100 flex items-center">
+                          <li 
+                            className="px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer"
+                            onClick={handleReport}
+                          >
                             <PiSirenBold className="mr-2" /> 신고하기
                           </li>
                         )}
@@ -181,12 +206,25 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
                 <div className="p-4 h-40 bg-[#F9F9FA] rounded-lg text-sm text-gray-700 overflow-auto">
                   {post.description}
                 </div>
-  
+
+                <div className="border-t border-gray-200 my-4 " />
+
+                {/* 카테고리 섹션 */}
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold text-[#ADAEB2]">카테고리</p>
+                  <span className="inline-block px-2 py-1 bg-[#F3F3F5] text-[#828286] text-xs rounded">
+                    {categories.find((c) => c.id === post.category)?.name || post.category}
+                  </span>
+                  <span className="inline-block px-2 py-1 bg-[#F0EDFF] text-[#6849FE] text-xs rounded">
+                    {post.isBorrowable === "POSSIBLE" ? "대여가능" : "대여불가"}
+                  </span>
+                </div>
+
                 <button
                   onClick={startChat}
                   className="w-full mt-4 bg-[#6849FE] text-white py-3 rounded-lg text-sm font-semibold flex items-center justify-center"
                 >
-                  채팅방 입장하기
+                  채팅 시작하기
                   <GoArrowRight className="inline-block ml-2" />
                 </button>
                 
@@ -194,6 +232,47 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
             )}
           </section>
         </main>
+
+        {/* 신고하기 모달 */}
+        {showReportModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
+              <h2 className="text-xl font-bold mb-4">게시물 신고</h2>
+              <div className="space-y-3 mb-6">
+                <label className="flex items-center">
+                  <input type="radio" name="report" className="mr-2" />
+                  <span className="text-sm">스팸/광고</span>
+                </label>
+                <label className="flex items-center">
+                  <input type="radio" name="report" className="mr-2" />
+                  <span className="text-sm">부적절한 내용</span>
+                </label>
+                <label className="flex items-center">
+                  <input type="radio" name="report" className="mr-2" />
+                  <span className="text-sm">사기/허위매물</span>
+                </label>
+                <label className="flex items-center">
+                  <input type="radio" name="report" className="mr-2" />
+                  <span className="text-sm">기타</span>
+                </label>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowReportModal(false)}
+                  className="flex-1 py-2 px-4 bg-gray-200 text-gray-800 rounded-lg"
+                >
+                  취소
+                </button>
+                <button
+                  onClick={submitReport}
+                  className="flex-1 py-2 px-4 bg-red-500 text-white rounded-lg"
+                >
+                  신고하기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
   
         <Application
           open={showApplication}
