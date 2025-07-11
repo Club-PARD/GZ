@@ -1,6 +1,7 @@
 import React from "react";
 import { TransactionItem, RequestItem, Tab } from "../../lib/rentals.types";
 import axios from "axios";
+import Link from "next/link";
 
 interface TransactionRowProps {
   item: TransactionItem | RequestItem;
@@ -31,6 +32,11 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
     status: transactionItem?.status || "",
     category: transactionItem?.category || "대여 신청",
   };
+
+  // postId 추출 (TransactionItem의 경우 id 사용, RequestItem의 경우 postId 또는 applyList에서 추출)
+  const postId = transactionItem?.id || 
+    (requestItem && 'postId' in requestItem && requestItem.postId) || 
+    (requestItem && 'applyList' in requestItem && requestItem.applyList.length > 0 ? requestItem.applyList[0].postId : null);
 
   // 더미 수락/거절 핸들러
   const handleAccept = async () => {
@@ -77,8 +83,32 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
         <img src={displayData.imageUrl} alt={displayData.title} className="w-20 h-20 rounded object-cover" />
         <div>
           <div className="flex items-center font-semibold text-[#232323]">
-            {displayData.title}
-            <span className="ml-2 text-gray-400">&gt;</span>
+            {postId ? (
+              <Link
+                href={`/detail/${postId}`}
+                className="hover:text-[#6849FE] cursor-pointer flex items-center"
+              >
+                {displayData.title}
+                <svg
+                  className="w-4 h-4 ml-1 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </Link>
+            ) : (
+              <>
+                {displayData.title}
+                <span className="ml-2 text-gray-400">&gt;</span>
+              </>
+            )}
           </div>
           <div className="text-sm text-gray-500">{displayData.category}</div>
           {isRequestItem && firstApply && (
@@ -97,7 +127,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
       <div className="flex flex-col justify-center items-center space-y-2 px-6 py-6">
         {activeTab === "borrow" ? (
           <button
-            className={`flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg ${
+            className={`flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg transition hover:opacity-90 ${
               displayData.status === "거래 중" ? "bg-[var(--Purple-04,#6849FE)]" : "bg-[var(--Gray-05,#C2C3C9)]"
             }`}
             disabled
@@ -110,7 +140,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
           <button
             onClick={() => handleReturnConfirm(transactionItem?.id || 0)}
             disabled={displayData.status === "반납 완료"}
-            className={`flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg ${
+            className={`flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg transition hover:opacity-90 ${
               displayData.status === "반납 완료" ? "bg-[var(--Gray-05,#C2C3C9)]" : "bg-[var(--Purple-04,#6849FE)]"
             }`}
           >
@@ -122,7 +152,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
           <>
             <button 
               onClick={handleReject}
-              className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Gray-05,#C2C3C9)]"
+              className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Gray-05,#C2C3C9)] transition hover:opacity-90"
             >
               <div className="text-[var(--White,#FFF)] text-center text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
                 신청거절
@@ -130,7 +160,7 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
             </button>
             <button 
               onClick={handleAccept}
-              className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Purple-04,#6849FE)]"
+              className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Purple-04,#6849FE)] transition hover:opacity-90"
             >
               <div className="text-[var(--White,#FFF)] text-center text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
                 신청수락

@@ -46,7 +46,7 @@ const LentTab: React.FC<LentTabProps> = ({
 
       if (res.data.success) {
         const mapped: TransactionItem[] = res.data.data.map((d: BorrowedData) => ({
-          id: d.borrowedId,
+          id: d.postId || d.borrowedId, // postId가 있으면 사용, 없으면 borrowedId 사용
           title: d.itemName,
           category: d.category || "",
           duration: `${d.peroid}${d.unitOfPeroid === "DAY" ? "일" : "시간"}`,
@@ -92,6 +92,9 @@ const LentTab: React.FC<LentTabProps> = ({
     }
   }, [totalPages, currentPage]);
 
+  // 데이터가 없어도 최소 1페이지는 표시
+  const effectiveTotalPages = Math.max(1, totalPages);
+
   const currentItems = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     console.log(`[LentTab] currentItems slice: start=${start}, end=${start + ITEMS_PER_PAGE}`);
@@ -102,7 +105,7 @@ const LentTab: React.FC<LentTabProps> = ({
     Math.floor((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
   const currentBlockEnd = Math.min(
     currentBlockStart + BLOCK_SIZE - 1,
-    totalPages
+    effectiveTotalPages
   );
 
   return (
@@ -115,7 +118,7 @@ const LentTab: React.FC<LentTabProps> = ({
       />
       <Pagination
         currentPage={currentPage}
-        totalPages={totalPages}
+        totalPages={effectiveTotalPages}
         currentBlockStart={currentBlockStart}
         currentBlockEnd={currentBlockEnd}
         handlePrevBlock={() => {
@@ -127,7 +130,7 @@ const LentTab: React.FC<LentTabProps> = ({
           setCurrentPage(
             Math.min(
               currentBlockStart + BLOCK_SIZE,
-              totalPages - BLOCK_SIZE + 1
+              effectiveTotalPages - BLOCK_SIZE + 1
             )
           );
         }}
