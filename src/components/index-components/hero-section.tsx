@@ -73,7 +73,7 @@ export default function HeroSection() {
     "
   >
 <Image
-            src="/images/onboardfinal.svg"
+            src="/images/onboardfinal.svg" 
             alt="hero-section"
             width={902}
             height={586}
