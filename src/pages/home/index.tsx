@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { getHomeData, getSearchData } from "@/lib/api";
 import Image from "next/image";
+import { usePreventBackNavigation } from "@/lib/hooks/usePreventBackNavigation";
 
 // API 응답 타입 정의
 interface HomeResponse {
@@ -35,6 +36,11 @@ interface HomePost {
 
 export default function Home() {
   const router = useRouter();
+
+  // 뒤로 가기 방지 - replace 메서드만 사용
+  usePreventBackNavigation({
+    enabled: true
+  });
 
   // 전체 게시물 원본 저장용
   const [allPosts, setAllPosts] = useState<HomePost[]>([]);
