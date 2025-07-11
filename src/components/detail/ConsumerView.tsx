@@ -62,8 +62,8 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
         <div className="bg-white pt-[80px]">
         <Header />
   
-        <main className="max-w-5xl mx-40 my-8 flex gap-8">
-          <section className="w-1/2 space-y-4">
+        <main className="max-w mx-40 my-8 flex gap-8">
+          <section className="w-1/2 space-y-4 mr-[64px]">
             {images.map((src, idx) => (
               <div key={idx} className={styles.imageContainer}>
                 <Image
@@ -106,9 +106,9 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
             )}
           </section>
   
-          <section className="w-[560px] space-y-4 p-4 fixed right-20 bottom-70 top-[96px] bg-white rounded-lg shadow">
+          <section className="w-[430px] h-[500px] space-y-4 p-4  right-[100px] bottom-70 top-[113px] bg-white rounded-lg shadow fixed">
             {channelUrl ? (
-              <div className="relative h-[600px]">
+              <div className="relative h-[500px] w-[560px] right-[80px] ">
                 <ChatWindow me={me} selectedChannelUrl={channelUrl} />
                 <div className="absolute top-0 right-0 p-4">
                   <button
@@ -163,7 +163,7 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
                   </div>
                 </div>
   
-                <div className="border-t border-gray-200 my-4" />
+                <div className="border-t border-gray-200 my-4 " />
   
                 <div className="grid grid-cols-[max-content_auto] gap-x-4 gap-y-2">
                   <p className="text-lg font-semibold text-[#ADAEB2]">1시간</p>
@@ -176,7 +176,7 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
                   </p>
                 </div>
   
-                <div className="border-t border-gray-200 my-4" />
+                <div className="border-t border-gray-200 my-4 " />
   
                 <div className="p-4 h-40 bg-[#F9F9FA] rounded-lg text-sm text-gray-700 overflow-auto">
                   {post.description}
@@ -189,6 +189,7 @@ export const ConsumerView = ({ post, me }: { post: Post; me: string }) => {
                   채팅방 입장하기
                   <GoArrowRight className="inline-block ml-2" />
                 </button>
+                
               </>
             )}
           </section>
