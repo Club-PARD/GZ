@@ -39,12 +39,10 @@ export default function DetailPage() {
     const [error, setError] = useState<string | null>(null);
 
     // 뒤로가기 방지: detail-page-producer일 때만 new-page로 못가게 막음
-    if (postId === 'detail-page-producer') {
-      usePreventBackNavigation({
-        enabled: true,
-        blockPaths: ['/detail/new-page']
-      });
-    }
+    usePreventBackNavigation({
+      enabled: postId === 'detail-page-producer',
+      blockPaths: ['/detail/new-page']
+    });
 
     useEffect(() => {
         const storedMe = localStorage.getItem("me") || "";
