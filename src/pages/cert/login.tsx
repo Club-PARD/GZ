@@ -2,14 +2,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Header from '@/components/cert-header';
 import { getSendbird } from '@/lib/sendbird';
 import { requestFcmToken } from '@/lib/firebase';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { FaSquareCheck } from 'react-icons/fa6';
 import axios from 'axios';
+import Link from 'next/link';
 
 export default function Login() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -120,7 +123,7 @@ export default function Login() {
       }
 
       // 6) 홈으로 이동
-      window.location.href = '/home';
+      router.replace('/home');
     } catch (error: unknown) {
       const err = error as Error;
       console.error('로그인 중 오류:', err);
@@ -187,11 +190,11 @@ export default function Login() {
 
           {/* 링크 */}
           <div className="flex justify-center space-x-2 text-sm text-[#ADAEB2] mt-[16px]">
-            <a href="#" className="hover:underline">아이디 찾기</a>
+            <Link href="#" className="hover:underline">아이디 찾기</Link>
             <span>|</span>
-            <a href="#" className="hover:underline">비밀번호 찾기</a>
+            <Link href="#" className="hover:underline">비밀번호 찾기</Link>
             <span>|</span>
-            <a href="#" className="hover:underline">회원가입</a>
+            <Link href="/cert/cert" className="hover:underline">회원가입</Link>
           </div>
         </form>
       </div>

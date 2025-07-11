@@ -96,7 +96,7 @@ export default function Home() {
       }
       document.cookie = `schoolName=${encodeURIComponent(schoolName)}; path=/;`;
       document.cookie = `studentMail=${encodeURIComponent(studentMail)}; path=/;`;
-      router.push("/cert/register");
+      router.replace("/cert/register");
     } catch (e) {
       const m = e instanceof Error ? e.message : "인증번호 확인 중 오류";
       setErrorDialog({ isOpen: true, message: m });

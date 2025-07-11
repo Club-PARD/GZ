@@ -37,7 +37,7 @@ export default function Success() {
           <p className="text-sm text-center text-[#616264]">로그인 후 지구 서비스를 더 자세히 살펴볼 수 있습니다.</p>
           <div className="flex justify-center">
 
-            <Link href="/cert/login">
+            <Link href="/cert/login" replace>
               <button
                 type="submit"
                 className="w-[180px] h-[53px] px-[24px] py-[16px] bg-[#6849FE] text-white rounded-lg mt-[60px]"

@@ -179,7 +179,7 @@ export default function NewPage() {
     if (!userId) {
       alert("로그인이 필요합니다.");
       setIsLoading(false);
-      router.push('/cert/login');
+      router.replace('/cert/login');
       return;
     }
 
@@ -247,7 +247,7 @@ export default function NewPage() {
       localStorage.setItem('registeredItem', JSON.stringify(itemDataForStorage))
       
               // detail-page-producer로 라우팅
-        router.push('/detail/detail-page-producer')
+        router.replace('/detail/detail-page-producer')
     } catch (err: unknown) {
       const error = err as Error;
       console.error('대여 신청 중 오류:', error);
