@@ -14,7 +14,7 @@ export default async function handler(
 
   // 1) url 파라미터가 있으면 → 이미지 프록시
   if (url && typeof url === "string") {
-    const base = process.env.NEXT_PUBLIC_API_URL || "https://gz-zigu.store/"
+    const base = process.env.NEXT_PUBLIC_API_URL || ""
     if (!url.startsWith(base)) {
       return res.status(400).json({ message: "Invalid image URL" })
     }

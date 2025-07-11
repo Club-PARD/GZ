@@ -247,7 +247,7 @@ const MyPostsPage: React.FC = () => {
                                   ? `/api/image-proxy?url=${
                                       post.firstImageUrl.startsWith("http")
                                         ? post.firstImageUrl
-                                        : `https://gz-zigu.store/${post.firstImageUrl}`
+                                        : `${process.env.NEXT_PUBLIC_API_URL}${post.firstImageUrl}`
                                     }`
                                   : "/images/camera.jpg"
                               }
