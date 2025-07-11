@@ -74,7 +74,7 @@ export default function HomeHeader() {
   }, [queryMe]);
 
   return (
-    <div className="fixed top-0 left-0 right-0 h-[70px] pl-[166px] pr-[272px] bg-white z-50">
+    <div className="fixed top-0 left-0 right-0 h-[70px] pl-[166px] pr-[166px] bg-white z-50" style={{ borderBottom: '1px solid var(--Gray-03, #F3F3F5)' }}>
       <header className="w-full flex justify-between items-center px-8 py-4 ">
         <Link
           className="cursor-pointer hover:opacity-80 transition-opacity"
@@ -94,21 +94,24 @@ export default function HomeHeader() {
           {/* 이제 여기서 채팅으로 이동 */}
           <Link
             href={me ? `/channels?me=${encodeURIComponent(me)}` : "/"}
-            className="text-black py-2 rounded-md hover:bg-gray-200 transition-colors"
+            className={`py-2 rounded-md hover:bg-gray-200 transition-colors ${router.pathname === "/channels" ? "text-[#232323]" : "text-[#ADAEB2]"
+              }`}
           >
             내채팅
           </Link>
           {/* 나머지 메뉴 */}
           <Link
             href="/rentals"
-            className="text-black py-2 rounded-md hover:bg-gray-200 transition-colors"
+            className={`py-2 rounded-md hover:bg-gray-200 transition-colors ${router.pathname === "/rentals" ? "text-[#232323]" : "text-[#ADAEB2]"
+              }`}
           >
             대여내역
           </Link>
 
           <Link
             href="/items"
-            className="text-black py-2 rounded-md hover:bg-gray-200 transition-colors"
+            className={`py-2 rounded-md hover:bg-gray-200 transition-colors ${router.pathname === "/items" ? "text-[#232323]" : "text-[#ADAEB2]"
+              }`}
           >
             내물건
           </Link>
@@ -116,7 +119,7 @@ export default function HomeHeader() {
             href="/detail/new-page"
             className="border border-[#6849FE] bg-white text-[#6849FE] rounded-[8px] hover:border-black flex items-center gap-[4px] transition-colors w-[123px] h-[34px] justify-center hover:bg-white shadow-none"
           >
-            <BsPlusLg className="w-[16px] h-[16px]"/>
+            <BsPlusLg className="w-[16px] h-[16px]" />
             <span className="text-[14px] font-normal">물건 등록하기</span>
           </Link>
 
@@ -154,11 +157,10 @@ export default function HomeHeader() {
      shadow-[0px_4px_12px_0px_rgba(0,0,0,0.1)]
      z-[100]
      transition-opacity duration-200
-     ${
-       menuOpen
-         ? "opacity-100 pointer-events-auto"
-         : "opacity-0 pointer-events-none"
-     }
+     ${menuOpen
+                  ? "opacity-100 pointer-events-auto"
+                  : "opacity-0 pointer-events-none"
+                }
    `}
             >
               {/* 상단 프로필 요약 */}
@@ -248,7 +250,7 @@ export default function HomeHeader() {
                     href="/profile"
                     className="flex items-center 
                       w-[232px] py-[10px] px-[16px] gap-[12px] 
-                     bg-white hover:bg-gray-100 rounded"
+                      bg-white hover:bg-gray-100 rounded"
                   >
                     <MdPolicy
                       className="

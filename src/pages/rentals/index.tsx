@@ -8,6 +8,7 @@ import BorrowedTab from "./BorrowedTab";
 import LentTab from "./LentTab";
 import RequestsTab from "./RequestsTab";
 import ApplyTab from "./ApplyTab";
+import { useRouter } from "next/router";
 
 type Tab = "borrow" | "lend" | "request" | "apply";
 
@@ -19,6 +20,7 @@ const api = axios.create({
 const RentalsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>("borrow");
   const [reloadTrigger, setReloadTrigger] = useState(0);
+  const router = useRouter();
 
   const handleReturnConfirm = async (id: number) => {
     try {
@@ -29,6 +31,7 @@ const RentalsPage: React.FC = () => {
         console.error("반납 요청 오류:", res.data.message);
       } else {
         setReloadTrigger((prev) => prev + 1);
+        router.push("/items"); // 반납 성공 시 내 물건 페이지로 이동(새로고침)
       }
     } catch (err) {
       console.error("반납 요청 실패:", err);

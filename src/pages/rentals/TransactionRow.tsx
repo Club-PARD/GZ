@@ -33,10 +33,13 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
     category: transactionItem?.category || "대여 신청",
   };
 
-  // postId 추출 (TransactionItem의 경우 id 사용, RequestItem의 경우 postId 또는 applyList에서 추출)
-  const postId = transactionItem?.id || 
-    (requestItem && 'postId' in requestItem && requestItem.postId) || 
-    (requestItem && 'applyList' in requestItem && requestItem.applyList.length > 0 ? requestItem.applyList[0].postId : null);
+  // postId 추출 (TransactionItem의 경우 id가 아닌 postId 사용, RequestItem의 경우 기존대로)
+  const postId =
+    activeTab === "lend"
+      ? transactionItem?.postId
+      : transactionItem?.id ||
+        (requestItem && 'postId' in requestItem && requestItem.postId) ||
+        (requestItem && 'applyList' in requestItem && requestItem.applyList.length > 0 ? requestItem.applyList[0].postId : null);
 
   // 더미 수락/거절 핸들러
   const handleAccept = async () => {
