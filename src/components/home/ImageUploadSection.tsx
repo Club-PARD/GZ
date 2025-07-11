@@ -1,7 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { BiSolidImage } from "@/components/icons";
-import LoadingBalls from "@/components/loading-components/loding-ball";
 import Image from "next/image";
 import { compressImage } from "@/utils/imageCompression";
 
