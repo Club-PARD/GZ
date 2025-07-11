@@ -28,7 +28,7 @@ const TabNav: React.FC<TabNavProps> = ({
       return (
         <button
           key={tab}
-          className={`pb-1 ${
+          className={`pb-1 transition hover:opacity-90 cursor-pointer ${
             isActive
               ? "border-b-2 border-[#232323] text-[#232323] text-[22px] font-semibold leading-[130%] tracking-[-0.44px]"
               : "text-[#C2C3C9] text-[22px] font-semibold leading-[130%] tracking-[-0.44px]"

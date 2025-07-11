@@ -44,6 +44,9 @@ const RequestsTab: React.FC<RequestsTabProps> = ({ handleReturnConfirm }) => {
     if (currentPage > totalPages && totalPages > 0) setCurrentPage(1);
   }, [totalPages, currentPage]);
 
+  // 데이터가 없어도 최소 1페이지는 표시
+  const effectiveTotalPages = Math.max(1, totalPages);
+
   const currentItems = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return (requestItemsState || []).slice(start, start + ITEMS_PER_PAGE);
@@ -53,14 +56,14 @@ const RequestsTab: React.FC<RequestsTabProps> = ({ handleReturnConfirm }) => {
     Math.floor((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
   const currentBlockEnd = Math.min(
     currentBlockStart + BLOCK_SIZE - 1,
-    totalPages
+    effectiveTotalPages
   );
 
   const handlePrevBlock = () =>
     setCurrentPage(Math.max(currentBlockStart - BLOCK_SIZE, 1));
   const handleNextBlock = () =>
     setCurrentPage(
-      Math.min(currentBlockStart + BLOCK_SIZE, totalPages - BLOCK_SIZE + 1)
+      Math.min(currentBlockStart + BLOCK_SIZE, effectiveTotalPages - BLOCK_SIZE + 1)
     );
 
   return (
@@ -74,7 +77,7 @@ const RequestsTab: React.FC<RequestsTabProps> = ({ handleReturnConfirm }) => {
 
       <Pagination
         currentPage={currentPage}
-        totalPages={totalPages}
+        totalPages={effectiveTotalPages}
         currentBlockStart={currentBlockStart}
         currentBlockEnd={currentBlockEnd}
         handlePrevBlock={handlePrevBlock}

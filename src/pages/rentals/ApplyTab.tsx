@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import Pagination from "./Pagination";
+import Link from "next/link";
 
 interface ApplyData {
   postId: number;
@@ -50,6 +51,9 @@ const ApplyTab: React.FC = () => {
     if (currentPage > totalPages && totalPages > 0) setCurrentPage(1);
   }, [totalPages, currentPage]);
 
+  // 데이터가 없어도 최소 1페이지는 표시
+  const effectiveTotalPages = Math.max(1, totalPages);
+
   const currentItems = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
     return items.slice(start, start + ITEMS_PER_PAGE);
@@ -59,7 +63,7 @@ const ApplyTab: React.FC = () => {
     Math.floor((currentPage - 1) / BLOCK_SIZE) * BLOCK_SIZE + 1;
   const currentBlockEnd = Math.min(
     currentBlockStart + BLOCK_SIZE - 1,
-    totalPages
+    effectiveTotalPages
   );
 
   return (
@@ -89,8 +93,25 @@ const ApplyTab: React.FC = () => {
                   />
                   <div>
                     <div className="flex items-center font-semibold text-[#232323]">
-                      {d.itemName}
-                      <span className="ml-2 text-gray-400">&gt;</span>
+                      <Link
+                        href={`/detail/${d.postId}`}
+                        className="hover:text-[#6849FE] cursor-pointer flex items-center"
+                      >
+                        {d.itemName}
+                        <svg
+                          className="w-4 h-4 ml-1 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </Link>
                     </div>
                     <div className="text-sm text-gray-500">대여 신청</div>
                   </div>
@@ -109,7 +130,7 @@ const ApplyTab: React.FC = () => {
                 <div className="flex flex-col justify-center items-center px-6 py-6 text-center">
                   <button
                     disabled
-                    className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Gray-05,#C2C3C9)]"
+                    className="flex w-[104px] h-[38px] flex-shrink-0 justify-center items-center gap-[6px] px-[16px] py-[8px] rounded-lg bg-[var(--Gray-05,#C2C3C9)] transition hover:opacity-90"
                   >
                     <span className="text-[var(--White,#FFF)] text-center text-[16px] font-semibold leading-[130%] tracking-[-0.32px]">
                       수락대기
@@ -133,7 +154,7 @@ const ApplyTab: React.FC = () => {
 
       <Pagination
         currentPage={currentPage}
-        totalPages={totalPages}
+        totalPages={effectiveTotalPages}
         currentBlockStart={currentBlockStart}
         currentBlockEnd={currentBlockEnd}
         handlePrevBlock={() =>
@@ -141,7 +162,7 @@ const ApplyTab: React.FC = () => {
         }
         handleNextBlock={() =>
           setCurrentPage(
-            Math.min(currentBlockStart + BLOCK_SIZE, totalPages - BLOCK_SIZE + 1)
+            Math.min(currentBlockStart + BLOCK_SIZE, effectiveTotalPages - BLOCK_SIZE + 1)
           )
         }
         setCurrentPage={setCurrentPage}
