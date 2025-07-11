@@ -93,7 +93,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         <div className="grid grid-cols-3 items-center gap-3 pb-[20px]">
           <label
             htmlFor="nickname"
-            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
+            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px] dark:text-[var(--Gray-06,#ADAEB2)]"
           >
             닉네임
           </label>
@@ -111,7 +111,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         <div className="grid grid-cols-3 items-center gap-4">
           <label
             htmlFor="current-pw"
-            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
+            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px] dark:text-[var(--Gray-06,#ADAEB2)]"
           >
             현재 비밀번호
           </label>
@@ -129,7 +129,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         <div className="grid grid-cols-3 items-center gap-4">
           <label
             htmlFor="new-pw"
-            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
+            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px] dark:text-[var(--Gray-06,#ADAEB2)]"
           >
             새 비밀번호
           </label>
@@ -147,7 +147,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         <div className="grid grid-cols-3 items-center gap-4">
           <label
             htmlFor="confirm-pw"
-            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px]"
+            className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px] dark:text-[var(--Gray-06,#ADAEB2)]"
           >
             새 비밀번호 확인
           </label>
