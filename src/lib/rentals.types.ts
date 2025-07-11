@@ -21,6 +21,7 @@ export interface TransactionItem {
 
 export interface Apply {
   applyId: number;
+  applierId: number;
   applierNickname: string;
   firstImageUrl: string;
   period: number;
