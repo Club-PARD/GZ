@@ -89,7 +89,7 @@ export default async function handler(
       setImmediate(async () => {
         try {
           await sendRentalApprovalEmail(backendResponse.data);
-        } catch (emailError) {
+        } catch {
           // 이메일 발송 실패는 전체 API 응답에 영향을 주지 않음
         }
       });
