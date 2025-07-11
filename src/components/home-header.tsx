@@ -75,7 +75,7 @@ export default function HomeHeader() {
 
   
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 pl-[260px] pr-[272px] bg-white h-16">
+    <div className="fixed top-0 left-0 right-0 h-[70px] pl-[166px] pr-[272px] bg-white z-50">
       <header className="w-full flex justify-between items-center px-8 py-4 ">
         <Link href={'/home'}>
           <Image 
@@ -88,11 +88,11 @@ export default function HomeHeader() {
           />
         </Link>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           {/* 이제 여기서 채팅으로 이동 */}
           <Link
             href={me ? `/channels?me=${encodeURIComponent(me)}` : "/"}
-            className="text-black px-6 py-2 rounded-md hover:bg-gray-200 transition-colors"
+            className="text-black px-3 py-2 rounded-md hover:bg-gray-200 transition-colors"
           >
             내채팅
           </Link>
@@ -103,12 +103,14 @@ export default function HomeHeader() {
           >
             대여내역
           </Link>
+
           <Link
             href="/items"
             className="text-black px-6 py-2 rounded-md hover:bg-gray-200 transition-colors"
           >
             내물건
           </Link>
+          
           {/*---------------------------- 수정부분----태윤---------------------- */}
           <div
           className="relative inline-block"
@@ -143,7 +145,7 @@ export default function HomeHeader() {
      absolute top-full right-0 mt-2
     w-[268px] h-[368px] bg-[#fff]
      shadow-[0px_4px_12px_0px_rgba(0,0,0,0.1)]
-     z-50
+     z-[100]
      transition-opacity duration-200
      ${menuOpen
        ? 'opacity-100 pointer-events-auto'
