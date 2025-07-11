@@ -43,14 +43,14 @@ const AccountSection: React.FC = () => {
 
   return (
     <>
-      <h1 className="text-2xl font-semibold mb-6 border-b pb-4">계정관리</h1>
+      <h1 className="text-2xl font-semibold mb-6 border-b pb-4 dark:text-black">계정관리</h1>
 
       {/* 로그아웃 */}
       <div className="flex items-center mb-8">
-        <span className="font-medium">로그아웃</span>
+        <span className="font-medium dark:text-black">로그아웃</span>
         <button
           onClick={handleLogout}
-          className="ml-4 px-4 py-2 border rounded-lg hover:bg-gray-100 transition"
+          className="ml-4 px-4 py-2 border rounded-lg hover:bg-gray-100 transition dark:text-black"
         >
           로그아웃
         </button>

@@ -37,9 +37,18 @@ const TransactionRow: React.FC<TransactionRowProps> = ({ item, activeTab, handle
     if (!isRequestItem || !requestItem) return;
     const firstApply = requestItem.applyList[0];
     const applyId = firstApply?.applyId;
-    if (!applyId) return;
+    const applierId = firstApply?.applierId;
+    
+    if (!applyId || !applierId) return;
+    
     try {
-      await axios.delete(`/api/apply/ok?applyId=${applyId}`);
+      // body로 전송하도록 변경
+      await axios.delete(`/api/apply/ok`, {
+        data: {
+          applyId: applyId,
+          applierId: applierId
+        }
+      });
       alert('신청을 수락했습니다.');
       if (typeof window !== 'undefined') window.location.reload();
     } catch {
