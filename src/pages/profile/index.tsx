@@ -54,12 +54,12 @@ export default function ProfilePage() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen h-[1080px] bg-white">
+    <div className="flex flex-col min-h-screen h-[1928px] bg-white">
       <Header />
-      <div className="flex flex-1 justify-center py-8 pt-[120px]">
+      <div className="flex flex-1 justify-center py-8 pt-[120px] ">
         <div className="w-[1280px] flex bg-white">
           <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-          <main className="flex-1 p-10 overflow-y-auto">
+          <main className="flex-1 ml-[20px] overflow-y-auto">
             {activeTab === 'info' && userId !== null && (
               <InfoSection
                 userId={userId}

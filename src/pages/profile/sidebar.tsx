@@ -10,7 +10,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => (
-  <aside className="w-[280px] h-[435px] flex-shrink-0 bg-[var(--Gray-02,#F9F9FA)]">
+  <aside className="w-[280px] h-[435px] flex-shrink-0 bg-[var(--Gray-02,#F9F9FA)] ">
     <div className="flex flex-col h-full justify-around">
       <TabButton label="내 정보" active={activeTab === 'info'} onClick={() => setActiveTab('info')} />
       <TabButton label="환경설정" active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />

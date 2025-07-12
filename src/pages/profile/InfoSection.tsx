@@ -1,7 +1,7 @@
 // components/profile/InfoSection.tsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import Image from 'next/image';
 interface InfoSectionProps {
   userId: number;
   nickname: string;
@@ -54,21 +54,20 @@ const InfoSection: React.FC<InfoSectionProps> = ({
     <>
       {/* 내 정보 */}
       <div className="w-full border-y border-gray-200 py-[20px] mb-6">
-        <h1 className="text-[var(--Gray-10,#232323)] text-[24px] font-medium leading-[130%] text-2xl pr-[40px]">
+        <h1 className="text-[var(--Gray-10,#232323)] text-[24px] font-medium leading-[130%] text-2xl pr-[40px] ml-[48px]">
           내 프로필
         </h1>
       </div>
       <div className="flex items-center mb-8">
-        <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
-          {/* 아바타 아이콘 */}
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5.121 17.804A9 9 0 1118.88 6.195M9 11a3 3 0 106 0 3 3 0 00-6 0z"
-            />
-          </svg>
+                <div className=" rounded-full flex items-center justify-center text-gray-500 ml-[48px]">
+          <Image
+            src="/images/myprofile.svg"
+            alt="프로필 아바타"
+            width={100}          // ← 32px 로 키우고
+            height={100}
+            className="w-[100px] h-[100px] mr-[24px]" // ← Tailwind 로도 8×8 (32px) 고정
+            priority
+          />
         </div>
         <div className="ml-6">
           <p className="text-[var(--Gray-10,#232323)] text-[20px] font-medium leading-[130%] tracking-[-0.4px]">
@@ -82,7 +81,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
 
       {/* 프로필 수정 헤더 */}
       <div className="w-[890px] border-y border-[#D8D9DF] py-[20px] mb-6">
-        <h1 className="text-[var(--Gray-10,#232323)] text-[24px] font-medium leading-[130%] tracking-[-0.48px]">
+        <h1 className="text-[var(--Gray-10,#232323)] text-[24px] font-medium leading-[130%] tracking-[-0.48px] ml-[48px]">
           프로필 수정
         </h1>
       </div>
@@ -90,7 +89,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
       {/* 프로필 수정 폼 */}
       <div className="space-y-[16px] pt-[24px]">
         {/* 닉네임 */}
-        <div className="grid grid-cols-3 items-center gap-3 pb-[20px]">
+        <div className="grid grid-cols-3 items-center gap-3 pb-[20px] ml-[48px]">
           <label
             htmlFor="nickname"
             className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px] dark:text-[var(--Gray-06,#ADAEB2)]"
@@ -108,7 +107,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         </div>
 
         {/* 현재 비밀번호 */}
-        <div className="grid grid-cols-3 items-center gap-4">
+        <div className="grid grid-cols-3 items-center gap-4 ml-[48px]">
           <label
             htmlFor="current-pw"
             className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px] dark:text-[var(--Gray-06,#ADAEB2)]"
@@ -126,7 +125,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         </div>
 
         {/* 새 비밀번호 */}
-        <div className="grid grid-cols-3 items-center gap-4">
+        <div className="grid grid-cols-3 items-center gap-4 ml-[48px]">
           <label
             htmlFor="new-pw"
             className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px] dark:text-[var(--Gray-06,#ADAEB2)]"
@@ -144,7 +143,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
         </div>
 
         {/* 새 비밀번호 확인 */}
-        <div className="grid grid-cols-3 items-center gap-4">
+        <div className="grid grid-cols-3 items-center gap-4 ml-[48px]">
           <label
             htmlFor="confirm-pw"
             className="text-[var(--Gray-06,#ADAEB2)] text-[18px] font-normal leading-[160%] tracking-[-0.36px] dark:text-[var(--Gray-06,#ADAEB2)]"
@@ -163,7 +162,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({
       </div>
 
       {/* 액션 버튼 */}
-      <div className="flex w-full justify-center space-x-[20px] mt-8">
+      <div className="flex w-full justify-center space-x-[20px] mt-[40px]">
         <button
           className="flex w-[160px] py-4 px-6 justify-center items-center gap-1.5 rounded-lg bg-[var(--Gray-08,#616264)] text-[var(--White,#FFF)] text-center text-[16px] font-semibold leading-[130%] tracking-[-0.32px]"
         >
