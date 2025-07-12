@@ -22,6 +22,7 @@ interface Post {
   nickname: string;
   itemName: string;
   post_id: number;
+  isBorrowable: "POSSIBLE" | "IMPOSSIBLE";
   imageUrls?: string[];
   price_per_hour?: number;
   price_per_day?: number;
@@ -68,6 +69,7 @@ export default function DetailPage() {
                 nickname: "나",
                 itemName: itemData.userInput?.itemName || itemData.data?.itemName || "제목 없음",
                 post_id: itemData.data?.postId || Date.now(),
+                isBorrowable: "POSSIBLE",
                 imageUrls: itemData.imageUrls || itemData.data?.imageUrls || [],
                 price_per_hour: itemData.userInput?.price_per_hour || itemData.data?.price_per_hour || 0,
                 price_per_day: itemData.userInput?.price_per_day || itemData.data?.price_per_day || 0,

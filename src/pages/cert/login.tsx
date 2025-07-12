@@ -61,9 +61,35 @@ export default function Login() {
         password,
       }, {
         withCredentials: true,
+        validateStatus: () => true, // 모든 상태 코드를 성공으로 처리
       });
 
-      // 2) 로그인 성공 처리
+      // 2) 상태 코드 확인
+      if (res.status !== 200) {
+        console.log('HTTP 상태 코드:', res.status);
+        console.log('오류 데이터:', res.data);
+        
+        switch (res.status) {
+          case 401:
+            setError('아이디 또는 비밀번호가 올바르지 않습니다.');
+            break;
+          case 404:
+            setError('존재하지 않는 계정입니다.');
+            break;
+          case 400:
+            setError(res.data?.message || '입력한 정보를 다시 확인해주세요.');
+            break;
+          case 500:
+            setError('서버에 문제가 발생했습니다. 잠시 후 다시 시도해주세요.');
+            break;
+          default:
+            setError('로그인 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      // 3) 로그인 성공 처리
       const json = res.data;
       const userId = String(json.data.userId);
       const nickname = json.data.nickname;
@@ -73,7 +99,7 @@ export default function Login() {
         localStorage.setItem('authToken', json.data.token || json.token);
       }
 
-      // 3) Sendbird 연결
+      // 4) Sendbird 연결
       const sb = getSendbird();
       if (!sb) throw new Error('Sendbird가 초기화되지 않았습니다.');
 
@@ -92,7 +118,7 @@ export default function Login() {
         }
       }
 
-      // 4) FCM 토큰 요청 및 Firestore 저장
+      // 5) FCM 토큰 요청 및 Firestore 저장
       try {
         await requestFcmToken(async token => {
           if (token && sb.currentUser) {
@@ -112,7 +138,7 @@ export default function Login() {
         // 무시
       }
 
-      // 5) 자격증명 저장/삭제
+      // 6) 자격증명 저장/삭제
       if (agreePrivacy) {
         localStorage.setItem(
           'savedCredentials',
@@ -122,12 +148,11 @@ export default function Login() {
         localStorage.removeItem('savedCredentials');
       }
 
-      // 6) 홈으로 이동
+      // 7) 홈으로 이동
       router.replace('/home');
     } catch (error: unknown) {
-      const err = error as Error;
-      console.error('로그인 중 오류:', err);
-      alert('로그인 중 오류가 발생했습니다.');
+      console.error('네트워크 오류:', error);
+      setError('네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요.');
     } finally {
       setIsLoading(false);
     }
@@ -141,7 +166,7 @@ export default function Login() {
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="w-[580px] h-[461px] bg-[#FFFFFF] px-[80px] pt-[80px] pb-[60px] rounded-2xl"
+          className="w-[580px] bg-[#FFFFFF] px-[80px] pt-[80px] pb-[60px] rounded-2xl"
         >
           {/* 이메일 */}
           <div>
@@ -177,12 +202,16 @@ export default function Login() {
           </div>
 
           {/* 오류 메시지 */}
-          {error && <p className="text-red-600 mt-[12px]">{error}</p>}
+          {error && (
+            <div className="w-[420px] mt-[20px] p-[12px] bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-600 text-sm font-medium">{error}</p>
+            </div>
+          )}
 
           {/* 로그인 버튼 */}
           <button
             type="submit"
-            className="w-[420px] h-[53px] p-[16px] bg-[#6849FE] text-white rounded-lg mt-[60px] transition hover:opacity-90"
+            className={`w-[420px] h-[53px] p-[16px] bg-[#6849FE] text-white rounded-lg transition hover:opacity-90 ${error ? 'mt-[20px]' : 'mt-[60px]'}`}
             disabled={!email.trim() || !password || isLoading}
           >
             {isLoading ? '로그인 중...' : '로그인'}
