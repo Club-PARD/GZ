@@ -24,7 +24,7 @@ export default function Header() {
             로그인
           </Link>
           <Link
-            href="/"
+            href="/profile/SupportSection2"
             className="text-black px-6 py-2 rounded-md hover:bg-gray-200 transition-colors"
           >
             고객센터

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { PiCheckCircleFill } from 'react-icons/pi';
 export interface PoliciesSectionProps {
   expanded: { terms: boolean; privacy: boolean };
   agreed: { terms: boolean; privacy: boolean };
@@ -25,15 +25,38 @@ const PoliciesSection: React.FC<PoliciesSectionProps> = ({
               {key === 'terms' ? '서비스 이용약관' : '개인정보 수집·이용'}
             </h2>
             
-            <label className="inline-flex items-center">
+            <label className="inline-flex items-center space-x-2 cursor-pointer">
+              {/* 숨겨진 실제 체크박스 */}
               <input
                 type="checkbox"
+                className="sr-only"
                 checked={agreed[key]}
                 onChange={() => toggleAgree(key)}
-                className="form-checkbox h-5 w-5 text-purple-600"
               />
-              <span className="ml-2 text-gray-700">
-                [필수] {key === 'terms' ? '서비스 이용약관에' : '개인정보 수집·이용에'} 동의합니다.
+
+              {/* 항상 회색 원. 체크되면 아이콘 렌더링 */}
+              <span className="relative  rounded-full flex items-center justify-center">
+                {agreed[key] ? (
+                  <PiCheckCircleFill size={24} className="text-[#6849FE]" />
+                ) : (
+                  <span className="w-[24px] h-[24px] border border-[#ADAEB2] rounded-full" />
+                )}
+              </span>
+
+              {/* 라벨 텍스트 */}
+              <span
+                className="
+                  text-[var(--Gray-08,#616264)]
+                  font-['Pretendard Variable']
+                  text-[14px]
+                  font-medium
+                  leading-[130%]
+                  tracking-[-0.28px]
+                "
+              >
+                [필수] {key === 'terms'
+                  ? '서비스 이용약관에 동의합니다.'
+                  : '개인정보 수집·이용에 동의합니다.'}
               </span>
             </label>
           </div>
