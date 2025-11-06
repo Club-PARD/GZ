@@ -421,4 +421,6 @@ const MyPostsPage: React.FC = () => {
   );
 };
 
+
 export default MyPostsPage;
+/* 버셀 베포 */
