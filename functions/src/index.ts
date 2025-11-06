@@ -12,7 +12,8 @@ const db = admin.firestore();
 const messaging = admin.messaging();
 
 // Sendbird API 설정
-const SENDBIRD_APP_ID = "07CA004F-C047-45F1-ACF2-11B70C188311"; // 로그에서 확인된 앱 ID
+const SENDBIRD_APP_ID =
+  functions.config().sendbird?.app_id || process.env.SENDBIRD_APP_ID;
 const SENDBIRD_API_TOKEN =
   functions.config().sendbird?.api_token || process.env.SENDBIRD_API_TOKEN;
 
